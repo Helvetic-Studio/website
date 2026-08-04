@@ -3,7 +3,10 @@ import { ArrowDown01Icon, ArrowUp01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@website/ui/lib/utils";
 
-function Accordion({ className, ...props }: AccordionPrimitive.Root.Props) {
+const Accordion = function Accordion({
+  className,
+  ...props
+}: AccordionPrimitive.Root.Props) {
   return (
     <AccordionPrimitive.Root
       data-slot="accordion"
@@ -11,9 +14,12 @@ function Accordion({ className, ...props }: AccordionPrimitive.Root.Props) {
       {...props}
     />
   );
-}
+};
 
-function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
+const AccordionItem = function AccordionItem({
+  className,
+  ...props
+}: AccordionPrimitive.Item.Props) {
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
@@ -21,9 +27,9 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
       {...props}
     />
   );
-}
+};
 
-function AccordionTrigger({
+const AccordionTrigger = function AccordionTrigger({
   className,
   children,
   ...props
@@ -54,9 +60,9 @@ function AccordionTrigger({
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );
-}
+};
 
-function AccordionContent({
+const AccordionContent = function AccordionContent({
   className,
   children,
   ...props
@@ -77,6 +83,6 @@ function AccordionContent({
       </div>
     </AccordionPrimitive.Panel>
   );
-}
+};
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };

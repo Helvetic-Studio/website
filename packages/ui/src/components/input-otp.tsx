@@ -6,7 +6,7 @@ import { cn } from "@website/ui/lib/utils";
 import { OTPInput, OTPInputContext } from "input-otp";
 import * as React from "react";
 
-function InputOTP({
+const InputOTP = function InputOTP({
   className,
   containerClassName,
   ...props
@@ -25,9 +25,12 @@ function InputOTP({
       {...props}
     />
   );
-}
+};
 
-function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
+const InputOTPGroup = function InputOTPGroup({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="input-otp-group"
@@ -38,9 +41,9 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function InputOTPSlot({
+const InputOTPSlot = function InputOTPSlot({
   index,
   className,
   ...props
@@ -61,26 +64,27 @@ function InputOTPSlot({
       {...props}
     >
       {char}
-      {hasFakeCaret && (
+      {hasFakeCaret === true && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
         </div>
       )}
     </div>
   );
-}
+};
 
-function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
+const InputOTPSeparator = function InputOTPSeparator({
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="input-otp-separator"
       className="flex items-center [&_svg:not([class*='size-'])]:size-4"
-      role="separator"
       {...props}
     >
       <HugeiconsIcon icon={MinusSignIcon} strokeWidth={2} />
     </div>
   );
-}
+};
 
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator };

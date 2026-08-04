@@ -2,23 +2,18 @@
 
 import { ArrowDown02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  MessageScroller as MessageScrollerPrimitive,
-  useMessageScroller,
-  useMessageScrollerScrollable,
-  useMessageScrollerVisibility,
-} from "@shadcn/react/message-scroller";
+import { MessageScroller as MessageScrollerPrimitive } from "@shadcn/react/message-scroller";
 import { Button } from "@website/ui/components/button";
 import { cn } from "@website/ui/lib/utils";
 import * as React from "react";
 
-function MessageScrollerProvider(
+const MessageScrollerProvider = function MessageScrollerProvider(
   props: React.ComponentProps<typeof MessageScrollerPrimitive.Provider>
 ) {
   return <MessageScrollerPrimitive.Provider {...props} />;
-}
+};
 
-function MessageScroller({
+const MessageScroller = function MessageScroller({
   className,
   ...props
 }: React.ComponentProps<typeof MessageScrollerPrimitive.Root>) {
@@ -32,9 +27,9 @@ function MessageScroller({
       {...props}
     />
   );
-}
+};
 
-function MessageScrollerViewport({
+const MessageScrollerViewport = function MessageScrollerViewport({
   className,
   ...props
 }: React.ComponentProps<typeof MessageScrollerPrimitive.Viewport>) {
@@ -48,9 +43,9 @@ function MessageScrollerViewport({
       {...props}
     />
   );
-}
+};
 
-function MessageScrollerContent({
+const MessageScrollerContent = function MessageScrollerContent({
   className,
   ...props
 }: React.ComponentProps<typeof MessageScrollerPrimitive.Content>) {
@@ -61,9 +56,9 @@ function MessageScrollerContent({
       {...props}
     />
   );
-}
+};
 
-function MessageScrollerItem({
+const MessageScrollerItem = function MessageScrollerItem({
   className,
   scrollAnchor = false,
   ...props
@@ -79,9 +74,9 @@ function MessageScrollerItem({
       {...props}
     />
   );
-}
+};
 
-function MessageScrollerButton({
+const MessageScrollerButton = function MessageScrollerButton({
   direction = "end",
   className,
   children,
@@ -115,7 +110,7 @@ function MessageScrollerButton({
       )}
     </MessageScrollerPrimitive.Button>
   );
-}
+};
 
 export {
   MessageScrollerProvider,
@@ -124,7 +119,10 @@ export {
   MessageScrollerContent,
   MessageScrollerItem,
   MessageScrollerButton,
+};
+
+export {
   useMessageScroller,
   useMessageScrollerScrollable,
   useMessageScrollerVisibility,
-};
+} from "@shadcn/react/message-scroller";

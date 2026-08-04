@@ -5,7 +5,10 @@ import { Tick02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@website/ui/lib/utils";
 
-function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
+const Checkbox = function Checkbox({
+  className,
+  ...props
+}: CheckboxPrimitive.Root.Props) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
@@ -23,6 +26,6 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );
-}
+};
 
 export { Checkbox };

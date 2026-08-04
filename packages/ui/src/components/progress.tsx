@@ -3,7 +3,36 @@
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import { cn } from "@website/ui/lib/utils";
 
-function Progress({
+const ProgressTrack = function ProgressTrack({
+  className,
+  ...props
+}: ProgressPrimitive.Track.Props) {
+  return (
+    <ProgressPrimitive.Track
+      className={cn(
+        "relative flex h-1 w-full items-center overflow-x-hidden rounded-none bg-muted",
+        className
+      )}
+      data-slot="progress-track"
+      {...props}
+    />
+  );
+};
+
+const ProgressIndicator = function ProgressIndicator({
+  className,
+  ...props
+}: ProgressPrimitive.Indicator.Props) {
+  return (
+    <ProgressPrimitive.Indicator
+      data-slot="progress-indicator"
+      className={cn("h-full bg-primary transition-all", className)}
+      {...props}
+    />
+  );
+};
+
+const Progress = function Progress({
   className,
   children,
   value,
@@ -22,35 +51,12 @@ function Progress({
       </ProgressTrack>
     </ProgressPrimitive.Root>
   );
-}
+};
 
-function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
-  return (
-    <ProgressPrimitive.Track
-      className={cn(
-        "relative flex h-1 w-full items-center overflow-x-hidden rounded-none bg-muted",
-        className
-      )}
-      data-slot="progress-track"
-      {...props}
-    />
-  );
-}
-
-function ProgressIndicator({
+const ProgressLabel = function ProgressLabel({
   className,
   ...props
-}: ProgressPrimitive.Indicator.Props) {
-  return (
-    <ProgressPrimitive.Indicator
-      data-slot="progress-indicator"
-      className={cn("h-full bg-primary transition-all", className)}
-      {...props}
-    />
-  );
-}
-
-function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
+}: ProgressPrimitive.Label.Props) {
   return (
     <ProgressPrimitive.Label
       className={cn("text-xs", className)}
@@ -58,9 +64,12 @@ function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
       {...props}
     />
   );
-}
+};
 
-function ProgressValue({ className, ...props }: ProgressPrimitive.Value.Props) {
+const ProgressValue = function ProgressValue({
+  className,
+  ...props
+}: ProgressPrimitive.Value.Props) {
   return (
     <ProgressPrimitive.Value
       className={cn(
@@ -71,7 +80,7 @@ function ProgressValue({ className, ...props }: ProgressPrimitive.Value.Props) {
       {...props}
     />
   );
-}
+};
 
 export {
   Progress,

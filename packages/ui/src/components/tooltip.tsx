@@ -3,7 +3,7 @@
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 import { cn } from "@website/ui/lib/utils";
 
-function TooltipProvider({
+const TooltipProvider = function TooltipProvider({
   delay = 0,
   ...props
 }: TooltipPrimitive.Provider.Props) {
@@ -14,17 +14,19 @@ function TooltipProvider({
       {...props}
     />
   );
-}
+};
 
-function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
+const Tooltip = function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
-}
+};
 
-function TooltipTrigger({ ...props }: TooltipPrimitive.Trigger.Props) {
+const TooltipTrigger = function TooltipTrigger({
+  ...props
+}: TooltipPrimitive.Trigger.Props) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
-}
+};
 
-function TooltipContent({
+const TooltipContent = function TooltipContent({
   className,
   side = "top",
   sideOffset = 4,
@@ -60,6 +62,6 @@ function TooltipContent({
       </TooltipPrimitive.Positioner>
     </TooltipPrimitive.Portal>
   );
-}
+};
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

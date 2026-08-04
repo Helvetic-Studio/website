@@ -8,7 +8,10 @@ import { Button } from "@website/ui/components/button";
 import { cn } from "@website/ui/lib/utils";
 import * as React from "react";
 
-function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+const Pagination = function Pagination({
+  className,
+  ...props
+}: React.ComponentProps<"nav">) {
   return (
     <nav
       role="navigation"
@@ -18,9 +21,9 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       {...props}
     />
   );
-}
+};
 
-function PaginationContent({
+const PaginationContent = function PaginationContent({
   className,
   ...props
 }: React.ComponentProps<"ul">) {
@@ -31,42 +34,49 @@ function PaginationContent({
       {...props}
     />
   );
-}
+};
 
-function PaginationItem({ ...props }: React.ComponentProps<"li">) {
+const PaginationItem = function PaginationItem({
+  ...props
+}: React.ComponentProps<"li">) {
   return <li data-slot="pagination-item" {...props} />;
-}
+};
 
 type PaginationLinkProps = {
   isActive?: boolean;
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
   React.ComponentProps<"a">;
 
-function PaginationLink({
+const PaginationLink = function PaginationLink({
   className,
   isActive,
   size = "icon",
+  children,
   ...props
 }: PaginationLinkProps) {
+  const active = isActive === true;
+
   return (
     <Button
-      variant={isActive ? "outline" : "ghost"}
+      variant={active ? "outline" : "ghost"}
       size={size}
       className={cn(className)}
       nativeButton={false}
       render={
         <a
-          aria-current={isActive ? "page" : undefined}
+          aria-current={active ? "page" : undefined}
           data-slot="pagination-link"
-          data-active={isActive}
+          data-active={active}
           {...props}
-        />
+        >
+          {children}
+        </a>
       }
     />
   );
-}
+};
 
-function PaginationPrevious({
+const PaginationPrevious = function PaginationPrevious({
   className,
   text = "Previous",
   ...props
@@ -86,9 +96,9 @@ function PaginationPrevious({
       <span className="hidden sm:block">{text}</span>
     </PaginationLink>
   );
-}
+};
 
-function PaginationNext({
+const PaginationNext = function PaginationNext({
   className,
   text = "Next",
   ...props
@@ -108,9 +118,9 @@ function PaginationNext({
       />
     </PaginationLink>
   );
-}
+};
 
-function PaginationEllipsis({
+const PaginationEllipsis = function PaginationEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
@@ -128,7 +138,7 @@ function PaginationEllipsis({
       <span className="sr-only">More pages</span>
     </span>
   );
-}
+};
 
 export {
   Pagination,

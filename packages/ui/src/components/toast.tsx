@@ -14,17 +14,27 @@ import { Button } from "@website/ui/components/button";
 import { cn } from "@website/ui/lib/utils";
 import * as React from "react";
 
+const DEFAULT_TOAST_ACTION = <Button variant="outline" size="sm" />;
+const DEFAULT_TOAST_CLOSE = <Button variant="ghost" size="icon-sm" />;
+
 const toast = ToastPrimitive.createToastManager();
 
-function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
+const ToastProvider = function ToastProvider({
+  ...props
+}: ToastPrimitive.Provider.Props) {
   return <ToastPrimitive.Provider {...props} />;
-}
+};
 
-function ToastPortal({ ...props }: ToastPrimitive.Portal.Props) {
+const ToastPortal = function ToastPortal({
+  ...props
+}: ToastPrimitive.Portal.Props) {
   return <ToastPrimitive.Portal data-slot="toast-portal" {...props} />;
-}
+};
 
-function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
+const ToastViewport = function ToastViewport({
+  className,
+  ...props
+}: ToastPrimitive.Viewport.Props) {
   return (
     <ToastPrimitive.Viewport
       data-slot="toast-viewport"
@@ -35,9 +45,12 @@ function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
       {...props}
     />
   );
-}
+};
 
-function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
+const Toast = function Toast({
+  className,
+  ...props
+}: ToastPrimitive.Root.Props) {
   return (
     <ToastPrimitive.Root
       data-slot="toast"
@@ -62,9 +75,12 @@ function Toast({ className, ...props }: ToastPrimitive.Root.Props) {
       {...props}
     />
   );
-}
+};
 
-function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
+const ToastContent = function ToastContent({
+  className,
+  ...props
+}: ToastPrimitive.Content.Props) {
   return (
     <ToastPrimitive.Content
       data-slot="toast-content"
@@ -75,9 +91,12 @@ function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
       {...props}
     />
   );
-}
+};
 
-function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
+const ToastTitle = function ToastTitle({
+  className,
+  ...props
+}: ToastPrimitive.Title.Props) {
   return (
     <ToastPrimitive.Title
       data-slot="toast-title"
@@ -85,9 +104,9 @@ function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
       {...props}
     />
   );
-}
+};
 
-function ToastDescription({
+const ToastDescription = function ToastDescription({
   className,
   ...props
 }: ToastPrimitive.Description.Props) {
@@ -98,11 +117,11 @@ function ToastDescription({
       {...props}
     />
   );
-}
+};
 
-function ToastAction({
+const ToastAction = function ToastAction({
   className,
-  render = <Button variant="outline" size="sm" />,
+  render = DEFAULT_TOAST_ACTION,
   ...props
 }: ToastPrimitive.Action.Props) {
   return (
@@ -113,12 +132,12 @@ function ToastAction({
       {...props}
     />
   );
-}
+};
 
-function ToastClose({
+const ToastClose = function ToastClose({
   className,
   children,
-  render = <Button variant="ghost" size="icon-sm" />,
+  render = DEFAULT_TOAST_CLOSE,
   ...props
 }: ToastPrimitive.Close.Props) {
   return (
@@ -137,9 +156,9 @@ function ToastClose({
       )}
     </ToastPrimitive.Close>
   );
-}
+};
 
-function ToastIcon({ type }: { type: string | undefined }) {
+const ToastIcon = function ToastIcon({ type }: { type: string | undefined }) {
   let icon: React.ReactNode = null;
 
   if (type === "success") {
@@ -202,9 +221,9 @@ function ToastIcon({ type }: { type: string | undefined }) {
       {icon}
     </span>
   );
-}
+};
 
-function ToastList() {
+const ToastList = function ToastList() {
   const { toasts } = ToastPrimitive.useToastManager();
 
   return toasts.map((toastItem) => (
@@ -220,9 +239,9 @@ function ToastList() {
       </ToastContent>
     </Toast>
   ));
-}
+};
 
-function Toaster({
+const Toaster = function Toaster({
   children,
   toastManager = toast,
   ...props
@@ -237,10 +256,10 @@ function Toaster({
       </ToastPortal>
     </ToastProvider>
   );
-}
+};
 
-const createToastManager = ToastPrimitive.createToastManager;
-const useToastManager = ToastPrimitive.useToastManager;
+const { createToastManager } = ToastPrimitive;
+const { useToastManager } = ToastPrimitive;
 
 export {
   Toaster,

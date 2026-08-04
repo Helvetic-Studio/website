@@ -13,7 +13,10 @@ import * as React from "react";
 
 const Select = SelectPrimitive.Root;
 
-function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
+const SelectGroup = function SelectGroup({
+  className,
+  ...props
+}: SelectPrimitive.Group.Props) {
   return (
     <SelectPrimitive.Group
       data-slot="select-group"
@@ -21,9 +24,12 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
       {...props}
     />
   );
-}
+};
 
-function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
+const SelectValue = function SelectValue({
+  className,
+  ...props
+}: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
@@ -31,9 +37,9 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
       {...props}
     />
   );
-}
+};
 
-function SelectTrigger({
+const SelectTrigger = function SelectTrigger({
   className,
   size = "default",
   children,
@@ -63,9 +69,45 @@ function SelectTrigger({
       />
     </SelectPrimitive.Trigger>
   );
-}
+};
 
-function SelectContent({
+const SelectScrollUpButton = function SelectScrollUpButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.ScrollUpArrow>) {
+  return (
+    <SelectPrimitive.ScrollUpArrow
+      data-slot="select-scroll-up-button"
+      className={cn(
+        "top-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={2} />
+    </SelectPrimitive.ScrollUpArrow>
+  );
+};
+
+const SelectScrollDownButton = function SelectScrollDownButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.ScrollDownArrow>) {
+  return (
+    <SelectPrimitive.ScrollDownArrow
+      data-slot="select-scroll-down-button"
+      className={cn(
+        "bottom-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} />
+    </SelectPrimitive.ScrollDownArrow>
+  );
+};
+
+const SelectContent = function SelectContent({
   className,
   children,
   side = "bottom",
@@ -105,9 +147,9 @@ function SelectContent({
       </SelectPrimitive.Positioner>
     </SelectPrimitive.Portal>
   );
-}
+};
 
-function SelectLabel({
+const SelectLabel = function SelectLabel({
   className,
   ...props
 }: SelectPrimitive.GroupLabel.Props) {
@@ -118,9 +160,9 @@ function SelectLabel({
       {...props}
     />
   );
-}
+};
 
-function SelectItem({
+const SelectItem = function SelectItem({
   className,
   children,
   ...props
@@ -150,9 +192,9 @@ function SelectItem({
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );
-}
+};
 
-function SelectSeparator({
+const SelectSeparator = function SelectSeparator({
   className,
   ...props
 }: SelectPrimitive.Separator.Props) {
@@ -163,43 +205,7 @@ function SelectSeparator({
       {...props}
     />
   );
-}
-
-function SelectScrollUpButton({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollUpArrow>) {
-  return (
-    <SelectPrimitive.ScrollUpArrow
-      data-slot="select-scroll-up-button"
-      className={cn(
-        "top-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
-      {...props}
-    >
-      <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={2} />
-    </SelectPrimitive.ScrollUpArrow>
-  );
-}
-
-function SelectScrollDownButton({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollDownArrow>) {
-  return (
-    <SelectPrimitive.ScrollDownArrow
-      data-slot="select-scroll-down-button"
-      className={cn(
-        "bottom-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
-      {...props}
-    >
-      <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} />
-    </SelectPrimitive.ScrollDownArrow>
-  );
-}
+};
 
 export {
   Select,

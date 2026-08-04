@@ -2,13 +2,16 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { Separator } from "@website/ui/components/separator";
 import { cn } from "@website/ui/lib/utils";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
+const ItemGroup = function ItemGroup({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
-      role="list"
       data-slot="item-group"
       className={cn(
         "group/item-group flex w-full flex-col gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2",
@@ -17,9 +20,9 @@ function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function ItemSeparator({
+const ItemSeparator = function ItemSeparator({
   className,
   ...props
 }: React.ComponentProps<typeof Separator>) {
@@ -31,7 +34,7 @@ function ItemSeparator({
       {...props}
     />
   );
-}
+};
 
 const itemVariants = cva(
   "group/item flex w-full flex-wrap items-center rounded-none border text-xs transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-muted",
@@ -55,7 +58,7 @@ const itemVariants = cva(
   }
 );
 
-function Item({
+const Item = function Item({
   className,
   variant = "default",
   size = "default",
@@ -77,7 +80,7 @@ function Item({
       size,
     },
   });
-}
+};
 
 const itemMediaVariants = cva(
   "flex shrink-0 items-center justify-center gap-2 group-has-data-[slot=item-description]/item:translate-y-0.5 group-has-data-[slot=item-description]/item:self-start [&_svg]:pointer-events-none",
@@ -96,7 +99,7 @@ const itemMediaVariants = cva(
   }
 );
 
-function ItemMedia({
+const ItemMedia = function ItemMedia({
   className,
   variant = "default",
   ...props
@@ -109,9 +112,12 @@ function ItemMedia({
       {...props}
     />
   );
-}
+};
 
-function ItemContent({ className, ...props }: React.ComponentProps<"div">) {
+const ItemContent = function ItemContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="item-content"
@@ -122,9 +128,12 @@ function ItemContent({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
+const ItemTitle = function ItemTitle({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="item-title"
@@ -135,9 +144,12 @@ function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
+const ItemDescription = function ItemDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
   return (
     <p
       data-slot="item-description"
@@ -148,9 +160,12 @@ function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
       {...props}
     />
   );
-}
+};
 
-function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
+const ItemActions = function ItemActions({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="item-actions"
@@ -158,9 +173,12 @@ function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function ItemHeader({ className, ...props }: React.ComponentProps<"div">) {
+const ItemHeader = function ItemHeader({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="item-header"
@@ -171,9 +189,12 @@ function ItemHeader({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
+const ItemFooter = function ItemFooter({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="item-footer"
@@ -184,7 +205,7 @@ function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
 export {
   Item,

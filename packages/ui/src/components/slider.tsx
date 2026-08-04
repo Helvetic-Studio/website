@@ -1,7 +1,10 @@
 import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import { cn } from "@website/ui/lib/utils";
 
-function Slider({
+const isNumberArray = (value: unknown): value is number[] =>
+  Array.isArray(value) && value.every((item) => typeof item === "number");
+
+const Slider = function Slider({
   className,
   defaultValue,
   value,
@@ -9,11 +12,13 @@ function Slider({
   max = 100,
   ...props
 }: SliderPrimitive.Root.Props) {
-  const _values = Array.isArray(value)
-    ? value
-    : Array.isArray(defaultValue)
-      ? defaultValue
-      : [min, max];
+  let values = [min, max];
+  if (isNumberArray(defaultValue)) {
+    values = defaultValue;
+  }
+  if (isNumberArray(value)) {
+    values = value;
+  }
 
   return (
     <SliderPrimitive.Root
@@ -36,7 +41,7 @@ function Slider({
             className="bg-primary select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
-        {Array.from({ length: _values.length }, (_, index) => (
+        {Array.from({ length: values.length }, (_, index) => (
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
@@ -46,6 +51,6 @@ function Slider({
       </SliderPrimitive.Control>
     </SliderPrimitive.Root>
   );
-}
+};
 
 export { Slider };

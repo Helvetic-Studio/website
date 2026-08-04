@@ -3,7 +3,7 @@
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
 import { cn } from "@website/ui/lib/utils";
 
-function Switch({
+const Switch = function Switch({
   className,
   size = "default",
   ...props
@@ -26,6 +26,6 @@ function Switch({
       />
     </SwitchPrimitive.Root>
   );
-}
+};
 
 export { Switch };

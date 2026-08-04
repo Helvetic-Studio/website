@@ -22,7 +22,10 @@ import {
 import { cn } from "@website/ui/lib/utils";
 import * as React from "react";
 
-function Menubar({ className, ...props }: MenubarPrimitive.Props) {
+const Menubar = function Menubar({
+  className,
+  ...props
+}: MenubarPrimitive.Props) {
   return (
     <MenubarPrimitive
       data-slot="menubar"
@@ -33,25 +36,27 @@ function Menubar({ className, ...props }: MenubarPrimitive.Props) {
       {...props}
     />
   );
-}
+};
 
-function MenubarMenu({ ...props }: React.ComponentProps<typeof DropdownMenu>) {
+const MenubarMenu = function MenubarMenu({
+  ...props
+}: React.ComponentProps<typeof DropdownMenu>) {
   return <DropdownMenu data-slot="menubar-menu" {...props} />;
-}
+};
 
-function MenubarGroup({
+const MenubarGroup = function MenubarGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuGroup>) {
   return <DropdownMenuGroup data-slot="menubar-group" {...props} />;
-}
+};
 
-function MenubarPortal({
+const MenubarPortal = function MenubarPortal({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPortal>) {
   return <DropdownMenuPortal data-slot="menubar-portal" {...props} />;
-}
+};
 
-function MenubarTrigger({
+const MenubarTrigger = function MenubarTrigger({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuTrigger>) {
@@ -65,9 +70,9 @@ function MenubarTrigger({
       {...props}
     />
   );
-}
+};
 
-function MenubarContent({
+const MenubarContent = function MenubarContent({
   className,
   align = "start",
   alignOffset = -4,
@@ -87,9 +92,9 @@ function MenubarContent({
       {...props}
     />
   );
-}
+};
 
-function MenubarItem({
+const MenubarItem = function MenubarItem({
   className,
   inset,
   variant = "default",
@@ -107,9 +112,9 @@ function MenubarItem({
       {...props}
     />
   );
-}
+};
 
-function MenubarCheckboxItem({
+const MenubarCheckboxItem = function MenubarCheckboxItem({
   className,
   children,
   checked,
@@ -137,15 +142,15 @@ function MenubarCheckboxItem({
       {children}
     </MenuPrimitive.CheckboxItem>
   );
-}
+};
 
-function MenubarRadioGroup({
+const MenubarRadioGroup = function MenubarRadioGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuRadioGroup>) {
   return <DropdownMenuRadioGroup data-slot="menubar-radio-group" {...props} />;
-}
+};
 
-function MenubarRadioItem({
+const MenubarRadioItem = function MenubarRadioItem({
   className,
   children,
   inset,
@@ -171,9 +176,9 @@ function MenubarRadioItem({
       {children}
     </MenuPrimitive.RadioItem>
   );
-}
+};
 
-function MenubarLabel({
+const MenubarLabel = function MenubarLabel({
   className,
   inset,
   ...props
@@ -188,9 +193,9 @@ function MenubarLabel({
       {...props}
     />
   );
-}
+};
 
-function MenubarSeparator({
+const MenubarSeparator = function MenubarSeparator({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuSeparator>) {
@@ -201,9 +206,9 @@ function MenubarSeparator({
       {...props}
     />
   );
-}
+};
 
-function MenubarShortcut({
+const MenubarShortcut = function MenubarShortcut({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuShortcut>) {
@@ -217,15 +222,15 @@ function MenubarShortcut({
       {...props}
     />
   );
-}
+};
 
-function MenubarSub({
+const MenubarSub = function MenubarSub({
   ...props
 }: React.ComponentProps<typeof DropdownMenuSub>) {
   return <DropdownMenuSub data-slot="menubar-sub" {...props} />;
-}
+};
 
-function MenubarSubTrigger({
+const MenubarSubTrigger = function MenubarSubTrigger({
   className,
   inset,
   ...props
@@ -243,9 +248,9 @@ function MenubarSubTrigger({
       {...props}
     />
   );
-}
+};
 
-function MenubarSubContent({
+const MenubarSubContent = function MenubarSubContent({
   className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuSubContent>) {
@@ -259,7 +264,7 @@ function MenubarSubContent({
       {...props}
     />
   );
-}
+};
 
 export {
   Menubar,

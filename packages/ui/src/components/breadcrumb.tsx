@@ -8,7 +8,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@website/ui/lib/utils";
 import * as React from "react";
 
-function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
+const Breadcrumb = function Breadcrumb({
+  className,
+  ...props
+}: React.ComponentProps<"nav">) {
   return (
     <nav
       aria-label="breadcrumb"
@@ -17,9 +20,12 @@ function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
       {...props}
     />
   );
-}
+};
 
-function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
+const BreadcrumbList = function BreadcrumbList({
+  className,
+  ...props
+}: React.ComponentProps<"ol">) {
   return (
     <ol
       data-slot="breadcrumb-list"
@@ -30,9 +36,12 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
       {...props}
     />
   );
-}
+};
 
-function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
+const BreadcrumbItem = function BreadcrumbItem({
+  className,
+  ...props
+}: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="breadcrumb-item"
@@ -40,9 +49,9 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
       {...props}
     />
   );
-}
+};
 
-function BreadcrumbLink({
+const BreadcrumbLink = function BreadcrumbLink({
   className,
   render,
   ...props
@@ -60,22 +69,23 @@ function BreadcrumbLink({
       slot: "breadcrumb-link",
     },
   });
-}
+};
 
-function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
+const BreadcrumbPage = function BreadcrumbPage({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="breadcrumb-page"
-      role="link"
-      aria-disabled="true"
       aria-current="page"
       className={cn("font-normal text-foreground", className)}
       {...props}
     />
   );
-}
+};
 
-function BreadcrumbSeparator({
+const BreadcrumbSeparator = function BreadcrumbSeparator({
   children,
   className,
   ...props
@@ -91,9 +101,9 @@ function BreadcrumbSeparator({
       {children ?? <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} />}
     </li>
   );
-}
+};
 
-function BreadcrumbEllipsis({
+const BreadcrumbEllipsis = function BreadcrumbEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
@@ -112,7 +122,7 @@ function BreadcrumbEllipsis({
       <span className="sr-only">More</span>
     </span>
   );
-}
+};
 
 export {
   Breadcrumb,

@@ -17,7 +17,7 @@ import { cn } from "@website/ui/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";
 
-function Command({
+const Command = function Command({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive>) {
@@ -31,9 +31,9 @@ function Command({
       {...props}
     />
   );
-}
+};
 
-function CommandDialog({
+const CommandDialog = function CommandDialog({
   title = "Command Palette",
   description = "Search for a command to run...",
   children,
@@ -64,9 +64,9 @@ function CommandDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-function CommandInput({
+const CommandInput = function CommandInput({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
@@ -91,9 +91,9 @@ function CommandInput({
       </InputGroup>
     </div>
   );
-}
+};
 
-function CommandList({
+const CommandList = function CommandList({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.List>) {
@@ -107,9 +107,9 @@ function CommandList({
       {...props}
     />
   );
-}
+};
 
-function CommandEmpty({
+const CommandEmpty = function CommandEmpty({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
@@ -120,9 +120,9 @@ function CommandEmpty({
       {...props}
     />
   );
-}
+};
 
-function CommandGroup({
+const CommandGroup = function CommandGroup({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Group>) {
@@ -136,9 +136,9 @@ function CommandGroup({
       {...props}
     />
   );
-}
+};
 
-function CommandSeparator({
+const CommandSeparator = function CommandSeparator({
   className,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Separator>) {
@@ -149,9 +149,9 @@ function CommandSeparator({
       {...props}
     />
   );
-}
+};
 
-function CommandItem({
+const CommandItem = function CommandItem({
   className,
   children,
   ...props
@@ -173,9 +173,9 @@ function CommandItem({
       />
     </CommandPrimitive.Item>
   );
-}
+};
 
-function CommandShortcut({
+const CommandShortcut = function CommandShortcut({
   className,
   ...props
 }: React.ComponentProps<"span">) {
@@ -189,7 +189,7 @@ function CommandShortcut({
       {...props}
     />
   );
-}
+};
 
 export {
   Command,

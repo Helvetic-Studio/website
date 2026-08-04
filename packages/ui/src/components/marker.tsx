@@ -1,7 +1,8 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { cn } from "@website/ui/lib/utils";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 const markerVariants = cva(
@@ -18,7 +19,7 @@ const markerVariants = cva(
   }
 );
 
-function Marker({
+const Marker = function Marker({
   className,
   variant = "default",
   render,
@@ -38,9 +39,12 @@ function Marker({
       variant,
     },
   });
-}
+};
 
-function MarkerIcon({ className, ...props }: React.ComponentProps<"span">) {
+const MarkerIcon = function MarkerIcon({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="marker-icon"
@@ -52,9 +56,12 @@ function MarkerIcon({ className, ...props }: React.ComponentProps<"span">) {
       {...props}
     />
   );
-}
+};
 
-function MarkerContent({ className, ...props }: React.ComponentProps<"span">) {
+const MarkerContent = function MarkerContent({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="marker-content"
@@ -65,6 +72,6 @@ function MarkerContent({ className, ...props }: React.ComponentProps<"span">) {
       {...props}
     />
   );
-}
+};
 
 export { Marker, MarkerIcon, MarkerContent, markerVariants };

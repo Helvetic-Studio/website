@@ -3,7 +3,7 @@
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator";
 import { cn } from "@website/ui/lib/utils";
 
-function Separator({
+const Separator = function Separator({
   className,
   orientation = "horizontal",
   ...props
@@ -19,6 +19,6 @@ function Separator({
       {...props}
     />
   );
-}
+};
 
 export { Separator };
