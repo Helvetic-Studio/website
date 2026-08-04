@@ -1,9 +1,10 @@
-import react from "@vitejs/plugin-react";
-import ultraciteFmt from "ultracite/oxfmt";
-import core from "ultracite/oxlint/core";
-import next from "ultracite/oxlint/next";
-import reactRules from "ultracite/oxlint/react";
 import { defineConfig } from "vite-plus";
+import react from "@vitejs/plugin-react";
+import ultracite from "ultracite/oxfmt";
+import coreRules from "ultracite/oxlint/core";
+import nextRules from "ultracite/oxlint/next";
+import reactRules from "ultracite/oxlint/react";
+import vitestRules from "ultracite/oxlint/vitest";
 
 export default defineConfig({
   plugins: [react()],
@@ -11,8 +12,8 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   lint: {
-    extends: [core, reactRules, next],
-    ignorePatterns: core.ignorePatterns ?? [],
+    extends: [coreRules, reactRules, nextRules, vitestRules],
+    ignorePatterns: coreRules.ignorePatterns ?? [],
     options: {
       typeAware: true,
       typeCheck: true,
@@ -27,7 +28,7 @@ export default defineConfig({
     ],
   },
   fmt: {
-    ...ultraciteFmt,
+    ...ultracite,
   },
   test: {
     coverage: {
