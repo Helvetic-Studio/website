@@ -19,13 +19,13 @@ const markerVariants = cva(
   }
 );
 
-const Marker = function Marker({
+const Marker = ({
   className,
   variant = "default",
   render,
   ...props
-}: useRender.ComponentProps<"div"> & VariantProps<typeof markerVariants>) {
-  return useRender({
+}: useRender.ComponentProps<"div"> & VariantProps<typeof markerVariants>) =>
+  useRender({
     defaultTagName: "div",
     props: mergeProps<"div">(
       {
@@ -39,39 +39,31 @@ const Marker = function Marker({
       variant,
     },
   });
-};
 
-const MarkerIcon = function MarkerIcon({
+const MarkerIcon = ({ className, ...props }: React.ComponentProps<"span">) => (
+  <span
+    data-slot="marker-icon"
+    aria-hidden="true"
+    className={cn(
+      "size-3.5 shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
+      className
+    )}
+    {...props}
+  />
+);
+
+const MarkerContent = ({
   className,
   ...props
-}: React.ComponentProps<"span">) {
-  return (
-    <span
-      data-slot="marker-icon"
-      aria-hidden="true"
-      className={cn(
-        "size-3.5 shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
-        className
-      )}
-      {...props}
-    />
-  );
-};
-
-const MarkerContent = function MarkerContent({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
-  return (
-    <span
-      data-slot="marker-content"
-      className={cn(
-        "min-w-0 wrap-break-word group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
-        className
-      )}
-      {...props}
-    />
-  );
-};
+}: React.ComponentProps<"span">) => (
+  <span
+    data-slot="marker-content"
+    className={cn(
+      "min-w-0 wrap-break-word group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
+      className
+    )}
+    {...props}
+  />
+);
 
 export { Marker, MarkerIcon, MarkerContent, markerVariants };

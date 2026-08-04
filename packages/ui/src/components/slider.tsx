@@ -4,14 +4,14 @@ import { cn } from "@website/ui/lib/utils";
 const isNumberArray = (value: unknown): value is number[] =>
   Array.isArray(value) && value.every((item) => typeof item === "number");
 
-const Slider = function Slider({
+const Slider = ({
   className,
   defaultValue,
   value,
   min = 0,
   max = 100,
   ...props
-}: SliderPrimitive.Root.Props) {
+}: SliderPrimitive.Root.Props) => {
   let values = [min, max];
   if (isNumberArray(defaultValue)) {
     values = defaultValue;

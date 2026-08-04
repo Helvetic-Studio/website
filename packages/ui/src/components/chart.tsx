@@ -5,12 +5,12 @@ import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 import type { TooltipValueType } from "recharts";
 
-// Format: { THEME_NAME: CSS_SELECTOR }
-const THEMES = { light: "", dark: ".dark" } as const;
-const THEME_ENTRIES: (readonly [keyof typeof THEMES, string])[] = [
+// Format: [THEME_NAME, CSS_SELECTOR]
+const THEME_ENTRIES = [
   ["light", ""],
   ["dark", ".dark"],
-];
+] as const;
+type ChartTheme = (typeof THEME_ENTRIES)[number][0];
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
 const EMPTY_CHART_PAYLOAD = [] as const;
@@ -23,7 +23,7 @@ export type ChartConfig = Record<
     icon?: React.ComponentType;
   } & (
     | { color?: string; theme?: never }
-    | { color?: never; theme: Record<keyof typeof THEMES, string> }
+    | { color?: never; theme: Record<ChartTheme, string> }
   )
 >;
 
@@ -67,11 +67,11 @@ const getIndicatorColor = (
   return fallbackColor;
 };
 
-const getPayloadConfigFromPayload = function getPayloadConfigFromPayload(
+const getPayloadConfigFromPayload = (
   config: ChartConfig,
   payload: unknown,
   key: string
-): ChartConfig[string] | undefined {
+): ChartConfig[string] | undefined => {
   if (!isRecord(payload)) {
     return undefined;
   }
@@ -91,7 +91,7 @@ const getPayloadConfigFromPayload = function getPayloadConfigFromPayload(
   return config[configLabelKey] ?? config[key];
 };
 
-const useChart = function useChart() {
+const useChart = () => {
   const context = React.useContext(ChartContext);
 
   if (!context) {
@@ -129,7 +129,7 @@ ${colorConfig
   return <style>{stylesheet}</style>;
 };
 
-const ChartContainer = function ChartContainer({
+const ChartContainer = ({
   id,
   className,
   children,
@@ -145,7 +145,7 @@ const ChartContainer = function ChartContainer({
     width: number;
     height: number;
   };
-}) {
+}) => {
   const uniqueId = React.useId();
   const chartId = `chart-${id ?? uniqueId.replaceAll(":", "")}`;
   const contextValue = React.useMemo(() => ({ config }), [config]);
@@ -174,7 +174,7 @@ const ChartContainer = function ChartContainer({
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
-const ChartTooltipContent = function ChartTooltipContent({
+const ChartTooltipContent = ({
   active,
   payload,
   className,
@@ -201,7 +201,7 @@ const ChartTooltipContent = function ChartTooltipContent({
       TooltipNameType
     >,
     "accessibilityLayer"
-  >) {
+  >) => {
   const { config } = useChart();
   const tooltipPayload = payload ?? EMPTY_CHART_PAYLOAD;
 
@@ -345,7 +345,7 @@ const ChartTooltipContent = function ChartTooltipContent({
 
 const ChartLegend = RechartsPrimitive.Legend;
 
-const ChartLegendContent = function ChartLegendContent({
+const ChartLegendContent = ({
   className,
   hideIcon = false,
   payload,
@@ -354,7 +354,7 @@ const ChartLegendContent = function ChartLegendContent({
 }: React.ComponentProps<"div"> & {
   hideIcon?: boolean;
   nameKey?: string;
-} & RechartsPrimitive.DefaultLegendContentProps) {
+} & RechartsPrimitive.DefaultLegendContentProps) => {
   const { config } = useChart();
   const legendPayload = payload ?? [];
 

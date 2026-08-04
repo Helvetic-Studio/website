@@ -8,21 +8,16 @@ import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-const InputGroup = function InputGroup({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="input-group"
-      className={cn(
-        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-none border border-input transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-1 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-1 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
-        className
-      )}
-      {...props}
-    />
-  );
-};
+const InputGroup = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div
+    data-slot="input-group"
+    className={cn(
+      "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-none border border-input transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-1 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-1 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
+      className
+    )}
+    {...props}
+  />
+);
 
 const inputGroupAddonVariants = cva(
   "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-xs font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-none [&>svg:not([class*='size-'])]:size-4",
@@ -45,31 +40,29 @@ const inputGroupAddonVariants = cva(
   }
 );
 
-const InputGroupAddon = function InputGroupAddon({
+const InputGroupAddon = ({
   className,
   align = "inline-start",
   ...props
 }: React.ComponentProps<"button"> &
-  VariantProps<typeof inputGroupAddonVariants>) {
-  return (
-    <button
-      type="button"
-      data-slot="input-group-addon"
-      data-align={align}
-      className={cn(inputGroupAddonVariants({ align }), className)}
-      onClick={(e) => {
-        if (
-          e.target instanceof HTMLElement &&
-          e.target.closest("button") !== e.currentTarget
-        ) {
-          return;
-        }
-        e.currentTarget.parentElement?.querySelector("input")?.focus();
-      }}
-      {...props}
-    />
-  );
-};
+  VariantProps<typeof inputGroupAddonVariants>) => (
+  <button
+    type="button"
+    data-slot="input-group-addon"
+    data-align={align}
+    className={cn(inputGroupAddonVariants({ align }), className)}
+    onClick={(e) => {
+      if (
+        e.target instanceof HTMLElement &&
+        e.target.closest("button") !== e.currentTarget
+      ) {
+        return;
+      }
+      e.currentTarget.parentElement?.querySelector("input")?.focus();
+    }}
+    {...props}
+  />
+);
 
 const inputGroupButtonVariants = cva(
   "flex items-center gap-2 text-xs shadow-none",
@@ -88,7 +81,7 @@ const inputGroupButtonVariants = cva(
   }
 );
 
-const InputGroupButton = function InputGroupButton({
+const InputGroupButton = ({
   className,
   type = "button",
   variant = "ghost",
@@ -97,64 +90,56 @@ const InputGroupButton = function InputGroupButton({
 }: Omit<React.ComponentProps<typeof Button>, "size" | "type"> &
   VariantProps<typeof inputGroupButtonVariants> & {
     type?: "button" | "submit" | "reset";
-  }) {
-  return (
-    <Button
-      type={type}
-      data-size={size}
-      variant={variant}
-      className={cn(inputGroupButtonVariants({ size }), className)}
-      {...props}
-    />
-  );
-};
+  }) => (
+  <Button
+    type={type}
+    data-size={size}
+    variant={variant}
+    className={cn(inputGroupButtonVariants({ size }), className)}
+    {...props}
+  />
+);
 
-const InputGroupText = function InputGroupText({
+const InputGroupText = ({
   className,
   ...props
-}: React.ComponentProps<"span">) {
-  return (
-    <span
-      className={cn(
-        "flex items-center gap-2 text-xs text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
-      {...props}
-    />
-  );
-};
+}: React.ComponentProps<"span">) => (
+  <span
+    className={cn(
+      "flex items-center gap-2 text-xs text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+      className
+    )}
+    {...props}
+  />
+);
 
-const InputGroupInput = function InputGroupInput({
+const InputGroupInput = ({
   className,
   ...props
-}: React.ComponentProps<"input">) {
-  return (
-    <Input
-      data-slot="input-group-control"
-      className={cn(
-        "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
-        className
-      )}
-      {...props}
-    />
-  );
-};
+}: React.ComponentProps<"input">) => (
+  <Input
+    data-slot="input-group-control"
+    className={cn(
+      "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
+      className
+    )}
+    {...props}
+  />
+);
 
-const InputGroupTextarea = function InputGroupTextarea({
+const InputGroupTextarea = ({
   className,
   ...props
-}: React.ComponentProps<"textarea">) {
-  return (
-    <Textarea
-      data-slot="input-group-control"
-      className={cn(
-        "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
-        className
-      )}
-      {...props}
-    />
-  );
-};
+}: React.ComponentProps<"textarea">) => (
+  <Textarea
+    data-slot="input-group-control"
+    className={cn(
+      "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
+      className
+    )}
+    {...props}
+  />
+);
 
 export {
   InputGroup,

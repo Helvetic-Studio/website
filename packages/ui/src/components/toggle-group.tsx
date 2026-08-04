@@ -23,7 +23,7 @@ interface ToggleGroupStyle extends React.CSSProperties {
   "--gap": number;
 }
 
-const ToggleGroup = function ToggleGroup({
+const ToggleGroup = ({
   className,
   variant,
   size,
@@ -35,7 +35,7 @@ const ToggleGroup = function ToggleGroup({
   VariantProps<typeof toggleVariants> & {
     spacing?: number;
     orientation?: "horizontal" | "vertical";
-  }) {
+  }) => {
   const contextValue = React.useMemo(
     () => ({ variant, size, spacing, orientation }),
     [variant, size, spacing, orientation]
@@ -63,13 +63,13 @@ const ToggleGroup = function ToggleGroup({
   );
 };
 
-const ToggleGroupItem = function ToggleGroupItem({
+const ToggleGroupItem = ({
   className,
   children,
   variant = "default",
   size = "default",
   ...props
-}: TogglePrimitive.Props & VariantProps<typeof toggleVariants>) {
+}: TogglePrimitive.Props & VariantProps<typeof toggleVariants>) => {
   const context = React.useContext(ToggleGroupContext);
 
   return (

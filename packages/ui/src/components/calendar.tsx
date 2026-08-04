@@ -20,7 +20,7 @@ const CalendarLocaleContext = React.createContext<Partial<Locale> | undefined>(
   undefined
 );
 
-const CalendarDayButton = function CalendarDayButton({
+const CalendarDayButton = ({
   className,
   day,
   modifiers,
@@ -28,7 +28,7 @@ const CalendarDayButton = function CalendarDayButton({
   ...props
 }: React.ComponentProps<typeof DayButton> & {
   locale?: Partial<Locale> | undefined;
-}) {
+}) => {
   const defaultClassNames = getDefaultClassNames();
   const focused = modifiers["focused"] === true;
   const ref = React.useRef<HTMLButtonElement>(null);
@@ -123,7 +123,7 @@ const DEFAULT_CALENDAR_COMPONENTS: DayPickerComponents = {
   WeekNumber: CalendarWeekNumber,
 };
 
-const Calendar = function Calendar({
+const Calendar = ({
   className,
   classNames,
   showOutsideDays = true,
@@ -135,7 +135,7 @@ const Calendar = function Calendar({
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-}) {
+}) => {
   const defaultClassNames = getDefaultClassNames();
   const calendarComponents = React.useMemo(
     () => ({ ...DEFAULT_CALENDAR_COMPONENTS, ...components }),
