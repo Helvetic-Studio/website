@@ -1,10 +1,10 @@
-import { defineConfig } from "vite-plus";
 import react from "@vitejs/plugin-react";
 import ultracite from "ultracite/oxfmt";
 import coreRules from "ultracite/oxlint/core";
 import nextRules from "ultracite/oxlint/next";
 import reactRules from "ultracite/oxlint/react";
 import vitestRules from "ultracite/oxlint/vitest";
+import { defineConfig } from "vite-plus";
 
 export default defineConfig({
   plugins: [react()],
