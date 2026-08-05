@@ -36,10 +36,10 @@
     "oxfmt": "0.62.0",
     "oxlint": "1.77.0",
     "oxlint-tsgolint": "7.0.2001",
-    "rolldown": "1.2.0",
+    "rolldown": "1.2.1",
     "typescript": "catalog:",
-    "ultracite": "7.9.4",
-    "vite-plus": "0.2.6"
+    "ultracite": "7.10.0",
+    "vite-plus": "0.2.7"
   },
   "devEngines": {
     "packageManager": {
