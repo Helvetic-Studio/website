@@ -35,6 +35,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
     },
+    passWithNoTests: true,
     environment: "jsdom",
     restoreMocks: true,
     setupFiles: ["./vitest.setup.ts"],
