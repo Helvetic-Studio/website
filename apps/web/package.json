@@ -15,7 +15,7 @@
     "@website/env": "workspace:*",
     "@website/ui": "workspace:*",
     "babel-plugin-react-compiler": "1.0.0",
-    "motion": "^12.43.0",
+    "motion": "12.43.0",
     "next": "16.3.0",
     "next-themes": "catalog:",
     "react": "catalog:",
