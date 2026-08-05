@@ -11,6 +11,10 @@
     "next-devtools": {
       "command": "npx",
       "args": ["-y", "next-devtools-mcp@latest"]
+    },
+    "fallow": {
+      "command": "pnpm",
+      "args": ["exec", "fallow-mcp"]
     }
   }
 }

@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 overrides:
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.6
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.8
   vitest: 4.1.10
 
 allowBuilds:
@@ -17,12 +17,20 @@ catalog:
   "@types/node": 22.20.1
   "@types/react": 19.2.18
   "@types/react-dom": 19.2.4
-  dotenv: 17.4.2
   next-themes: 0.4.6
   postcss-load-config: 6.0.1
   react: 19.2.8
   react-dom: 19.2.8
-  sonner: 2.0.7
   tailwindcss: 4.3.3
   typescript: 7.0.2
-  zod: 4.4.3
+
+minimumReleaseAgeExclude:
+  - "@voidzero-dev/vite-plus-core@0.2.8"
+  - "@voidzero-dev/vite-plus-darwin-arm64@0.2.8"
+  - "@voidzero-dev/vite-plus-darwin-x64@0.2.8"
+  - "@voidzero-dev/vite-plus-linux-arm64-gnu@0.2.8"
+  - "@voidzero-dev/vite-plus-linux-arm64-musl@0.2.8"
+  - "@voidzero-dev/vite-plus-linux-x64-gnu@0.2.8"
+  - "@voidzero-dev/vite-plus-linux-x64-musl@0.2.8"
+  - "@voidzero-dev/vite-plus-win32-arm64-msvc@0.2.8"
+  - "@voidzero-dev/vite-plus-win32-x64-msvc@0.2.8"

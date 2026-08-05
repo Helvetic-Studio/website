@@ -10,11 +10,11 @@ const THEME_ENTRIES = [
   ["light", ""],
   ["dark", ".dark"],
 ] as const;
-type ChartTheme = (typeof THEME_ENTRIES)[number][0];
+export type ChartTheme = (typeof THEME_ENTRIES)[number][0];
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
 const EMPTY_CHART_PAYLOAD = [] as const;
-type TooltipNameType = number | string;
+export type TooltipNameType = number | string;
 
 export type ChartConfig = Record<
   string,

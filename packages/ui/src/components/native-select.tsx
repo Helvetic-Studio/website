@@ -3,7 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@website/ui/lib/utils";
 import * as React from "react";
 
-type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
+export type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
   size?: "sm" | "default";
 };
 

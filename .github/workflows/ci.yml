@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Set up Vite+
         uses: voidzero-dev/setup-vp@143f5f385f39b1b753ffed1a01ad443811855c8b # v1.16.1
@@ -49,6 +51,28 @@ jobs:
 
       - name: Check types
         run: vp run -r check-types
+
+      - name: Audit changed code with fallow
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            base="origin/$BASE_REF"
+          elif [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "0000000000000000000000000000000000000000" ] \
+            && git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null; then
+            # On push, origin/main already equals HEAD, so diffing against it is
+            # always empty. github.event.before is the pre-push tip.
+            base="$PUSH_BEFORE"
+          else
+            base="HEAD~1"
+          fi
+          echo "Auditing changes since $base"
+          # compact, not github-annotations: the annotation formats are rejected
+          # when typeAware is enabled (.fallowrc.json) and exit 2 on every run.
+          pnpm exec fallow audit --base "$base" --format compact --quiet
 
       - name: Run unit tests
         run: vp test run
