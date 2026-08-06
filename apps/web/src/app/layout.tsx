@@ -19,14 +19,12 @@ export const metadata: Metadata = {
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 };
 
-const RootLayout = ({ children }: LayoutProps<"/">) => {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
-  );
-};
+const RootLayout = ({ children }: LayoutProps<"/">) => (
+  <html lang="en" suppressHydrationWarning>
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <Providers>{children}</Providers>
+    </body>
+  </html>
+);
 
 export default RootLayout;

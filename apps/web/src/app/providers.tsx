@@ -9,11 +9,14 @@ interface ProvidersProps {
   children: React.ReactNode;
 }
 
-export const Providers = ({ children }: ProvidersProps) => {
-  return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <TooltipProvider>{children}</TooltipProvider>
-      <Toaster />
-    </ThemeProvider>
-  );
-};
+export const Providers = ({ children }: ProvidersProps) => (
+  <ThemeProvider
+    attribute="class"
+    defaultTheme="system"
+    enableSystem
+    disableTransitionOnChange
+  >
+    <TooltipProvider>{children}</TooltipProvider>
+    <Toaster />
+  </ThemeProvider>
+);
