@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "voidzero.vite-plus-extension-pack",
+    "fallow-rs.fallow-vscode",
+    "bradlc.vscode-tailwindcss",
+    "ms-playwright.playwright",
+    "typescriptteam.native-preview"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "name": "website",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vp run -r dev",
+    "build": "vp run -r build",
+    "check-types": "vp run -r check-types",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "format": "vp fmt",
+    "format:fix": "vp fmt --fix",
+    "check": "vp check",
+    "fix": "vp check --fix",
+    "test": "vp test",
+    "test:e2e": "vp run -r test:e2e",
+    "test:e2e:install": "vp run -r test:e2e:install",
+    "test:e2e:ui": "vp run -r test:e2e:ui",
+    "test:watch": "vp test watch",
+    "test:coverage": "vp test run --coverage",
+    "fallow": "fallow",
+    "fallow:audit": "fallow audit"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-react": "6.0.5",
+    "@vitest/coverage-v8": "4.1.10",
+    "@website/config": "workspace:*",
+    "fallow": "3.14.0",
+    "jsdom": "30.0.1",
+    "oxfmt": "0.62.0",
+    "oxlint": "1.77.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "rolldown": "1.2.0",
+    "typescript": "catalog:",
+    "ultracite": "7.9.4",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "4.1.10"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.20.0",
+      "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "24.19.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.20.0"
+}
