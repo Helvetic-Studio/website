@@ -45,9 +45,15 @@ export default defineConfig({
     ...ultracite,
   },
   test: {
+    // Playwright owns *.spec.ts under e2e/; Vitest only runs *.test.*.
+    include: ["**/*.test.{ts,tsx,js,jsx}", "**/__tests__/**/*.{ts,tsx,js,jsx}"],
+    exclude: ["**/node_modules/**", "**/e2e/**", "**/*.spec.{ts,tsx,js,jsx}"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "json-summary", "html"],
+      reportsDirectory: "./coverage",
+      // Keep coverage artifacts when tests fail so the CI report action can run.
+      reportOnFailure: true,
     },
     passWithNoTests: true,
     environment: "jsdom",

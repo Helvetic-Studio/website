@@ -9,6 +9,10 @@ on:
 
 permissions:
   contents: read
+  id-token: write
+  pull-requests: write
+  checks: write
+  security-events: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -52,30 +56,36 @@ jobs:
       - name: Check types
         run: vp run -r check-types
 
-      - name: Audit changed code with fallow
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          BASE_REF: ${{ github.base_ref }}
-          PUSH_BEFORE: ${{ github.event.before }}
-        run: |
-          set -euo pipefail
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            base="origin/$BASE_REF"
-          elif [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "0000000000000000000000000000000000000000" ] \
-            && git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null; then
-            # On push, origin/main already equals HEAD, so diffing against it is
-            # always empty. github.event.before is the pre-push tip.
-            base="$PUSH_BEFORE"
-          else
-            base="HEAD~1"
-          fi
-          echo "Auditing changes since $base"
-          # compact, not github-annotations: the annotation formats are rejected
-          # when typeAware is enabled (.fallowrc.json) and exit 2 on every run.
-          pnpm exec fallow audit --base "$base" --format compact --quiet
+      - name: Run unit tests with coverage
+        run: vp test run --coverage
 
-      - name: Run unit tests
-        run: vp test run
+      - name: Report coverage
+        if: ${{ !cancelled() }}
+        uses: davelosert/vitest-coverage-report-action@8b157684c6a6b259b97d45e72b44242865c0f6a5 # v2.12.2
+        with:
+          vite-config-path: vite.config.ts
+          file-coverage-mode: changes
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: coverage-report
+          path: coverage
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Audit changed code with fallow
+        if: github.event_name == 'pull_request'
+        uses: fallow-rs/fallow@3cf8074a0e2e91c895c0a4224ba1c3bec4630d65 # v3.14.0
+        with:
+          command: audit
+          gate: new-only
+          coverage: coverage/coverage-final.json
+          comment: true
+          review-comments: true
+          review-guidance: true
+          sarif: true
 
       - name: Build application
         run: vp run -r build
