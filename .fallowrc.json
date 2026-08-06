@@ -28,7 +28,7 @@
     "zones": [
       {
         "name": "app",
-        "patterns": ["apps/web/src/app/**"]
+        "patterns": ["apps/web/src/app/**", "apps/*/e2e/**"]
       },
       {
         "name": "features",

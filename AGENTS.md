@@ -24,21 +24,21 @@ For non-skill agents, treat the task map below as the local onboarding source: r
 
 ## Fallow task map
 
-| When the agent is about to...                                     | Run                                                                                       |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| delete an "unused" export or file                                 | `pnpm exec fallow dead-code --trace <file>:<export>`                                      |
-| prove a TypeScript symbol's exact consumers before refactoring    | `pnpm exec fallow dead-code --type-aware --symbol-impact <file>:<export-or-class.method>` |
-| delete an "unused" dependency                                     | `pnpm exec fallow dead-code --trace-dependency <name>`                                    |
-| commit or open a PR                                               | `pnpm exec fallow audit --base <ref>`                                                     |
-| prioritize refactoring                                            | `pnpm exec fallow health --hotspots --targets`                                            |
-| ask who owns code                                                 | `pnpm exec fallow health --ownership`                                                     |
-| check untested-but-reachable code                                 | `pnpm exec fallow health --coverage-gaps`                                                 |
-| consolidate duplication                                           | `pnpm exec fallow dupes --trace dup:<fingerprint>`                                        |
-| find feature flags                                                | `pnpm exec fallow flags`                                                                  |
-| check which architecture rules apply to a file before changing it | `pnpm exec fallow guard <files>`                                                          |
-| surface security candidates                                       | `pnpm exec fallow security`                                                               |
-| understand a finding                                              | `pnpm exec fallow explain <issue-type>`                                                   |
-| scope a monorepo                                                  | `--workspace <glob> / --changed-workspaces <ref>` (global flags, prefix any command)      |
+| When the agent is about to... | Run |
+| --- | --- |
+| delete an "unused" export or file | `pnpm exec fallow dead-code --trace <file>:<export>` |
+| prove a TypeScript symbol's exact consumers before refactoring | `pnpm exec fallow dead-code --type-aware --symbol-impact <file>:<export-or-class.method>` |
+| delete an "unused" dependency | `pnpm exec fallow dead-code --trace-dependency <name>` |
+| commit or open a PR | `pnpm exec fallow audit --base <ref>` |
+| prioritize refactoring | `pnpm exec fallow health --hotspots --targets` |
+| ask who owns code | `pnpm exec fallow health --ownership` |
+| check untested-but-reachable code | `pnpm exec fallow health --coverage-gaps` |
+| consolidate duplication | `pnpm exec fallow dupes --trace dup:<fingerprint>` |
+| find feature flags | `pnpm exec fallow flags` |
+| check which architecture rules apply to a file before changing it | `pnpm exec fallow guard <files>` |
+| surface security candidates | `pnpm exec fallow security` |
+| understand a finding | `pnpm exec fallow explain <issue-type>` |
+| scope a monorepo | `--workspace <glob> / --changed-workspaces <ref>` (global flags, prefix any command) |
 
 <!-- fallow:setup-hooks:end -->
 

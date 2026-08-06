@@ -1,3 +1,6 @@
 {
-  "recommendations": ["voidzero.vite-plus-extension-pack", "fallow-rs.fallow-vscode"]
+  "recommendations": [
+    "voidzero.vite-plus-extension-pack",
+    "fallow-rs.fallow-vscode"
+  ]
 }

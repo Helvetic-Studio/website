@@ -12,7 +12,21 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   lint: {
-    extends: [coreRules, reactRules, nextRules, vitestRules],
+    extends: [
+      coreRules,
+      reactRules,
+      nextRules,
+      // Ultracite targets *.{test,spec}; keep Vitest rules on *.test only (Playwright uses *.spec).
+      {
+        overrides: (vitestRules.overrides ?? []).map((override) => ({
+          ...override,
+          files: [
+            "**/*.test.{ts,tsx,js,jsx}",
+            "**/__tests__/**/*.{ts,tsx,js,jsx}",
+          ],
+        })),
+      },
+    ],
     ignorePatterns: coreRules.ignorePatterns ?? [],
     options: {
       typeAware: true,
