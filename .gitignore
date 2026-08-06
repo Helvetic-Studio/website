@@ -45,6 +45,9 @@ lerna-debug.log*
 .alchemy
 .vercel
 
+# pnpm
+.pnpm-store
+
 # Testing
 coverage
 .nyc_output

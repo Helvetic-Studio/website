@@ -20,6 +20,56 @@
   },
   "includeEntryExports": true,
   "publicPackages": ["@website/ui"],
+  "rules": {
+    "boundary-violation": "error"
+  },
+  "boundaries": {
+    "preset": "bulletproof",
+    "zones": [
+      {
+        "name": "app",
+        "patterns": ["apps/web/src/app/**"]
+      },
+      {
+        "name": "features",
+        "patterns": ["apps/web/src/features/**"],
+        "autoDiscover": ["apps/web/src/features"]
+      },
+      {
+        "name": "shared",
+        "patterns": [
+          "apps/web/src/assets/**",
+          "apps/web/src/components/**",
+          "apps/web/src/config/**",
+          "apps/web/src/hooks/**",
+          "apps/web/src/lib/**",
+          "apps/web/src/providers/**",
+          "apps/web/src/shared/**",
+          "apps/web/src/stores/**",
+          "apps/web/src/styles/**",
+          "apps/web/src/testing/**",
+          "apps/web/src/types/**",
+          "apps/web/src/utils/**",
+          "apps/web/src/*.css",
+          "packages/env/src/**",
+          "packages/ui/src/**"
+        ]
+      },
+      {
+        "name": "server",
+        "patterns": ["apps/web/src/server/**"]
+      }
+    ],
+    "coverage": {
+      "requireAllFiles": true,
+      "allowUnmatched": [
+        "*.config.ts",
+        "*.setup.ts",
+        "apps/*/*.config.ts",
+        "packages/*/*.config.ts"
+      ]
+    }
+  },
   "health": {
     "thresholdOverrides": [
       {

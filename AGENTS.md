@@ -4,11 +4,17 @@ The marketing website for Helvetic Studio, a web design and web engineering stud
 
 ## Tooling
 
+- Use pnpm 11.20.0 for package management.
+- Use Vite+ (`vp`) to run project scripts and checks.
+- Build the workspace with `vp run build`.
+- Type-check the workspace with `vp run check-types`.
+- Run static validation with `vp run check`; apply safe formatting and lint fixes with `vp run fix`.
+
 <!-- fallow:setup-hooks:start -->
 
 ## Fallow local gate
 
-Before any `git commit` or `git push`, run `fallow audit --format json --quiet --explain --gate-marker agent`. If the verdict is `fail`, fix the reported findings before retrying. Treat JSON runtime errors like `{ "error": true, ... }` as non-blocking.
+Before any `git commit` or `git push`, run `pnpm exec fallow audit --format json --quiet --explain --gate-marker agent`. If the verdict is `fail`, fix the reported findings before retrying. Treat JSON runtime errors like `{ "error": true, ... }` as non-blocking.
 
 Audit defaults to `gate=new-only`: only findings introduced by the current changeset affect the verdict. Inherited findings on touched files are reported under `attribution` and annotated with `introduced: false`, but do not block the commit. Set `"audit": { "gate": "all" }` in `.fallowrc.json` to gate every finding in changed files.
 
@@ -18,29 +24,27 @@ For non-skill agents, treat the task map below as the local onboarding source: r
 
 ## Fallow task map
 
-| When the agent is about to... | Run |
-| --- | --- |
-| delete an "unused" export or file | `fallow dead-code --trace <file>:<export>` |
-| prove a TypeScript symbol's exact consumers before refactoring | `fallow dead-code --type-aware --symbol-impact <file>:<export-or-class.method>` |
-| delete an "unused" dependency | `fallow dead-code --trace-dependency <name>` |
-| commit or open a PR | `fallow audit --base <ref>` |
-| prioritize refactoring | `fallow health --hotspots --targets` |
-| ask who owns code | `fallow health --ownership` |
-| check untested-but-reachable code | `fallow health --coverage-gaps` |
-| consolidate duplication | `fallow dupes --trace dup:<fingerprint>` |
-| find feature flags | `fallow flags` |
-| check which architecture rules apply to a file before changing it | `fallow guard <files>` |
-| surface security candidates | `fallow security` |
-| understand a finding | `fallow explain <issue-type>` |
-| scope a monorepo | `--workspace <glob> / --changed-workspaces <ref>` (global flags, prefix any command) |
+| When the agent is about to...                                     | Run                                                                                       |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| delete an "unused" export or file                                 | `pnpm exec fallow dead-code --trace <file>:<export>`                                      |
+| prove a TypeScript symbol's exact consumers before refactoring    | `pnpm exec fallow dead-code --type-aware --symbol-impact <file>:<export-or-class.method>` |
+| delete an "unused" dependency                                     | `pnpm exec fallow dead-code --trace-dependency <name>`                                    |
+| commit or open a PR                                               | `pnpm exec fallow audit --base <ref>`                                                     |
+| prioritize refactoring                                            | `pnpm exec fallow health --hotspots --targets`                                            |
+| ask who owns code                                                 | `pnpm exec fallow health --ownership`                                                     |
+| check untested-but-reachable code                                 | `pnpm exec fallow health --coverage-gaps`                                                 |
+| consolidate duplication                                           | `pnpm exec fallow dupes --trace dup:<fingerprint>`                                        |
+| find feature flags                                                | `pnpm exec fallow flags`                                                                  |
+| check which architecture rules apply to a file before changing it | `pnpm exec fallow guard <files>`                                                          |
+| surface security candidates                                       | `pnpm exec fallow security`                                                               |
+| understand a finding                                              | `pnpm exec fallow explain <issue-type>`                                                   |
+| scope a monorepo                                                  | `--workspace <glob> / --changed-workspaces <ref>` (global flags, prefix any command)      |
 
 <!-- fallow:setup-hooks:end -->
 
-- Use pnpm 11.20.0 for package management.
-- Use Vite+ (`vp`) to run project scripts and checks.
-- Build the workspace with `vp run build`.
-- Type-check the workspace with `vp run check-types`.
-- Run static validation with `vp run check`; apply safe formatting and lint fixes with `vp run fix`.
+## Architecture
+
+Read [Application architecture](docs/agents/architecture.md) before adding or moving application modules, features, server code, or workspace packages. Run `pnpm exec fallow guard <files>` before changing architectural boundaries.
 
 ## Task-specific guidance
 
@@ -49,6 +53,7 @@ Read only the guides relevant to the files being changed:
 - [TypeScript conventions](docs/agents/typescript.md)
 - [React and Next.js conventions](docs/agents/react-nextjs.md)
 - [Testing conventions](docs/agents/testing.md)
+- [Application architecture](docs/agents/architecture.md)
 
 <!-- BEGIN:nextjs-agent-rules -->
 
