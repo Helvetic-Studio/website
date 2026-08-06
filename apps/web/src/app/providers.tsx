@@ -5,7 +5,7 @@ import { TooltipProvider } from "@website/ui/components/tooltip";
 
 import { ThemeProvider } from "@/components/theme/theme-provider";
 
-interface ProvidersProps {
+export interface ProvidersProps {
   children: React.ReactNode;
 }
 

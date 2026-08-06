@@ -21,7 +21,7 @@ interface ThemeOptionProps {
 const ThemeOption = ({ icon, value, isActive, onChange }: ThemeOptionProps) => (
   <label
     data-active={isActive}
-    className="relative flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-[color] hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-4"
+    className="relative flex size-8 items-center justify-center rounded-full text-muted-foreground transition-[color] hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-4"
   >
     <input
       type="radio"

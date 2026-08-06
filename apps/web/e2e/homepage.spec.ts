@@ -15,7 +15,7 @@ test("changes the color theme", async ({ page }) => {
   const darkTheme = page.getByRole("radio", {
     name: "Switch to dark theme",
   });
-  await darkTheme.click();
+  await page.locator("label").filter({ has: darkTheme }).click();
 
   await expect(darkTheme).toBeChecked();
   await expect(page.locator("html")).toHaveClass(/dark/u);
