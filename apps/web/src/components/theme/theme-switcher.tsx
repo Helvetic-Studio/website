@@ -1,27 +1,20 @@
 "use client";
 
-import {
-  Moon02Icon,
-  Sun03Icon,
-  ComputerIcon,
-} from "@hugeicons/core-free-icons";
+import { Moon02Icon, Sun03Icon, ComputerIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import type { JSX } from "react";
 import { useSyncExternalStore } from "react";
 
-const ThemeOption = ({
-  icon,
-  value,
-  isActive,
-  onClick,
-}: {
+interface ThemeOptionProps {
   icon: JSX.Element;
   value: string;
   isActive?: boolean;
   onClick: (value: string) => void;
-}) => (
+}
+
+const ThemeOption = ({ icon, value, isActive, onClick }: ThemeOptionProps) => (
   <button
     data-active={isActive}
     className="relative flex size-8 items-center justify-center rounded-full text-muted-foreground transition-[color] hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-4"
@@ -65,7 +58,7 @@ export const ThemeSwitcher = () => {
   const isMounted = useSyncExternalStore(
     () => () => {},
     () => true,
-    () => false
+    () => false,
   );
 
   if (!isMounted) {
