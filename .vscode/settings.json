@@ -6,7 +6,7 @@
   "oxc.fmt.configPath": "./vite.config.ts",
   "oxc.typeAware": true,
   "emmet.showExpandedAbbreviation": "never",
-  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "./node_modules/typescript",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "[astro]": {
     "editor.defaultFormatter": "astro-build.astro-vscode"
