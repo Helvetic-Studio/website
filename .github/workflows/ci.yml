@@ -58,7 +58,7 @@ jobs:
       # generate them before any type-aware lint or tsc run on a cold checkout.
       - name: Generate Next.js types
         if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
-        run: pnpm run typegen
+        run: vp run typegen
 
       - name: Check formatting and linting
         if: ${{ !cancelled() && steps.install.conclusion == 'success' }}

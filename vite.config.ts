@@ -65,7 +65,7 @@ export default defineConfig({
   },
   staged: {
     "*.{js,ts,jsx,tsx,json,jsonc,css,md,yml,yaml}": [
-      () => "pnpm run typegen",
+      () => "vp run typegen",
       "vp check --fix",
     ],
   },
