@@ -57,6 +57,24 @@ export default defineConfig({
       reportsDirectory: "./coverage",
       // Keep coverage artifacts when tests fail so the CI report action can run.
       reportOnFailure: true,
+      // Include uncovered sources so the report isn't limited to files imported by tests.
+      include: [
+        "apps/web/src/**/*.{ts,tsx}",
+        "packages/ui/src/lib/**/*.{ts,tsx}",
+        "packages/ui/src/hooks/**/*.{ts,tsx}",
+      ],
+      exclude: [
+        // Declaration files match `*.{ts,tsx}` globs.
+        "**/*.d.ts",
+        // Shared Vitest fixtures/helpers — not production code.
+        "apps/web/src/testing/**",
+        // Thin App Router shells and Server Components — owned by Playwright e2e.
+        "apps/web/src/app/**",
+        // Type-only modules have no runtime to cover.
+        "apps/web/src/types/**",
+        // Trivial next-themes re-export — no behavior worth unit-covering.
+        "apps/web/src/components/theme/theme-provider.tsx",
+      ],
     },
     passWithNoTests: true,
     environment: "jsdom",
