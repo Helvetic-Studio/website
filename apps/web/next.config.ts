@@ -1,4 +1,5 @@
 import "@website/env/web";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -17,7 +18,5 @@ const nextConfig: NextConfig = {
 // Consumed by the Next.js build, never imported by TypeScript code.
 // fallow-ignore-next-line unused-export
 export default nextConfig;
-
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 void initOpenNextCloudflareForDev();
