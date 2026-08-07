@@ -27,7 +27,10 @@ export default defineConfig({
         })),
       },
     ],
-    ignorePatterns: coreRules.ignorePatterns ?? [],
+    ignorePatterns: [
+      ...(coreRules.ignorePatterns ?? []),
+      "**/cloudflare-env.d.ts",
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
