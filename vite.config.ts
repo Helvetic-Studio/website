@@ -64,6 +64,9 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
   },
   staged: {
-    "*.{js,ts,jsx,tsx,json,jsonc,css,md}": "vp check --fix",
+    "*.{js,ts,jsx,tsx,json,jsonc,css,md,yml,yaml}": [
+      () => "pnpm run typegen",
+      "vp check --fix",
+    ],
   },
 });

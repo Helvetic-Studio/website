@@ -54,6 +54,12 @@ jobs:
 
       # Independent verify steps keep running after sibling failures so CI surfaces
       # every problem in one pass. Only skip when setup failed or the job was cancelled.
+      # Next.js route helpers (LayoutProps/PageProps) live in apps/web/.next/types;
+      # generate them before any type-aware lint or tsc run on a cold checkout.
+      - name: Generate Next.js types
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
+        run: pnpm run typegen
+
       - name: Check formatting and linting
         if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         run: vp check

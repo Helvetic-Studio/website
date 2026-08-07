@@ -4,6 +4,8 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "oxc.fmt.configPath": "./vite.config.ts",
+  "oxc.path.oxfmt": "./node_modules/vite-plus/bin/oxfmt",
+  "oxc.path.oxlint": "./node_modules/vite-plus/bin/oxlint",
   "oxc.typeAware": true,
   "emmet.showExpandedAbbreviation": "never",
   "js/ts.tsdk.path": "./node_modules/typescript",
