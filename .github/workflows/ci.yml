@@ -40,9 +40,11 @@ jobs:
           run-install: false
 
       - name: Install dependencies
+        id: install
         run: vp install --frozen-lockfile
 
       - name: Restore Next.js build cache
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: apps/web/.next/cache
@@ -50,24 +52,36 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
 
+      # Independent verify steps keep running after sibling failures so CI surfaces
+      # every problem in one pass. Only skip when setup failed or the job was cancelled.
+      # Next.js route helpers (LayoutProps/PageProps) live in apps/web/.next/types;
+      # generate them before any type-aware lint or tsc run on a cold checkout.
+      - name: Generate Next.js types
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
+        run: vp run typegen
+
       - name: Check formatting and linting
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         run: vp check
 
       - name: Check types
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         run: vp run -r check-types
 
       - name: Run unit tests with coverage
+        id: unit-tests
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         run: vp test run --coverage
 
       - name: Report coverage
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.unit-tests.conclusion != 'skipped' }}
         uses: davelosert/vitest-coverage-report-action@8b157684c6a6b259b97d45e72b44242865c0f6a5 # v2.12.2
         with:
           vite-config-path: vite.config.ts
-          file-coverage-mode: changes
+          file-coverage-mode: all
 
       - name: Upload coverage report
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.unit-tests.conclusion != 'skipped' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: coverage-report
@@ -76,7 +90,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Audit changed code with fallow
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' && !cancelled() && steps.install.conclusion == 'success' }}
         uses: fallow-rs/fallow@3cf8074a0e2e91c895c0a4224ba1c3bec4630d65 # v3.14.0
         with:
           command: audit
@@ -85,19 +99,25 @@ jobs:
           comment: true
           review-comments: true
           review-guidance: true
-          sarif: true
 
       - name: Build application
+        id: build
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         run: vp run -r build
 
       - name: Install Playwright browsers
+        id: playwright-install
+        if: ${{ !cancelled() && steps.install.conclusion == 'success' }}
         run: vp run -r test:e2e:install
 
       - name: Run end-to-end tests
+        id: e2e
+        # Needs a production build (`next start`) and Playwright browsers.
+        if: ${{ !cancelled() && steps.build.conclusion == 'success' && steps.playwright-install.conclusion == 'success' }}
         run: vp run -r test:e2e
 
       - name: Upload Playwright report
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.e2e.conclusion != 'skipped' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: playwright-report
