@@ -99,7 +99,6 @@ jobs:
           comment: true
           review-comments: true
           review-guidance: true
-          sarif: true
 
       - name: Build application
         id: build

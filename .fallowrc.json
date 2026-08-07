@@ -11,6 +11,7 @@
       "source": "pnpm-workspace.yaml"
     }
   ],
+  "ignorePatterns": ["**/cloudflare-env.d.ts"],
   "typeAware": {
     "enabled": true,
     "require": "best-effort"
