@@ -27,6 +27,7 @@
 .netlify
 .wrangler
 .alchemy
+.open-next
 
 # Environment & local files
 .env*

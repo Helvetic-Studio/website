@@ -7,6 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "check-types": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install --with-deps",
@@ -15,6 +19,7 @@
   "dependencies": {
     "@hugeicons/core-free-icons": "catalog:",
     "@hugeicons/react": "catalog:",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@website/env": "workspace:*",
     "@website/ui": "workspace:*",
     "babel-plugin-react-compiler": "1.0.0",
@@ -38,6 +43,7 @@
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "wrangler": "^4.119.0"
   }
 }
