@@ -6,7 +6,8 @@ import {
   ComputerIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { motion } from "motion/react";
+import { useHotkey } from "@tanstack/react-hotkeys";
+import { motion, useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
 import type { JSX } from "react";
 import { useSyncExternalStore } from "react";
@@ -16,35 +17,50 @@ interface ThemeOptionProps {
   value: string;
   isActive: boolean;
   onChange: (value: string) => void;
+  reduceMotion: boolean;
 }
 
-const ThemeOption = ({ icon, value, isActive, onChange }: ThemeOptionProps) => (
-  <label
-    data-active={isActive}
-    className="relative flex size-8 items-center justify-center rounded-full text-muted-foreground transition-[color] hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-4"
-  >
-    <input
-      type="radio"
-      name="theme"
-      value={value}
-      checked={isActive}
-      aria-label={`Switch to ${value} theme`}
-      className="sr-only"
-      onChange={() => {
-        onChange(value);
-      }}
-    />
-    {icon}
-
-    {isActive ? (
+const ThemeOption = ({
+  icon,
+  value,
+  isActive,
+  onChange,
+  reduceMotion,
+}: ThemeOptionProps) => {
+  let activeIndicator: JSX.Element | null = null;
+  if (isActive) {
+    activeIndicator = reduceMotion ? (
+      <span className="absolute inset-0 rounded-full border" />
+    ) : (
       <motion.span
         layoutId="theme-option"
         transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
         className="absolute inset-0 rounded-full border"
       />
-    ) : null}
-  </label>
-);
+    );
+  }
+
+  return (
+    <label
+      data-active={isActive}
+      className="relative flex size-8 items-center justify-center rounded-full text-muted-foreground transition-[color] hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-4"
+    >
+      <input
+        type="radio"
+        name="theme"
+        value={value}
+        checked={isActive}
+        aria-label={`Switch to ${value} theme`}
+        className="sr-only"
+        onChange={() => {
+          onChange(value);
+        }}
+      />
+      {icon}
+      {activeIndicator}
+    </label>
+  );
+};
 
 const THEME_OPTIONS = [
   {
@@ -68,11 +84,24 @@ const subscribeToNothing = (_onStoreChange: () => void): (() => void) =>
   unsubscribeFromNothing;
 
 export const ThemeSwitcher = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const reduceMotion = Boolean(useReducedMotion());
   const isMounted = useSyncExternalStore(
     subscribeToNothing,
     () => true,
     () => false
+  );
+
+  useHotkey(
+    "D",
+    () => {
+      setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    },
+    {
+      enabled: isMounted,
+      ignoreInputs: true,
+      preventDefault: true,
+    }
   );
 
   if (!isMounted) {
@@ -81,9 +110,9 @@ export const ThemeSwitcher = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={reduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3 }}
       className="inline-flex items-center overflow-clip rounded-full bg-background inset-ring-1 inset-ring-border"
       aria-label="Theme"
     >
@@ -94,6 +123,7 @@ export const ThemeSwitcher = () => {
           value={option.value}
           isActive={theme === option.value}
           onChange={setTheme}
+          reduceMotion={reduceMotion}
         />
       ))}
     </motion.div>
