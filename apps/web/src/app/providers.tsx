@@ -2,21 +2,17 @@
 
 import { Toaster } from "@website/ui/components/toast";
 import { TooltipProvider } from "@website/ui/components/tooltip";
-
-import { ThemeProvider } from "@/components/theme/theme-provider";
+import { MotionConfig } from "motion/react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
 }
 
 export const Providers = ({ children }: ProvidersProps) => (
-  <ThemeProvider
-    attribute="class"
-    defaultTheme="system"
-    enableSystem
-    disableTransitionOnChange
-  >
-    <TooltipProvider>{children}</TooltipProvider>
-    <Toaster />
-  </ThemeProvider>
+  <MotionConfig reducedMotion="user">
+    <TooltipProvider>
+      {children}
+      <Toaster />
+    </TooltipProvider>
+  </MotionConfig>
 );
