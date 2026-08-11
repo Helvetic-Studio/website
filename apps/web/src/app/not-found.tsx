@@ -8,7 +8,7 @@ const NotFoundPage = () => (
     <p className="text-center text-muted-foreground">
       The page you are looking for does not exist.
     </p>
-    <Link href="/" className={cn(buttonVariants({ variant: "secondary" }))}>
+    <Link href="/" className={cn(buttonVariants())}>
       Back to home
     </Link>
   </div>

@@ -6,7 +6,6 @@ import {
   ComputerIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useHotkey } from "@tanstack/react-hotkeys";
 import { motion, useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
 import type { JSX } from "react";
@@ -84,24 +83,12 @@ const subscribeToNothing = (_onStoreChange: () => void): (() => void) =>
   unsubscribeFromNothing;
 
 export const ThemeSwitcher = () => {
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const reduceMotion = Boolean(useReducedMotion());
   const isMounted = useSyncExternalStore(
     subscribeToNothing,
     () => true,
     () => false
-  );
-
-  useHotkey(
-    "D",
-    () => {
-      setTheme(resolvedTheme === "dark" ? "light" : "dark");
-    },
-    {
-      enabled: isMounted,
-      ignoreInputs: true,
-      preventDefault: true,
-    }
   );
 
   if (!isMounted) {

@@ -1,14 +1,35 @@
 "use client";
 
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import * as React from "react";
+import { useHotkey } from "@tanstack/react-hotkeys";
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
+import type { ComponentProps, ReactNode } from "react";
 
-export interface ThemeProviderProps extends React.ComponentProps<
+export interface ThemeProviderProps extends ComponentProps<
   typeof NextThemesProvider
 > {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
+const ThemeHotkey = () => {
+  const { resolvedTheme, setTheme } = useTheme();
+
+  useHotkey(
+    "D",
+    () => {
+      setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    },
+    {
+      ignoreInputs: true,
+      preventDefault: true,
+    }
+  );
+
+  return null;
+};
+
 export const ThemeProvider = ({ children, ...props }: ThemeProviderProps) => (
-  <NextThemesProvider {...props}>{children}</NextThemesProvider>
+  <NextThemesProvider {...props}>
+    <ThemeHotkey />
+    {children}
+  </NextThemesProvider>
 );
