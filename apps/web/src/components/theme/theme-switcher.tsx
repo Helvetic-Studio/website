@@ -42,7 +42,7 @@ const ThemeOption = ({
   return (
     <label
       data-active={isActive}
-      className="relative flex size-8 items-center justify-center rounded-full text-muted-foreground transition-[color] hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-4"
+      className="text-muted-foreground hover:text-foreground data-[active=true]:text-foreground relative flex size-8 items-center justify-center rounded-full transition-[color] [&_svg]:size-4"
     >
       <input
         type="radio"
@@ -100,7 +100,7 @@ export const ThemeSwitcher = () => {
       initial={reduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: reduceMotion ? 0 : 0.3 }}
-      className="inline-flex items-center overflow-clip rounded-full bg-background inset-ring-1 inset-ring-border"
+      className="bg-background inset-ring-border inline-flex items-center overflow-clip rounded-full inset-ring-1"
       aria-label="Theme"
     >
       {THEME_OPTIONS.map((option) => (

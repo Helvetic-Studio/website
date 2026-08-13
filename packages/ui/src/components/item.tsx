@@ -30,13 +30,13 @@ const ItemSeparator = ({
 );
 
 const itemVariants = cva(
-  "group/item flex w-full flex-wrap items-center rounded-lg border text-xs transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-muted",
+  "group/item focus-visible:border-ring focus-visible:ring-ring/50 [a]:hover:bg-muted flex w-full flex-wrap items-center rounded-lg border text-xs transition-colors duration-100 outline-none focus-visible:ring-[3px] [a]:transition-colors",
   {
     variants: {
       variant: {
         default: "border-transparent",
         outline: "border-border",
-        muted: "border-transparent bg-muted/50",
+        muted: "bg-muted/50 border-transparent",
       },
       size: {
         default: "gap-2.5 px-3 py-2.5",
@@ -133,7 +133,7 @@ const ItemDescription = ({
   <p
     data-slot="item-description"
     className={cn(
-      "line-clamp-2 text-left text-xs/relaxed font-normal text-muted-foreground group-data-[size=xs]/item:text-xs/relaxed [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
+      "text-muted-foreground [&>a:hover]:text-primary line-clamp-2 text-left text-xs/relaxed font-normal group-data-[size=xs]/item:text-xs/relaxed [&>a]:underline [&>a]:underline-offset-4",
       className
     )}
     {...props}
