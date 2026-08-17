@@ -91,7 +91,7 @@ jobs:
 
       - name: Audit changed code with fallow
         if: ${{ github.event_name == 'pull_request' && !cancelled() && steps.install.conclusion == 'success' }}
-        uses: fallow-rs/fallow@3cf8074a0e2e91c895c0a4224ba1c3bec4630d65 # v3.14.0
+        uses: fallow-rs/fallow@45fd28766199acb1f939f6862274a37aad12770b # v3.16.0
         with:
           command: audit
           gate: new-only
