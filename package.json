@@ -33,20 +33,20 @@
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",
-    "@vitejs/plugin-react": "6.0.5",
-    "@vitest/coverage-v8": "4.1.10",
+    "@vitejs/plugin-react": "6.1.1",
+    "@vitest/coverage-v8": "4.1.11",
     "@website/config": "workspace:*",
-    "fallow": "3.16.0",
+    "fallow": "3.20.0",
     "jsdom": "30.0.1",
     "oxfmt": "0.63.0",
     "oxlint": "1.78.0",
     "oxlint-tsgolint": "7.0.2001",
-    "rolldown": "1.2.4",
+    "rolldown": "1.2.6",
     "typescript": "catalog:",
-    "ultracite": "7.10.4",
+    "ultracite": "7.10.7",
     "vite": "catalog:",
     "vite-plus": "catalog:",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "devEngines": {
     "packageManager": {
