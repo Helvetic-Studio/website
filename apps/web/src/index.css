@@ -32,6 +32,10 @@
   --glass-panel-edge: oklch(1 0 0 / 0.88);
   --glass-panel-blur: 24px;
 
+  /* fallback so static analysis can resolve the var; next/font's generated
+     class on <html> (see layout.tsx) overrides this with the real stack */
+  --font-inter: ui-sans-serif, system-ui, sans-serif;
+
   /* shadcn contract overrides */
   --background: var(--surface-grad-top);
   --foreground: var(--brand-charcoal);
