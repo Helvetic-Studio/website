@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ViewTransition } from "react";
 
 import "../index.css";
+import { ContentStage } from "@/app/_components/content-stage";
 import { PeakPins } from "@/app/_components/peak-pins";
 import { RidgeBackground } from "@/app/_components/ridge-background";
 import { SiteNav } from "@/app/_components/site-nav";
@@ -32,9 +32,7 @@ const RootLayout = ({ children }: LayoutProps<"/">) => (
     <body className="antialiased">
       <Providers>
         <SiteNav />
-        <ViewTransition name="content">
-          <main className="site-content">{children}</main>
-        </ViewTransition>
+        <ContentStage>{children}</ContentStage>
         <ZoomStage>
           <RidgeBackground />
           <PeakPins />

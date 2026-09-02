@@ -11,9 +11,9 @@ import {
   SheetTrigger,
 } from "@website/ui/components/sheet";
 import { cn } from "@website/ui/lib/utils";
-import Link from "next/link";
 import { useState } from "react";
 
+import { FlightLink } from "@/app/_components/flight-link";
 import { SITE_LINKS } from "@/app/_lib/site-links";
 
 export interface MobileMenuProps {
@@ -45,10 +45,10 @@ export const MobileMenu = ({ pathname }: MobileMenuProps) => {
       <SheetContent side="top" className="menu-sheet" showCloseButton={false}>
         <SheetTitle className="sr-only">Menu</SheetTitle>
         <div className="menu-head">
-          <Link href="/" className="nav-brand" onClick={close}>
+          <FlightLink href="/" className="nav-brand" onClick={close}>
             <span className="nav-mark" aria-hidden="true" />
             helvetic.studio
-          </Link>
+          </FlightLink>
           <SheetClose
             render={
               <button
@@ -64,24 +64,24 @@ export const MobileMenu = ({ pathname }: MobileMenuProps) => {
         <ul className="menu-list">
           {SITE_LINKS.map((link) => (
             <li key={link.href}>
-              <Link
+              <FlightLink
                 href={link.href}
                 className="menu-link"
                 aria-current={link.href === pathname ? "page" : undefined}
                 onClick={close}
               >
                 {link.label}
-              </Link>
+              </FlightLink>
             </li>
           ))}
         </ul>
-        <Link
+        <FlightLink
           href="/contact"
           className={cn(buttonVariants(), "nav-cta menu-cta")}
           onClick={close}
         >
           Get in touch
-        </Link>
+        </FlightLink>
       </SheetContent>
     </Sheet>
   );

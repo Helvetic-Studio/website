@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
+import { FlightLink } from "@/app/_components/flight-link";
 import type { Cairn, Gateway } from "@/app/_lib/peaks";
 import { PEAKS, pinPosition } from "@/app/_lib/peaks";
 
@@ -92,12 +92,16 @@ const GatewayPin = ({ gateway, order }: GatewayPinProps) => {
   return (
     <div className="pin" style={positionStyle(gateway)}>
       <div className="pin-body">
-        <Link href={gateway.route} className="pin-gateway" style={entrance}>
+        <FlightLink
+          href={gateway.route}
+          className="pin-gateway"
+          style={entrance}
+        >
           <span className="pin-dot" />
           <span className="pin-stem" />
           <span className="pin-disc">{GATEWAY_ICONS[gateway.route]}</span>
           <span className="pin-label">{gateway.label}</span>
-        </Link>
+        </FlightLink>
       </div>
     </div>
   );

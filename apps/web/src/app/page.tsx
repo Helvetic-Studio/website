@@ -1,6 +1,7 @@
 import { buttonVariants } from "@website/ui/components/button";
 import { cn } from "@website/ui/lib/utils";
-import Link from "next/link";
+
+import { FlightLink } from "@/app/_components/flight-link";
 
 const Page = () => (
   <div className="hero">
@@ -14,10 +15,10 @@ const Page = () => (
       Sharp, fast websites that turn visitors into customers.
     </p>
     <div className="hero-actions">
-      <Link href="/contact" className={cn(buttonVariants(), "hero-cta")}>
+      <FlightLink href="/contact" className={cn(buttonVariants(), "hero-cta")}>
         Start a project
-      </Link>
-      <Link href="/work" className="hero-link">
+      </FlightLink>
+      <FlightLink href="/work" className="hero-link">
         See our work
         <svg
           width="16"
@@ -32,7 +33,7 @@ const Page = () => (
         >
           <path d="M3 8h10M9 4l4 4-4 4" />
         </svg>
-      </Link>
+      </FlightLink>
     </div>
   </div>
 );

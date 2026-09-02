@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import type { CSSProperties, ReactNode } from "react";
 import { useState } from "react";
 
+import { useFlight } from "@/app/_lib/flight";
 import { zoomFor } from "@/app/_lib/peaks";
 
 export interface ZoomStageProps {
@@ -20,23 +21,26 @@ interface Visited {
 const percent = (value: number) => `${value.toFixed(4)}%`;
 
 /**
- * The URL is the only source of truth for the zoom: browser back/forward carries no click, so a
- * click-driven ridge would never fly back out. Everything downstream is plain CSS on custom
- * properties, so the ridge, mist, scrim and pins can stay Server Components.
+ * The camera looks at the flight's target while one is in progress, otherwise at the URL — the
+ * URL alone would start the zoom only after the content had faded out, and browser back/forward
+ * carries no click, so a click-driven ridge would never fly back out. Everything downstream is
+ * plain CSS on custom properties, so the ridge, mist, scrim and pins can stay Server Components.
  */
 export const ZoomStage = ({ children }: ZoomStageProps) => {
   const pathname = usePathname();
+  const flight = useFlight();
+  const target = flight?.target ?? pathname;
   const [visited, setVisited] = useState<Visited>({
-    current: pathname,
+    current: target,
     previous: null,
   });
 
-  if (visited.current !== pathname) {
-    setVisited({ current: pathname, previous: visited.current });
+  if (visited.current !== target) {
+    setVisited({ current: target, previous: visited.current });
   }
 
   const { zoomed, lateral, focus, scales, easings } = zoomFor(
-    pathname,
+    target,
     visited.previous
   );
 

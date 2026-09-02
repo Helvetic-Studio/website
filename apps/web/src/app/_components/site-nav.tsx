@@ -2,12 +2,13 @@
 
 import { buttonVariants } from "@website/ui/components/button";
 import { cn } from "@website/ui/lib/utils";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
+import { FlightLink } from "@/app/_components/flight-link";
 import { MobileMenu } from "@/app/_components/mobile-menu";
+import { useFlight } from "@/app/_lib/flight";
 import { SITE_LINKS } from "@/app/_lib/site-links";
 
 const INDICATOR_BASE_WIDTH = 100;
@@ -19,6 +20,9 @@ interface Indicator {
 
 export const SiteNav = () => {
   const pathname = usePathname();
+  const flight = useFlight();
+  // The indicator leads: it moves at the click, while aria-current waits for the URL.
+  const target = flight?.target ?? pathname;
   const listRef = useRef<HTMLUListElement>(null);
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
   const [indicator, setIndicator] = useState<Indicator | null>(null);
@@ -26,7 +30,7 @@ export const SiteNav = () => {
   // Measured, not morphed: the indicator follows the active link's real box.
   useEffect(() => {
     const measure = () => {
-      const active = linkRefs.current.get(pathname);
+      const active = linkRefs.current.get(target);
       if (!active) {
         setIndicator(null);
         return;
@@ -42,7 +46,7 @@ export const SiteNav = () => {
     return () => {
       observer.disconnect();
     };
-  }, [pathname]);
+  }, [target]);
 
   const indicatorStyle: CSSProperties = indicator
     ? {
@@ -54,11 +58,11 @@ export const SiteNav = () => {
   return (
     <div className="site-nav">
       <nav className="nav-pill" aria-label="Primary">
-        <Link href="/" className="nav-brand">
+        <FlightLink href="/" className="nav-brand">
           {/* TODO: placeholder mark — the real Helvetic Studio mark does not exist yet */}
           <span className="nav-mark" aria-hidden="true" />
           helvetic.studio
-        </Link>
+        </FlightLink>
         <ul className="nav-links" ref={listRef}>
           <li
             className="nav-indicator"
@@ -67,7 +71,7 @@ export const SiteNav = () => {
           />
           {SITE_LINKS.map((link) => (
             <li key={link.href}>
-              <Link
+              <FlightLink
                 href={link.href}
                 className="nav-link"
                 aria-current={link.href === pathname ? "page" : undefined}
@@ -80,13 +84,13 @@ export const SiteNav = () => {
                 }}
               >
                 {link.label}
-              </Link>
+              </FlightLink>
             </li>
           ))}
         </ul>
-        <Link href="/contact" className={cn(buttonVariants(), "nav-cta")}>
+        <FlightLink href="/contact" className={cn(buttonVariants(), "nav-cta")}>
           Get in touch
-        </Link>
+        </FlightLink>
         <MobileMenu pathname={pathname} />
       </nav>
     </div>

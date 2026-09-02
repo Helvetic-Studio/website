@@ -59,8 +59,8 @@
   --rise-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Lateral (gateway → gateway) keeps ticket 7's 1600:1400 ratio. Lives on :root because the
-   view-transition pseudo-elements that share this duration are children of the root. */
+/* Lateral (gateway → gateway) keeps ticket 7's 1600:1400 ratio. Lives on :root because the content
+   stage, a sibling of the zoom stage, shares the duration. */
 :root:has(.zoom-stage[data-lateral="true"]) {
   --zoom-duration: 1150ms;
 }
@@ -199,7 +199,6 @@ body {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  view-transition-name: ridge;
 }
 
 /* The camera is one transform per layer: scale about the focus, written as
@@ -370,6 +369,7 @@ body {
 }
 
 .pin-gateway {
+  --pin-delay: 200ms; /* overridden inline per pin for entrance stagger */
   pointer-events: auto;
   display: flex;
   flex-direction: column;
@@ -382,7 +382,7 @@ body {
   transition:
     background 240ms ease,
     box-shadow 240ms ease;
-  animation: riseIn 800ms var(--rise-ease) var(--pin-delay, 200ms) both;
+  animation: riseIn 800ms var(--rise-ease) var(--pin-delay) both;
 }
 
 .zoom-stage[data-zoomed="true"] .pin-gateway {
@@ -823,77 +823,42 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
-   Content hand-off — mode E. Every selector is scoped on :root; body never matches.
+   Content hand-off — driven by ContentStage, not the View Transition API: Firefox paints the ridge
+   as a frozen snapshot for the whole flight and WebKit ignores the crossfade timing. A flight fades
+   the page out over the first 45%, pushes the route, then fades the new page in over the last 45%.
    --------------------------------------------------------------------------- */
 
-:root::view-transition {
+.site-content[data-flight="out"] {
   pointer-events: none;
+  animation: contentOut calc(var(--zoom-duration) * 0.45) linear both;
 }
 
-:root::view-transition-group(root) {
-  animation: none;
+/* Landed by a flight: the ridge is already half way, so the page follows at once. */
+.site-content[data-flight="in"] {
+  animation: contentIn calc(var(--zoom-duration) * 0.45) linear
+    calc(var(--zoom-duration) * 0.1) both;
 }
 
-:root::view-transition-old(root) {
-  animation: none;
-  opacity: 0;
-}
-
-:root::view-transition-new(root) {
-  animation: none;
-  opacity: 1;
-  mix-blend-mode: normal;
-}
-
-:root::view-transition-group(ridge) {
-  animation: none;
-}
-
-:root::view-transition-old(ridge) {
-  animation: none;
-  opacity: 0;
-}
-
-:root::view-transition-new(ridge) {
-  animation: none;
-  opacity: 1;
-  mix-blend-mode: normal;
-}
-
-:root::view-transition-group(content) {
-  animation: none;
-}
-
-:root::view-transition-old(content) {
-  animation: contentOut var(--zoom-duration) linear both;
-  mix-blend-mode: normal;
-}
-
-:root::view-transition-new(content) {
-  animation: contentIn var(--zoom-duration) linear both;
-  mix-blend-mode: normal;
+/* Landed by back/forward: the ridge only started flying with the URL, so the page waits for it. */
+.site-content[data-flight="pop"] {
+  animation: contentIn calc(var(--zoom-duration) * 0.45) linear
+    calc(var(--zoom-duration) * 0.55) both;
 }
 
 @keyframes contentOut {
-  0% {
+  from {
     opacity: 1;
   }
-  45% {
-    opacity: 0;
-  }
-  100% {
+  to {
     opacity: 0;
   }
 }
 
 @keyframes contentIn {
-  0% {
+  from {
     opacity: 0;
   }
-  55% {
-    opacity: 0;
-  }
-  100% {
+  to {
     opacity: 1;
   }
 }
