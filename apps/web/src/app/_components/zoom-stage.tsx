@@ -10,7 +10,7 @@ export interface ZoomStageProps {
   children: ReactNode;
 }
 
-type ZoomVariables = Record<`--origin-${string}`, string>;
+type ZoomVariables = Record<`--${"focus" | "zoom" | "ease"}-${string}`, string>;
 
 interface Visited {
   current: string;
@@ -35,20 +35,22 @@ export const ZoomStage = ({ children }: ZoomStageProps) => {
     setVisited({ current: pathname, previous: visited.current });
   }
 
-  const { zoomed, lateral, desktop, mobile } = zoomFor(
+  const { zoomed, lateral, focus, scales, easings } = zoomFor(
     pathname,
     visited.previous
   );
 
   const style: CSSProperties & ZoomVariables = {
-    "--origin-x-ridge": percent(desktop.originXRidge),
-    "--origin-x-pins": percent(desktop.originXPins),
-    "--origin-y-far": percent(desktop.originYFar),
-    "--origin-y-mid": percent(desktop.originYMid),
-    "--origin-y-near": percent(desktop.originYNear),
-    "--origin-y-far-mobile": percent(mobile.originYFar),
-    "--origin-y-mid-mobile": percent(mobile.originYMid),
-    "--origin-y-near-mobile": percent(mobile.originYNear),
+    "--focus-x-ridge": percent(focus.xRidge),
+    "--focus-x-pins": percent(focus.xPins),
+    "--focus-y": percent(focus.y),
+    "--zoom-far": String(scales.far),
+    "--zoom-mid": String(scales.mid),
+    "--zoom-near": String(scales.near),
+    "--ease-far": easings.far,
+    "--ease-mid": easings.mid,
+    "--ease-near": easings.near,
+    "--ease-pin": easings.pin,
   };
 
   return (

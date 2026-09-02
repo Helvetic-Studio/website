@@ -6,7 +6,7 @@ import { ImageResponse } from "next/og";
 import { RIDGE_POLYGONS, VIEWBOX } from "@/app/_lib/peaks";
 
 export const alt =
-  'Helvetic Studio — a red mountain ridge below the headline "Websites that make your business impossible to ignore."';
+  'Helvetic Studio — a red mountain ridge below the headline "Build a website. Get noticed. Grow."';
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -82,7 +82,7 @@ const Image = () =>
             letterSpacing: "-0.045em",
           }}
         >
-          Websites that make your business impossible to ignore.
+          Build a website. Get noticed. Grow.
         </div>
       </div>
       <svg

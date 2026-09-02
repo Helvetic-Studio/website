@@ -7,7 +7,7 @@ test("shows the homepage", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "We build websites that make your business impossible to ignore.",
+      name: "Build a website. Get noticed. Grow.",
     })
   ).toBeVisible();
 });

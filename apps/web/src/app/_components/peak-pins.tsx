@@ -95,9 +95,7 @@ const GatewayPin = ({ gateway, order }: GatewayPinProps) => {
         <Link href={gateway.route} className="pin-gateway" style={entrance}>
           <span className="pin-dot" />
           <span className="pin-stem" />
-          <span className="pin-disc glass-chrome">
-            {GATEWAY_ICONS[gateway.route]}
-          </span>
+          <span className="pin-disc">{GATEWAY_ICONS[gateway.route]}</span>
           <span className="pin-label">{gateway.label}</span>
         </Link>
       </div>

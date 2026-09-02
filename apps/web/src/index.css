@@ -44,9 +44,18 @@
   --muted: oklch(0.97 0.008 25);
   --accent: oklch(0.97 0.008 25);
 
+  /* ridge geometry — one box height for every layer, the mist and the pins. On short viewports
+     the range gives ground to the hero (it must clear the Work summit, 62.5% down the ridge). */
+  --ridge-height: clamp(46vh, 106vh - 315px, 76vh);
+
   /* motion */
   --zoom-duration: 1000ms; /* TODO: provisional — confirm by eye (1150ms lateral is derived below) */
-  --zoom-ease: cubic-bezier(0.76, 0, 0.18, 1);
+  --zoom-ease: cubic-bezier(
+    0.5,
+    0,
+    0.15,
+    1
+  ); /* opacity fades; the layers use log-scale easings */
   --rise-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -155,20 +164,26 @@ body {
    Zoom stage — the URL becomes custom properties; everything below is plain CSS
    --------------------------------------------------------------------------- */
 
+/* The stage's inline style sets --focus-*, --zoom-* and --ease-* from the URL (see zoom-stage.tsx).
+   These are the resting defaults for anything rendered outside it. */
 .zoom-stage {
   display: contents;
+  --focus-x-ridge: 50%;
+  --focus-x-pins: 50%;
+  --focus-y: 50%;
   --zoom-far: 1;
   --zoom-mid: 1;
   --zoom-near: 1;
+  --ease-far: var(--zoom-ease);
+  --ease-mid: var(--zoom-ease);
+  --ease-near: var(--zoom-ease);
+  --ease-pin: var(--zoom-ease);
   --scrim-opacity: 0.16;
   --mist-opacity: 1;
   --pins-opacity: 1;
 }
 
 .zoom-stage[data-zoomed="true"] {
-  --zoom-far: 1.35;
-  --zoom-mid: 2;
-  --zoom-near: 3.2;
   --scrim-opacity: 0.55;
   --mist-opacity: 0;
   --pins-opacity: 0;
@@ -187,18 +202,23 @@ body {
   view-transition-name: ridge;
 }
 
+/* The camera is one transform per layer: scale about the focus, written as
+   translate(focus · (1 − scale)) scale(scale) about the top-left corner. One property, one easing,
+   composited end to end — the pivot is never animated, so the flight cannot wobble. */
 .ridge-layer {
   position: absolute;
   bottom: 0;
   /* Treatment C: window the 1600-unit viewBox to x 430 → 1230. */
   left: -53.75%;
   width: 200%;
-  height: var(--layer-height);
-  transform: scale(var(--layer-zoom));
-  transform-origin: var(--origin-x-ridge) var(--layer-origin-y);
-  transition:
-    transform var(--zoom-duration) var(--zoom-ease),
-    transform-origin var(--zoom-duration) var(--zoom-ease);
+  height: var(--ridge-height);
+  transform: translate(
+      calc(var(--focus-x-ridge) * (1 - var(--layer-zoom))),
+      calc(var(--focus-y) * (1 - var(--layer-zoom)))
+    )
+    scale(var(--layer-zoom));
+  transform-origin: 0 0;
+  transition: transform var(--zoom-duration) var(--layer-ease);
   will-change: transform;
 }
 
@@ -209,21 +229,18 @@ body {
 }
 
 .ridge-far {
-  --layer-height: 82vh;
   --layer-zoom: var(--zoom-far);
-  --layer-origin-y: var(--origin-y-far);
+  --layer-ease: var(--ease-far);
 }
 
 .ridge-mid {
-  --layer-height: 78vh;
   --layer-zoom: var(--zoom-mid);
-  --layer-origin-y: var(--origin-y-mid);
+  --layer-ease: var(--ease-mid);
 }
 
 .ridge-near {
-  --layer-height: 76vh;
   --layer-zoom: var(--zoom-near);
-  --layer-origin-y: var(--origin-y-near);
+  --layer-ease: var(--ease-near);
 }
 
 .ridge-far > svg {
@@ -244,7 +261,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 76vh;
+  height: var(--ridge-height);
   opacity: var(--mist-opacity);
   transition: opacity var(--zoom-duration) var(--zoom-ease);
   animation: driftMist 26s ease-in-out infinite;
@@ -302,26 +319,29 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 76vh;
+  height: var(--ridge-height);
   z-index: 30;
   pointer-events: none;
   opacity: var(--pins-opacity);
-  transform: scale(var(--zoom-near));
-  transform-origin: var(--origin-x-pins) var(--origin-y-near);
+  transform: translate(
+      calc(var(--focus-x-pins) * (1 - var(--zoom-near))),
+      calc(var(--focus-y) * (1 - var(--zoom-near)))
+    )
+    scale(var(--zoom-near));
+  transform-origin: 0 0;
   transition:
-    transform var(--zoom-duration) var(--zoom-ease),
-    transform-origin var(--zoom-duration) var(--zoom-ease),
+    transform var(--zoom-duration) var(--ease-near),
     opacity calc(var(--zoom-duration) * 0.4) linear
       calc(var(--zoom-duration) * 0.6),
     visibility 0s linear 0s;
+  will-change: transform, opacity;
 }
 
 /* Zooming in: fade over the first 40%, then leave the tree entirely. */
 .zoom-stage[data-zoomed="true"] .pins {
   visibility: hidden;
   transition:
-    transform var(--zoom-duration) var(--zoom-ease),
-    transform-origin var(--zoom-duration) var(--zoom-ease),
+    transform var(--zoom-duration) var(--ease-near),
     opacity calc(var(--zoom-duration) * 0.4) linear,
     visibility 0s linear var(--zoom-duration);
 }
@@ -342,7 +362,7 @@ body {
   transform: translate(-50%, calc(-1 * var(--pin-anchor)))
     scale(calc(1 / var(--zoom-near)));
   transform-origin: 50% var(--pin-anchor);
-  transition: transform var(--zoom-duration) var(--zoom-ease);
+  transition: transform var(--zoom-duration) var(--ease-pin);
 }
 
 .pin-body-cairn {
@@ -403,6 +423,7 @@ body {
   );
 }
 
+/* A solid disc, not glass: four backdrop blurs riding a scaling layer cost frames during the zoom. */
 .pin-disc {
   flex: 0 0 auto;
   width: 44px;
@@ -412,6 +433,16 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--brand-red);
+  background: oklch(1 0 0 / 0.9);
+  border: 1px solid oklch(1 0 0);
+  box-shadow:
+    0 1px 2px oklch(0.2393 0 0 / 0.06),
+    0 12px 28px -14px oklch(0.2393 0 0 / 0.35);
+  transition: transform 240ms var(--rise-ease);
+}
+
+.pin-gateway:hover .pin-disc {
+  transform: translateY(-2px);
 }
 
 .pin-label {
@@ -659,26 +690,30 @@ body {
    Hero
    --------------------------------------------------------------------------- */
 
+/* Every vertical size is in vh so the block shrinks with the viewport and stays clear of the
+   summits; --ridge-height (on :root) is derived from the same budget. */
 .hero {
   max-width: 1000px;
   margin: 0 auto;
-  padding: clamp(28px, 7vh, 76px) 24px 0;
-  min-height: 36vh;
+  padding: clamp(20px, 4.5vh, 48px) 24px 0;
   box-sizing: border-box;
   text-align: center;
 }
 
 .hero-badge {
-  @apply glass-chrome;
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  padding: 7px 15px;
+  padding: 7px 14px;
   border-radius: 999px;
-  font-size: clamp(11px, 1.4vh, 13px);
+  background: oklch(1 0 0 / 0.72);
+  border: 1px solid oklch(1 0 0 / 0.95);
+  box-shadow: 0 10px 24px -16px oklch(0.2393 0 0 / 0.3);
+  font-size: 13px;
   font-weight: 500;
+  letter-spacing: -0.005em;
   color: var(--brand-gray);
-  margin-bottom: clamp(10px, 2.2vh, 26px);
+  margin-bottom: clamp(10px, 1.8vh, 20px);
   animation: riseIn 700ms var(--rise-ease) 60ms both;
 }
 
@@ -688,12 +723,13 @@ body {
   height: 7px;
   border-radius: 50%;
   background: var(--brand-red);
+  box-shadow: 0 0 0 3px oklch(0.5684 0.2129 25.98 / 0.14);
 }
 
 .hero-title {
   margin: 0;
-  font-size: clamp(30px, min(7.2vw, 10vh), 82px);
-  line-height: 1.04;
+  font-size: clamp(34px, min(7.4vw, 9vh), 84px);
+  line-height: 1.02;
   letter-spacing: -0.045em;
   font-weight: 800;
   text-wrap: balance;
@@ -701,13 +737,78 @@ body {
 }
 
 .hero-lede {
-  margin: clamp(10px, 2.2vh, 26px) auto 0;
-  max-width: 640px;
-  font-size: clamp(12px, 1.9vh, 20px);
+  margin: clamp(10px, 1.8vh, 18px) auto 0;
+  max-width: 560px;
+  font-size: clamp(15px, 2vh, 19px);
   line-height: 1.5;
   color: var(--brand-gray);
-  text-wrap: pretty;
+  text-wrap: balance;
   animation: riseIn 800ms var(--rise-ease) 240ms both;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 18px;
+  margin-top: clamp(16px, 2.6vh, 26px);
+  animation: riseIn 800ms var(--rise-ease) 330ms both;
+}
+
+.hero-cta {
+  padding: 13px 22px;
+  height: auto;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 12px 28px -12px oklch(0.5684 0.2129 25.98 / 0.9);
+  transition:
+    background 220ms ease,
+    transform 220ms var(--rise-ease),
+    box-shadow 220ms ease;
+}
+
+.hero-cta:hover {
+  background: var(--brand-red-hover);
+  color: var(--primary-foreground);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px -12px oklch(0.5684 0.2129 25.98 / 0.95);
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-charcoal);
+  text-decoration: none;
+  border-radius: 999px;
+  transition: color 200ms ease;
+}
+
+.hero-link > svg {
+  transition: transform 220ms var(--rise-ease);
+}
+
+.hero-link:hover {
+  color: var(--brand-red-text);
+}
+
+.hero-link:hover > svg {
+  transform: translateX(3px);
+}
+
+.hero-cta:focus-visible,
+.hero-link:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary);
 }
 
 /* Stub routes carry a single heading so a landed navigation is distinguishable from a broken one. */
@@ -802,24 +903,9 @@ body {
    --------------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
-  /* TODO: mobile ridge height — 56/53/51vh is a start value, judge by eye */
-  .ridge-far {
-    --layer-height: 56vh;
-    --layer-origin-y: var(--origin-y-far-mobile);
-  }
-
-  .ridge-mid {
-    --layer-height: 53vh;
-    --layer-origin-y: var(--origin-y-mid-mobile);
-  }
-
-  .ridge-near {
-    --layer-height: 51vh;
-    --layer-origin-y: var(--origin-y-near-mobile);
-  }
-
-  .ridge-mist {
-    height: 51vh;
+  :root {
+    /* TODO: mobile ridge height — 58vh judged by eye against the hero + CTA row at 390×844 */
+    --ridge-height: 58vh;
   }
 
   /* Real links: display none, never opacity or visibility. */
@@ -859,6 +945,7 @@ body {
   .hero-badge,
   .hero-title,
   .hero-lede,
+  .hero-actions,
   .pin-gateway {
     animation-name: fadeIn;
   }
