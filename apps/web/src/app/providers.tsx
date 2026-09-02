@@ -12,8 +12,7 @@ export interface ProvidersProps {
 export const Providers = ({ children }: ProvidersProps) => (
   <ThemeProvider
     attribute="class"
-    defaultTheme="system"
-    enableSystem
+    forcedTheme="light"
     disableTransitionOnChange
   >
     <TooltipProvider>{children}</TooltipProvider>

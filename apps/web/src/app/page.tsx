@@ -1,9 +1,19 @@
-import { ThemeSwitcher } from "@/components/theme/theme-switcher";
-
 const Page = () => (
-  <div className="flex flex-col gap-4 h-screen w-screen items-center justify-center">
-    <h1 className="text-4xl font-bold">Hello, World!</h1>
-    <ThemeSwitcher />
+  <div className="hero">
+    <p className="hero-badge">
+      <span className="hero-badge-dot" aria-hidden="true" />
+      {/* TODO: "Swiss web studio" or "Swiss software studio" */}
+      {/* TODO: season + year goes after "for" */}
+      Swiss web studio — taking on projects for
+    </p>
+    <h1 className="hero-title">
+      We build websites that make your business impossible to ignore.
+    </h1>
+    <p className="hero-lede">
+      You get a website that looks sharp, loads fast and turns visitors into
+      enquiries. No jargon, no endless meetings — just a site that works as hard
+      as you do.
+    </p>
   </div>
 );
 

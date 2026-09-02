@@ -42,6 +42,14 @@ export default defineConfig({
           "sort-keys": "off",
         },
       },
+      {
+        // The Home shell ships deliberate `TODO` placeholders (copy, artwork, by-eye values)
+        // that are tracked by grepping for the marker.
+        files: ["apps/web/src/app/**/*.{ts,tsx}"],
+        rules: {
+          "no-warning-comments": "off",
+        },
+      },
     ],
   },
   fmt: {

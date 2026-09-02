@@ -1,1 +1,865 @@
 @import "@website/ui/globals.css";
+
+:root {
+  /* brand */
+  --brand-red: oklch(
+    0.5684 0.2129 25.98
+  ); /* #D8232A — fills, strokes, graphics */
+  --brand-red-hover: oklch(0.5174 0.1952 25.99); /* #BF1C23 */
+  --brand-red-text: oklch(
+    0.545 0.2129 25.98
+  ); /* #CF1522 — red TEXT, any size (4.672:1) */
+  --brand-charcoal: oklch(0.2393 0 0); /* #1F1F1F */
+  --brand-gray: oklch(0.5218 0.0047 286.24); /* #69696C */
+
+  /* page ground */
+  --surface-grad-top: oklch(0.9956 0.0021 17.19); /* #fffdfd */
+  --surface-grad-mid: oklch(0.9798 0.0098 25.07); /* #fff6f5 */
+  --surface-grad-bot: oklch(0.9437 0.0219 21.01); /* #fbe7e6 */
+
+  /* ridge */
+  --ridge-layer-1: oklch(0.5684 0.2129 25.98 / 0.16);
+  --ridge-layer-2: oklch(0.5684 0.2129 25.98 / 0.28);
+  --ridge-layer-3: oklch(0.5684 0.2129 25.98 / 0.44);
+  --ridge-mist: oklch(0.9868 0.0074 25 / 0.85);
+  --ridge-scrim: oklch(0.9829 0.0086 25 / 0.9);
+
+  /* glass — exactly two tiers */
+  --glass-chrome: oklch(1 0 0 / 0.7);
+  --glass-chrome-edge: oklch(1 0 0 / 0.9);
+  --glass-chrome-blur: 16px;
+  --glass-panel: oklch(1 0 0 / 0.62);
+  --glass-panel-edge: oklch(1 0 0 / 0.88);
+  --glass-panel-blur: 24px;
+
+  /* shadcn contract overrides */
+  --background: var(--surface-grad-top);
+  --foreground: var(--brand-charcoal);
+  --primary: var(--brand-red);
+  --primary-foreground: oklch(1 0 0);
+  --muted-foreground: var(--brand-gray);
+  --ring: var(--brand-red);
+  --destructive: oklch(0.505 0.19 16);
+  --secondary: oklch(0.97 0.008 25);
+  --muted: oklch(0.97 0.008 25);
+  --accent: oklch(0.97 0.008 25);
+
+  /* motion */
+  --zoom-duration: 1000ms; /* TODO: provisional — confirm by eye (1150ms lateral is derived below) */
+  --zoom-ease: cubic-bezier(0.76, 0, 0.18, 1);
+  --rise-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Lateral (gateway → gateway) keeps ticket 7's 1600:1400 ratio. Lives on :root because the
+   view-transition pseudo-elements that share this duration are children of the root. */
+:root:has(.zoom-stage[data-lateral="true"]) {
+  --zoom-duration: 1150ms;
+}
+
+@theme inline {
+  --color-brand-red: var(--brand-red-text);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility glass-chrome {
+  background: var(--glass-chrome);
+  backdrop-filter: blur(var(--glass-chrome-blur));
+  -webkit-backdrop-filter: blur(var(--glass-chrome-blur));
+  border: 1px solid var(--glass-chrome-edge);
+  box-shadow: 0 16px 40px -20px oklch(0.2393 0 0 / 0.34);
+}
+
+@utility glass-panel {
+  background: var(--glass-panel);
+  backdrop-filter: blur(var(--glass-panel-blur));
+  -webkit-backdrop-filter: blur(var(--glass-panel-blur));
+  border: 1px solid var(--glass-panel-edge);
+  box-shadow: 0 26px 70px -34px oklch(0.2393 0 0 / 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+   Shell — the page ground and landmark layout
+   --------------------------------------------------------------------------- */
+
+html {
+  min-height: 100%;
+  background-color: var(--surface-grad-bot);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* The gradient is painted here, not on --background: shadcn components assume a flat colour. */
+  background-image: linear-gradient(
+    180deg,
+    var(--surface-grad-top) 0%,
+    var(--surface-grad-mid) 46%,
+    var(--surface-grad-bot) 100%
+  );
+}
+
+/* A constant box across routes, so the content hand-off never morphs its group. */
+.site-content {
+  position: relative;
+  z-index: 20;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes driftMist {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-40px, -8px, 0);
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes navDrop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Zoom stage — the URL becomes custom properties; everything below is plain CSS
+   --------------------------------------------------------------------------- */
+
+.zoom-stage {
+  display: contents;
+  --zoom-far: 1;
+  --zoom-mid: 1;
+  --zoom-near: 1;
+  --scrim-opacity: 0.16;
+  --mist-opacity: 1;
+  --pins-opacity: 1;
+}
+
+.zoom-stage[data-zoomed="true"] {
+  --zoom-far: 1.35;
+  --zoom-mid: 2;
+  --zoom-near: 3.2;
+  --scrim-opacity: 0.55;
+  --mist-opacity: 0;
+  --pins-opacity: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Ridge
+   --------------------------------------------------------------------------- */
+
+.ridge {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  view-transition-name: ridge;
+}
+
+.ridge-layer {
+  position: absolute;
+  bottom: 0;
+  /* Treatment C: window the 1600-unit viewBox to x 430 → 1230. */
+  left: -53.75%;
+  width: 200%;
+  height: var(--layer-height);
+  transform: scale(var(--layer-zoom));
+  transform-origin: var(--origin-x-ridge) var(--layer-origin-y);
+  transition:
+    transform var(--zoom-duration) var(--zoom-ease),
+    transform-origin var(--zoom-duration) var(--zoom-ease);
+  will-change: transform;
+}
+
+.ridge-layer > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ridge-far {
+  --layer-height: 82vh;
+  --layer-zoom: var(--zoom-far);
+  --layer-origin-y: var(--origin-y-far);
+}
+
+.ridge-mid {
+  --layer-height: 78vh;
+  --layer-zoom: var(--zoom-mid);
+  --layer-origin-y: var(--origin-y-mid);
+}
+
+.ridge-near {
+  --layer-height: 76vh;
+  --layer-zoom: var(--zoom-near);
+  --layer-origin-y: var(--origin-y-near);
+}
+
+.ridge-far > svg {
+  fill: var(--ridge-layer-1);
+}
+
+.ridge-mid > svg {
+  fill: var(--ridge-layer-2);
+}
+
+.ridge-near > svg {
+  fill: var(--ridge-layer-3);
+}
+
+/* Mist tracks the near layer's height, drifts, never scales, and fades out when zoomed. */
+.ridge-mist {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 76vh;
+  opacity: var(--mist-opacity);
+  transition: opacity var(--zoom-duration) var(--zoom-ease);
+  animation: driftMist 26s ease-in-out infinite;
+}
+
+.ridge-mist::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 38%;
+  height: 26%;
+  background: linear-gradient(
+    180deg,
+    oklch(0.9868 0.0074 25 / 0) 0%,
+    var(--ridge-mist) 50%,
+    oklch(0.9868 0.0074 25 / 0) 100%
+  );
+  filter: blur(14px);
+}
+
+.ridge-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34vh; /* TODO: judge the bottom fade by eye against the raised ridge */
+  background: linear-gradient(
+    180deg,
+    oklch(0.9437 0.0219 21.01 / 0) 0%,
+    oklch(0.9437 0.0219 21.01 / 0.55) 40%,
+    oklch(0.9437 0.0219 21.01 / 0.9) 100%
+  );
+}
+
+.ridge-scrim {
+  position: absolute;
+  inset: 0;
+  opacity: var(--scrim-opacity);
+  transition: opacity var(--zoom-duration) var(--zoom-ease);
+  background: linear-gradient(
+    180deg,
+    oklch(0.9829 0.0086 25 / 0.55) 0%,
+    var(--ridge-scrim) 55%,
+    var(--ridge-scrim) 100%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Summit markers — welded to the near layer, contents counter-scaled
+   --------------------------------------------------------------------------- */
+
+.pins {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 76vh;
+  z-index: 30;
+  pointer-events: none;
+  opacity: var(--pins-opacity);
+  transform: scale(var(--zoom-near));
+  transform-origin: var(--origin-x-pins) var(--origin-y-near);
+  transition:
+    transform var(--zoom-duration) var(--zoom-ease),
+    transform-origin var(--zoom-duration) var(--zoom-ease),
+    opacity calc(var(--zoom-duration) * 0.4) linear
+      calc(var(--zoom-duration) * 0.6),
+    visibility 0s linear 0s;
+}
+
+/* Zooming in: fade over the first 40%, then leave the tree entirely. */
+.zoom-stage[data-zoomed="true"] .pins {
+  visibility: hidden;
+  transition:
+    transform var(--zoom-duration) var(--zoom-ease),
+    transform-origin var(--zoom-duration) var(--zoom-ease),
+    opacity calc(var(--zoom-duration) * 0.4) linear,
+    visibility 0s linear var(--zoom-duration);
+}
+
+.pin {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* The body carries position + counter-scale; the marker inside carries its entrance animation,
+   so a fill-mode:both keyframe never overrides the live transform. */
+.pin-body {
+  --pin-anchor: 13.5px; /* dot centre: 10px padding + 3.5px radius */
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, calc(-1 * var(--pin-anchor)))
+    scale(calc(1 / var(--zoom-near)));
+  transform-origin: 50% var(--pin-anchor);
+  transition: transform var(--zoom-duration) var(--zoom-ease);
+}
+
+.pin-body-cairn {
+  --pin-anchor: 3px;
+}
+
+.pin-gateway {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px 12px;
+  border-radius: 16px;
+  color: var(--brand-charcoal);
+  text-decoration: none;
+  transition:
+    background 240ms ease,
+    box-shadow 240ms ease;
+  animation: riseIn 800ms var(--rise-ease) var(--pin-delay, 200ms) both;
+}
+
+.zoom-stage[data-zoomed="true"] .pin-gateway {
+  pointer-events: none;
+}
+
+.pin-gateway:hover {
+  background: oklch(1 0 0 / 0.7);
+  box-shadow: 0 18px 44px -20px oklch(0.2393 0 0 / 0.3);
+}
+
+.pin-gateway:focus-visible {
+  outline: none;
+  background: oklch(1 0 0 / 0.7);
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary),
+    0 18px 44px -20px oklch(0.2393 0 0 / 0.3);
+}
+
+.pin-dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand-red);
+  box-shadow: 0 0 0 4px oklch(0.5684 0.2129 25.98 / 0.14);
+}
+
+.pin-stem {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 16px;
+  background: linear-gradient(
+    180deg,
+    oklch(0.5684 0.2129 25.98 / 0),
+    oklch(0.5684 0.2129 25.98 / 0.45)
+  );
+}
+
+.pin-disc {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-red);
+}
+
+.pin-label {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Cairn: a quiet dot only. Not a link, no stop, no label. */
+.pin-cairn {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(0.5684 0.2129 25.98 / 0.42);
+  box-shadow: 0 0 0 3px oklch(0.5684 0.2129 25.98 / 0.08);
+  animation: fadeIn 800ms var(--rise-ease) 560ms both;
+}
+
+/* ---------------------------------------------------------------------------
+   Navbar
+   --------------------------------------------------------------------------- */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  padding: 18px 24px 6px;
+}
+
+.nav-pill {
+  @apply glass-chrome;
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 10px 10px 10px 20px;
+  border-radius: 999px;
+  animation: navDrop 700ms var(--rise-ease) both;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.03em;
+  color: var(--brand-charcoal);
+  text-decoration: none;
+  border-radius: 999px;
+}
+
+.nav-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: linear-gradient(150deg, #d8232a, #ff8b7f);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 6px 14px -6px oklch(0.5684 0.2129 25.98 / 0.8);
+}
+
+.nav-mark::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 14px;
+  margin-bottom: 5px;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  background: oklch(1 0 0 / 0.92);
+}
+
+.nav-links {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-indicator {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100px;
+  height: 34px;
+  margin-top: -17px;
+  border-radius: 999px;
+  background: oklch(0.5684 0.2129 25.98 / 0.1);
+  opacity: 0;
+  transform-origin: left center;
+  transition:
+    transform 520ms cubic-bezier(0.6, -0.02, 0.2, 1),
+    opacity 320ms ease;
+  pointer-events: none;
+}
+
+.nav-link {
+  position: relative;
+  display: block;
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-gray);
+  text-decoration: none;
+  transition:
+    color 260ms ease,
+    background 200ms ease;
+}
+
+.nav-link:hover {
+  background: oklch(0.2393 0 0 / 0.05);
+  color: var(--brand-charcoal);
+}
+
+.nav-link[aria-current="page"] {
+  font-weight: 600;
+  color: var(--brand-charcoal);
+}
+
+.nav-cta {
+  padding: 11px 20px;
+  border-radius: 999px;
+  height: auto;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 10px 24px -10px oklch(0.5684 0.2129 25.98 / 0.9);
+  transition:
+    background 220ms ease,
+    transform 220ms var(--rise-ease),
+    box-shadow 220ms ease;
+}
+
+.nav-cta:hover {
+  background: var(--brand-red-hover);
+  color: var(--primary-foreground);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -10px oklch(0.5684 0.2129 25.98 / 0.95);
+}
+
+.nav-menu-button {
+  display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--brand-charcoal);
+  cursor: pointer;
+}
+
+.nav-menu-button:hover {
+  background: oklch(0.2393 0 0 / 0.05);
+}
+
+/* Focus on glass: white halo + 2px red ring. The library's 1px 50% gray is invisible here. */
+.nav-brand:focus-visible,
+.nav-link:focus-visible,
+.nav-cta:focus-visible,
+.nav-menu-button:focus-visible,
+.menu-link:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary);
+}
+
+.nav-cta:focus-visible {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary),
+    0 10px 24px -10px oklch(0.5684 0.2129 25.98 / 0.9);
+}
+
+/* Mobile sheet: the pill unrolling. Unlayered so it beats the sheet's own utilities. */
+.menu-sheet {
+  @apply glass-chrome;
+  z-index: 70; /* above the pill: the sheet repeats the pill's header row */
+  border-radius: 0 0 28px 28px;
+  padding: 18px 24px 24px;
+  color: var(--brand-charcoal);
+}
+
+.menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 8px 8px 16px;
+  margin-bottom: 12px;
+}
+
+.menu-head .nav-menu-button {
+  display: inline-flex;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-link {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--brand-gray);
+  text-decoration: none;
+}
+
+.menu-link:hover {
+  background: oklch(0.2393 0 0 / 0.05);
+  color: var(--brand-charcoal);
+}
+
+.menu-link[aria-current="page"] {
+  font-weight: 600;
+  color: var(--brand-charcoal);
+}
+
+.menu-cta {
+  margin-top: 16px;
+  align-self: flex-start;
+}
+
+/* ---------------------------------------------------------------------------
+   Hero
+   --------------------------------------------------------------------------- */
+
+.hero {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(28px, 7vh, 76px) 24px 0;
+  min-height: 36vh;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.hero-badge {
+  @apply glass-chrome;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 15px;
+  border-radius: 999px;
+  font-size: clamp(11px, 1.4vh, 13px);
+  font-weight: 500;
+  color: var(--brand-gray);
+  margin-bottom: clamp(10px, 2.2vh, 26px);
+  animation: riseIn 700ms var(--rise-ease) 60ms both;
+}
+
+.hero-badge-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand-red);
+}
+
+.hero-title {
+  margin: 0;
+  font-size: clamp(30px, min(7.2vw, 10vh), 82px);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  text-wrap: balance;
+  animation: riseIn 800ms var(--rise-ease) 150ms both;
+}
+
+.hero-lede {
+  margin: clamp(10px, 2.2vh, 26px) auto 0;
+  max-width: 640px;
+  font-size: clamp(12px, 1.9vh, 20px);
+  line-height: 1.5;
+  color: var(--brand-gray);
+  text-wrap: pretty;
+  animation: riseIn 800ms var(--rise-ease) 240ms both;
+}
+
+/* Stub routes carry a single heading so a landed navigation is distinguishable from a broken one. */
+.stub-title {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 56px 24px 0;
+  font-size: clamp(30px, 6vw, 64px);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+}
+
+/* ---------------------------------------------------------------------------
+   Content hand-off — mode E. Every selector is scoped on :root; body never matches.
+   --------------------------------------------------------------------------- */
+
+:root::view-transition {
+  pointer-events: none;
+}
+
+:root::view-transition-group(root) {
+  animation: none;
+}
+
+:root::view-transition-old(root) {
+  animation: none;
+  opacity: 0;
+}
+
+:root::view-transition-new(root) {
+  animation: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+:root::view-transition-group(ridge) {
+  animation: none;
+}
+
+:root::view-transition-old(ridge) {
+  animation: none;
+  opacity: 0;
+}
+
+:root::view-transition-new(ridge) {
+  animation: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+:root::view-transition-group(content) {
+  animation: none;
+}
+
+:root::view-transition-old(content) {
+  animation: contentOut var(--zoom-duration) linear both;
+  mix-blend-mode: normal;
+}
+
+:root::view-transition-new(content) {
+  animation: contentIn var(--zoom-duration) linear both;
+  mix-blend-mode: normal;
+}
+
+@keyframes contentOut {
+  0% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes contentIn {
+  0% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Below 768: window + shorter ridge, pins gone, pill collapses to a Sheet
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* TODO: mobile ridge height — 56/53/51vh is a start value, judge by eye */
+  .ridge-far {
+    --layer-height: 56vh;
+    --layer-origin-y: var(--origin-y-far-mobile);
+  }
+
+  .ridge-mid {
+    --layer-height: 53vh;
+    --layer-origin-y: var(--origin-y-mid-mobile);
+  }
+
+  .ridge-near {
+    --layer-height: 51vh;
+    --layer-origin-y: var(--origin-y-near-mobile);
+  }
+
+  .ridge-mist {
+    height: 51vh;
+  }
+
+  /* Real links: display none, never opacity or visibility. */
+  .pins {
+    display: none;
+  }
+
+  .nav-links,
+  .nav-pill > .nav-cta {
+    display: none;
+  }
+
+  .nav-menu-button {
+    display: inline-flex;
+  }
+
+  .nav-pill {
+    padding: 8px 8px 8px 16px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion — zoom at full scale in 200ms (accepted risk, decided by the user)
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  :root:has(.zoom-stage[data-lateral="true"]) {
+    --zoom-duration: 200ms;
+  }
+
+  .ridge-mist {
+    animation: none;
+  }
+
+  .nav-pill,
+  .hero-badge,
+  .hero-title,
+  .hero-lede,
+  .pin-gateway {
+    animation-name: fadeIn;
+  }
+}
