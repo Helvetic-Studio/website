@@ -1,12 +1,13 @@
 import { buttonVariants } from "@website/ui/components/button";
 import { cn } from "@website/ui/lib/utils";
 
+import { ArrowIcon } from "@/app/_components/arrow-icon";
 import { FlightLink } from "@/app/_components/flight-link";
 
 const Page = () => (
   <div className="hero">
     <p className="hero-badge">
-      <span className="hero-badge-dot" aria-hidden="true" />
+      <span className="brand-dot" aria-hidden="true" />
       {/* TODO: "Swiss web studio" or "Swiss software studio"; add the season once booking is confirmed */}
       Swiss web studio · Now taking on new projects
     </p>
@@ -20,19 +21,7 @@ const Page = () => (
       </FlightLink>
       <FlightLink href="/work" className="hero-link">
         See our work
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 8h10M9 4l4 4-4 4" />
-        </svg>
+        <ArrowIcon />
       </FlightLink>
     </div>
   </div>

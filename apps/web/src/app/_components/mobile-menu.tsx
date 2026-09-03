@@ -14,6 +14,7 @@ import { cn } from "@website/ui/lib/utils";
 import { useState } from "react";
 
 import { FlightLink } from "@/app/_components/flight-link";
+import { isWithinRoute } from "@/app/_lib/routes";
 import { SITE_LINKS } from "@/app/_lib/site-links";
 
 export interface MobileMenuProps {
@@ -67,7 +68,9 @@ export const MobileMenu = ({ pathname }: MobileMenuProps) => {
               <FlightLink
                 href={link.href}
                 className="menu-link"
-                aria-current={link.href === pathname ? "page" : undefined}
+                aria-current={
+                  isWithinRoute(pathname, link.href) ? "page" : undefined
+                }
                 onClick={close}
               >
                 {link.label}

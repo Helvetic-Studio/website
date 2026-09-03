@@ -11,6 +11,7 @@ import {
   settleFlight,
   useFlight,
 } from "@/app/_lib/flight";
+import { summitFor } from "@/app/_lib/peaks";
 
 export interface ContentStageProps {
   children: ReactNode;
@@ -20,7 +21,7 @@ export interface ContentStageProps {
 type Arrival = "in" | "pop";
 
 interface Landing {
-  pathname: string;
+  summit: string;
   arrival: Arrival | undefined;
 }
 
@@ -38,15 +39,18 @@ const isLeaving = (flight: Flight | null, pathname: string): flight is Flight =>
 const departingFlight = (flight: Flight | null, pathname: string) =>
   isLeaving(flight, pathname) && flight.phase !== "pushed" ? flight : null;
 
-/** Remembers how the page on screen arrived. The initial document never animates. */
-const useArrival = (pathname: string, flight: Flight | null) => {
+/**
+ * Remembers how the summit on screen was reached. The initial document never animates, and a page
+ * of the same summit (another Work filter) is not an arrival at all.
+ */
+const useArrival = (summit: string, flight: Flight | null) => {
   const [landing, setLanding] = useState<Landing>({
-    pathname,
+    summit,
     arrival: undefined,
   });
 
-  if (landing.pathname !== pathname) {
-    setLanding({ pathname, arrival: flight === null ? "pop" : "in" });
+  if (landing.summit !== summit) {
+    setLanding({ summit, arrival: flight === null ? "pop" : "in" });
   }
 
   return landing.arrival;
@@ -93,19 +97,21 @@ const onAnimationEnd = (event: AnimationEvent<HTMLElement>) => {
 /**
  * The content hand-off. Leaving: the page fades out, and the route is pushed the moment that fade
  * ends. Arriving: the new page fades in, early after a flight (the ridge is already half way) or
- * late after back/forward (the ridge only starts flying when the URL changes).
+ * late after back/forward (the ridge only starts flying when the URL changes). The stage is keyed
+ * by summit, not by URL: the Work filters swap their grid inside a stage that stays put.
  */
 export const ContentStage = ({ children }: ContentStageProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const flight = useFlight();
-  const arrival = useArrival(pathname, flight);
+  const summit = summitFor(pathname);
+  const arrival = useArrival(summit, flight);
   usePushWhenFaded(departingFlight(flight, pathname), router);
   useSettleOnLanding(flight, pathname);
 
   return (
     <main
-      key={pathname}
+      key={summit}
       className="site-content"
       data-flight={isLeaving(flight, pathname) ? "out" : arrival}
       onAnimationEnd={onAnimationEnd}

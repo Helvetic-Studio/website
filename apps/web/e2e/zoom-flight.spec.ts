@@ -55,7 +55,7 @@ test("a gateway click flies the ridge in while the page fades, then flies back o
 
   await expect(page).toHaveURL("/services");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Services" })
+    page.getByRole("heading", { level: 1, name: /Everything your company/u })
   ).toBeVisible();
   await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
   await expect
@@ -86,7 +86,7 @@ test("a summit pin lands on its gateway", async ({ page }) => {
 
   await expect(page).toHaveURL("/work");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Work" })
+    page.getByRole("heading", { level: 1, name: "Work we're proud of." })
   ).toBeVisible();
   await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
   await expect

@@ -56,7 +56,7 @@ const renderStage = (pathname: string, page: string) => {
   return { land };
 };
 
-const fly = (target: "/services" | "/work" | "/about") => {
+const fly = (target: "/services" | "/work" | "/work/websites" | "/about") => {
   act(() => {
     startFlight(target);
   });
@@ -157,5 +157,29 @@ describe(ContentStage, () => {
 
     expect(screen.getByRole("main")).toHaveTextContent("home");
     expect(screen.getByRole("main")).toHaveAttribute("data-flight", "pop");
+  });
+
+  it("neither fades nor remounts between pages of one summit", () => {
+    const { land } = renderStage("/work", "all work");
+    const stage = screen.getByRole("main");
+
+    land("/work/websites", "websites");
+
+    expect(screen.getByRole("main")).toBe(stage);
+    expect(screen.getByRole("main")).toHaveTextContent("websites");
+    expect(screen.getByRole("main")).not.toHaveAttribute("data-flight");
+  });
+
+  it("lands a flight on a Work filter", () => {
+    const { land } = renderStage("/services", "services");
+    fly("/work/websites");
+    endFadeOut();
+    flushPush();
+    expect(navigation.push).toHaveBeenCalledWith("/work/websites");
+
+    land("/work/websites", "websites");
+
+    expect(screen.getByRole("main")).toHaveAttribute("data-flight", "in");
+    expect(screen.getByRole("status")).toHaveTextContent("none");
   });
 });

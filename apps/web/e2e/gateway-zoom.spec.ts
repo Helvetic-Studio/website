@@ -21,7 +21,7 @@ test("a gateway pin navigates and the URL drives the zoom", async ({
 
   await expect(page).toHaveURL(/\/work$/u);
   await expect(
-    page.getByRole("heading", { level: 1, name: "Work" })
+    page.getByRole("heading", { level: 1, name: "Work we're proud of." })
   ).toBeVisible();
   // The custom property, not the animation: proves the URL drove the zoom without waiting on it.
   await expect.poll(async () => await zoomNear(page)).toBe("3.2");

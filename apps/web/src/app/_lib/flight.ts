@@ -1,5 +1,6 @@
-import type { Route } from "next";
 import { useSyncExternalStore } from "react";
+
+import type { SiteRoute } from "@/app/_lib/routes";
 
 /**
  * A flight is a gateway link that has been activated while the URL still points at the old page.
@@ -9,7 +10,7 @@ import { useSyncExternalStore } from "react";
  * crossfade timing in WebKit.
  */
 export interface Flight {
-  target: Route;
+  target: SiteRoute;
   /** `leaving` while the content fades, `faded` once it has, `pushed` once the route was pushed. */
   phase: "leaving" | "faded" | "pushed";
 }
@@ -25,7 +26,7 @@ const publish = (next: Flight | null) => {
 };
 
 /** Retargets a flight in progress; a page that has already faded does not fade again. */
-export const startFlight = (target: Route) => {
+export const startFlight = (target: SiteRoute) => {
   if (flight?.target === target) {
     return;
   }

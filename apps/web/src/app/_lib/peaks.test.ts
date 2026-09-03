@@ -7,6 +7,7 @@ import {
   PEAKS,
   peakFocus,
   pinPosition,
+  summitFor,
   ZOOM_EASINGS,
   ZOOM_SCALES,
   zoomFor,
@@ -83,6 +84,19 @@ describe(gatewayForPath, () => {
     expect(gatewayForPath("/contact")?.x).toBe(1130);
     expect(gatewayForPath("/")).toBeUndefined();
     expect(gatewayForPath("/nowhere")).toBeUndefined();
+  });
+
+  it("puts the Work filters on the Work summit", () => {
+    expect(gatewayForPath("/work/websites")?.label).toBe("Work");
+    expect(gatewayForPath("/workshop")).toBeUndefined();
+  });
+});
+
+describe(summitFor, () => {
+  it("is the gateway for its pages and the page itself elsewhere", () => {
+    expect(summitFor("/work/design")).toBe("/work");
+    expect(summitFor("/about")).toBe("/about");
+    expect(summitFor("/")).toBe("/");
   });
 });
 
@@ -172,6 +186,7 @@ describe(zoomFor, () => {
 
   it("is lateral only between two gateways", () => {
     expect(zoomFor("/about", "/work").lateral).toBeTruthy();
+    expect(zoomFor("/work/websites", "/services").lateral).toBeTruthy();
     expect(zoomFor("/about", "/").lateral).toBeFalsy();
     expect(zoomFor("/", "/about").lateral).toBeFalsy();
     expect(zoomFor("/about", null).lateral).toBeFalsy();

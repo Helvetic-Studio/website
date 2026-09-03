@@ -22,6 +22,14 @@ The marketing website for Helvetic Studio. Its navigation is built around a laye
 
 **Lateral**: A zoom between two gateways with no stop at the range — the direct move from one inner page to another. _Avoid_: Peak-to-peak, side move
 
+**Summit page**: Any page seen from one gateway's camera position. `/work` and every Work filter (`/work/<service>`) are pages of the Work summit: moving between them is neither a zoom nor a fade, only the content beneath the header changes. _Avoid_: Sub-page, nested route
+
+### Catalogue
+
+**Service**: One of the five things the studio sells (websites, online shops, web applications, design, care & growth), in the order they are sold. Each owns a Work filter. _Avoid_: Offering, category, product
+
+**Work filter**: The Work page narrowed to the projects tagged with one service. One static page per service. _Avoid_: Tag page, portfolio category
+
 ### Surfaces
 
 **Glass**: The frosted translucent surface used for chrome and panels. Exactly two tiers exist: `glass-chrome` for the navbar and pins, `glass-panel` for content surfaces. _Avoid_: Frosted, blur, acrylic

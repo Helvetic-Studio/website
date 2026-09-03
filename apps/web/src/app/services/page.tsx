@@ -1,11 +1,44 @@
 import type { Metadata } from "next";
 
-// TODO: lift noindex once the real Services page ships
+import { SERVICES } from "@/app/_lib/services";
+import { CtaPanel } from "@/app/services/_components/cta-panel";
+import { ProcessSteps } from "@/app/services/_components/process-steps";
+import { ServiceIndex } from "@/app/services/_components/service-index";
+import { ServicePanel } from "@/app/services/_components/service-panel";
+
 export const metadata: Metadata = {
   title: "Services",
-  robots: { index: false, follow: true },
+  description:
+    "Websites, online shops, web applications, design and ongoing care — one Swiss team from the first sketch to launch and beyond.",
 };
 
-const ServicesPage = () => <h1 className="stub-title">Services</h1>;
+// One panel per service, in the order they are sold; each links into its own slice of the Work page.
+const ServicesPage = () => (
+  <div className="page">
+    <header className="page-head">
+      <p className="page-eyebrow">
+        <span className="brand-dot" aria-hidden="true" />
+        Services
+      </p>
+      <h1 className="page-title">Everything your company needs on the web.</h1>
+      <p className="page-lede">
+        Five services, one team, no hand-offs. Pick the one that fits your
+        project, or start with the goal and we&rsquo;ll suggest the route.
+      </p>
+      <ServiceIndex />
+    </header>
+    <div className="service-list">
+      {SERVICES.map((service, index) => (
+        <ServicePanel
+          key={service.slug}
+          service={service}
+          position={index + 1}
+        />
+      ))}
+    </div>
+    <ProcessSteps />
+    <CtaPanel />
+  </div>
+);
 
 export default ServicesPage;

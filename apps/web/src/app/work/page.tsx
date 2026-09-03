@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
-// TODO: lift noindex once the real Work page ships
+import { PROJECTS } from "@/app/_lib/projects";
+import { ProjectGrid } from "@/app/work/_components/project-grid";
+
 export const metadata: Metadata = {
   title: "Work",
-  robots: { index: false, follow: true },
+  description:
+    "Websites, shops, applications and design Helvetic Studio has built for companies across Switzerland.",
 };
 
-const WorkPage = () => <h1 className="stub-title">Work</h1>;
+const WorkPage = () => <ProjectGrid projects={PROJECTS} />;
 
 export default WorkPage;

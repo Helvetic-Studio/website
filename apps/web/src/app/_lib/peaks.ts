@@ -1,5 +1,7 @@
 import type { Route } from "next";
 
+import { isWithinRoute } from "@/app/_lib/routes";
+
 /** The ridge silhouette's coordinate space. All three layers share it. */
 export const VIEWBOX = { width: 1600, height: 520 } as const;
 
@@ -90,11 +92,20 @@ export const pinPosition = (summit: Summit) => {
   };
 };
 
+/** The gateway a page belongs to. Pages beneath a gateway (the Work filters) belong to it. */
 export const gatewayForPath = (pathname: string): Gateway | undefined =>
   PEAKS.find(
     (peak): peak is Gateway =>
-      peak.kind === "gateway" && peak.route === pathname
+      peak.kind === "gateway" && isWithinRoute(pathname, peak.route)
   );
+
+/**
+ * The summit a page is seen from: its gateway's route, or the page itself outside the gateways.
+ * Pages of one summit share a camera position and a content stage, so moving between them is
+ * neither a flight nor a fade.
+ */
+export const summitFor = (pathname: string): string =>
+  gatewayForPath(pathname)?.route ?? pathname;
 
 /* ---------------------------------------------------------------------------
    Easing — the zoom is perceptually logarithmic

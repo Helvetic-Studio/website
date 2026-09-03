@@ -91,6 +91,15 @@
   box-shadow: 0 26px 70px -34px oklch(0.2393 0 0 / 0.4);
 }
 
+/* The small white pill: the hero badge and the Services jump links. Solid, not glass. */
+@utility badge-pill {
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.72);
+  border: 1px solid oklch(1 0 0 / 0.95);
+  box-shadow: 0 10px 24px -16px oklch(0.2393 0 0 / 0.3);
+  font-size: 13px;
+}
+
 /* ---------------------------------------------------------------------------
    Shell — the page ground and landmark layout
    --------------------------------------------------------------------------- */
@@ -727,15 +736,11 @@ body {
 }
 
 .hero-badge {
+  @apply badge-pill;
   display: inline-flex;
   align-items: center;
   gap: 9px;
   padding: 7px 14px;
-  border-radius: 999px;
-  background: oklch(1 0 0 / 0.72);
-  border: 1px solid oklch(1 0 0 / 0.95);
-  box-shadow: 0 10px 24px -16px oklch(0.2393 0 0 / 0.3);
-  font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.005em;
   color: var(--brand-gray);
@@ -743,7 +748,8 @@ body {
   animation: riseIn 700ms var(--rise-ease) 60ms both;
 }
 
-.hero-badge-dot {
+/* The red dot with a halo: the hero badge and the page eyebrows. */
+.brand-dot {
   display: block;
   width: 7px;
   height: 7px;
@@ -890,6 +896,655 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   Content pages — Services and Work share one header, one link style and one entrance
+   --------------------------------------------------------------------------- */
+
+/* In-page jump links glide, but only once something inside the page holds focus — a clicked
+   anchor does, programmatic scrolls (Next's scroll-to-top, test drivers) do not. */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+.page {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+  box-sizing: border-box;
+}
+
+.page-head {
+  max-width: 760px;
+  margin-bottom: 40px;
+}
+
+.page-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--brand-red-text);
+  animation: riseIn 700ms var(--rise-ease) 60ms both;
+}
+
+.page-title {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  text-wrap: balance;
+  animation: riseIn 800ms var(--rise-ease) 150ms both;
+}
+
+.page-lede {
+  margin: 18px 0 0;
+  max-width: 600px;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.5;
+  color: var(--brand-gray);
+  text-wrap: pretty;
+  animation: riseIn 800ms var(--rise-ease) 240ms both;
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 36px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+/* The hero-link, for content: an arrow that nudges on hover, only where hover is real. */
+.page-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-charcoal);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 200ms ease;
+}
+
+.page-link > svg {
+  transition: transform 220ms var(--rise-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .page-link:hover {
+    color: var(--brand-red-text);
+  }
+
+  .page-link:hover > svg {
+    transform: translateX(3px);
+  }
+}
+
+.page-link:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary);
+}
+
+/* ---------------------------------------------------------------------------
+   Services — the jump list, one panel per service, the process, the close
+   --------------------------------------------------------------------------- */
+
+.service-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 26px;
+  animation: riseIn 800ms var(--rise-ease) 330ms both;
+}
+
+.service-index-link {
+  @apply badge-pill;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 12px;
+  font-weight: 600;
+  color: var(--brand-charcoal);
+  text-decoration: none;
+  transition:
+    background 200ms ease,
+    transform 200ms var(--rise-ease);
+}
+
+.service-index-number {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand-red-text);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .service-index-link:hover {
+    background: oklch(1 0 0 / 0.96);
+    transform: translateY(-1px);
+  }
+}
+
+.service-index-link:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary);
+}
+
+.service-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.service-panel {
+  @apply glass-panel;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 28px 48px;
+  padding: clamp(26px, 3.6vw, 44px);
+  border-radius: 28px;
+  /* Room for the sticky pill when a jump link lands here. */
+  scroll-margin-top: 104px;
+}
+
+/* The first panel enters with the header; the rest are revealed by the scroll (see below). */
+.service-panel:first-child {
+  animation: riseIn 800ms var(--rise-ease) 420ms both;
+}
+
+.service-number {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand-red-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.service-title {
+  margin: 0;
+  font-size: clamp(28px, 3.2vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+}
+
+.service-promise {
+  margin: 10px 0 0;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--brand-charcoal);
+  text-wrap: balance;
+}
+
+.service-description {
+  margin: 16px 0 0;
+  max-width: 54ch;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--brand-gray);
+  text-wrap: pretty;
+}
+
+.service-good-for {
+  margin: 18px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--brand-gray);
+  text-wrap: pretty;
+}
+
+.service-good-for-label {
+  display: inline-block;
+  margin-right: 6px;
+  font-weight: 600;
+  color: var(--brand-charcoal);
+}
+
+/* Starts level with the title, under the numeral. */
+.service-aside {
+  padding-top: 33px;
+}
+
+.service-aside-title {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-gray);
+}
+
+.service-deliverables {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-deliverable {
+  position: relative;
+  padding-left: 22px;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--brand-charcoal);
+}
+
+/* The Services gateway's diamond, as a bullet. */
+.service-deliverable::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
+  background: var(--brand-red);
+  transform: rotate(45deg);
+}
+
+.service-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  padding-top: 14px;
+  border-top: 1px solid oklch(0.2393 0 0 / 0.08);
+}
+
+.process {
+  margin-top: 72px;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.process-step {
+  @apply glass-panel;
+  padding: 24px 24px 26px;
+  border-radius: 22px;
+}
+
+.process-step-number {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--brand-red-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.process-step-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.process-step-text {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--brand-gray);
+  text-wrap: pretty;
+}
+
+/* The one solid surface on the site: the brand red, kept for the moment of decision. */
+.cta-panel {
+  margin-top: 72px;
+  padding: clamp(32px, 5vw, 56px);
+  border-radius: 28px;
+  background: var(--brand-red);
+  color: #fff;
+  box-shadow: 0 30px 70px -34px oklch(0.5684 0.2129 25.98 / 0.8);
+  text-align: center;
+}
+
+.cta-title {
+  margin: 0;
+  font-size: clamp(28px, 3.6vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.cta-text {
+  margin: 14px auto 0;
+  max-width: 560px;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.5;
+  color: oklch(1 0 0 / 0.86);
+  text-wrap: balance;
+}
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 26px;
+}
+
+.cta-button {
+  padding: 13px 22px;
+  height: auto;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brand-red-text);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 12px 28px -12px oklch(0.2393 0 0 / 0.5);
+  transition:
+    transform 220ms var(--rise-ease),
+    box-shadow 220ms ease;
+}
+
+.cta-button:hover {
+  background: #fff;
+  color: var(--brand-red-text);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px -12px oklch(0.2393 0 0 / 0.55);
+}
+
+.cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: color 200ms ease;
+}
+
+.cta-link > svg {
+  transition: transform 220ms var(--rise-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cta-link:hover {
+    color: oklch(1 0 0 / 0.8);
+  }
+
+  .cta-link:hover > svg {
+    transform: translateX(3px);
+  }
+}
+
+.cta-button:focus-visible,
+.cta-link:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--brand-red),
+    0 0 0 4px #fff;
+}
+
+/* Below-the-fold panels rise as they scroll into view: no JS, no observer, nothing hidden where
+   the browser cannot drive an animation by scroll. Panels already in view start revealed. */
+@supports (animation-timeline: view()) {
+  .service-panel:not(:first-child),
+  .process,
+  .cta-panel {
+    animation: riseIn linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Work — the header follows the filter, the grid swaps beneath it
+   --------------------------------------------------------------------------- */
+
+@keyframes textIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* The block enters once; the words inside swap with the filter. */
+.work-head {
+  animation: riseIn 800ms var(--rise-ease) 60ms both;
+}
+
+.work-head > .page-eyebrow {
+  animation: none;
+}
+
+.work-title {
+  animation: textIn 280ms var(--rise-ease) both;
+}
+
+.work-lede {
+  animation: textIn 280ms var(--rise-ease) 40ms both;
+}
+
+.work-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 26px;
+}
+
+.filter-chip {
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.55);
+  border: 1px solid oklch(1 0 0 / 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-gray);
+  text-decoration: none;
+  transition:
+    color 200ms ease,
+    background 200ms ease,
+    border-color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filter-chip:hover {
+    color: var(--brand-charcoal);
+    background: oklch(1 0 0 / 0.86);
+  }
+}
+
+.filter-chip[aria-current="page"] {
+  color: var(--brand-charcoal);
+  background: oklch(0.5684 0.2129 25.98 / 0.1);
+  border-color: oklch(0.5684 0.2129 25.98 / 0.16);
+}
+
+.filter-chip:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary);
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each card enters a beat after the one before it (--card-order is set per card). */
+.project-card {
+  @apply glass-panel;
+  --card-order: 0;
+  --cover-hue: 25;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 22px;
+  border-radius: 26px;
+  animation: cardIn 480ms var(--rise-ease) calc(var(--card-order) * 60ms) both;
+}
+
+.project-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(
+    150deg,
+    oklch(0.955 0.025 var(--cover-hue)) 0%,
+    oklch(0.86 0.075 var(--cover-hue)) 100%
+  );
+}
+
+.project-monogram {
+  font-size: clamp(64px, 9vw, 120px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  color: oklch(1 0 0 / 0.6);
+}
+
+.project-body {
+  padding: 18px 12px 0;
+}
+
+.project-meta {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-gray);
+}
+
+.project-title {
+  margin: 6px 0 0;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.project-title > a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-title > a:hover {
+    color: var(--brand-red-text);
+  }
+}
+
+.project-summary {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--brand-gray);
+  text-wrap: pretty;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-tag {
+  display: inline-block;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: oklch(0.5684 0.2129 25.98 / 0.09);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-red-text);
+  text-decoration: none;
+  transition: background 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-tag:hover {
+    background: oklch(0.5684 0.2129 25.98 / 0.16);
+  }
+}
+
+.project-tag:focus-visible,
+.project-title > a:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--primary);
+}
+
+.work-empty {
+  @apply glass-panel;
+  padding: 40px 24px;
+  border-radius: 28px;
+  text-align: center;
+  animation: cardIn 480ms var(--rise-ease) both;
+}
+
+.work-empty-title {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.work-empty-text {
+  margin: 8px auto 12px;
+  max-width: 440px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--brand-gray);
+}
+
+/* ---------------------------------------------------------------------------
    Below 768: window + shorter ridge, pins gone, pill collapses to a Sheet
    --------------------------------------------------------------------------- */
 
@@ -916,6 +1571,44 @@ body {
   .nav-pill {
     padding: 8px 8px 8px 16px;
   }
+
+  .page {
+    padding: 28px 16px 72px;
+  }
+
+  .page-head {
+    margin-bottom: 32px;
+  }
+
+  .service-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    border-radius: 22px;
+    scroll-margin-top: 84px;
+  }
+
+  .service-aside {
+    padding-top: 0;
+  }
+
+  .process,
+  .cta-panel {
+    margin-top: 56px;
+  }
+
+  .process-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .process-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -932,12 +1625,29 @@ body {
     animation: none;
   }
 
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
   .nav-pill,
   .hero-badge,
   .hero-title,
   .hero-lede,
   .hero-actions,
-  .pin-gateway {
+  .pin-gateway,
+  .page-eyebrow,
+  .page-title,
+  .page-lede,
+  .service-index,
+  .service-panel:first-child,
+  .service-panel:not(:first-child),
+  .process,
+  .cta-panel,
+  .work-head,
+  .work-title,
+  .work-lede,
+  .project-card,
+  .work-empty {
     animation-name: fadeIn;
   }
 }
