@@ -11,8 +11,6 @@ import { MobileMenu } from "@/app/_components/mobile-menu";
 import { useFlight } from "@/app/_lib/flight";
 import { SITE_LINKS } from "@/app/_lib/site-links";
 
-const INDICATOR_BASE_WIDTH = 100;
-
 interface Indicator {
   x: number;
   width: number;
@@ -27,31 +25,44 @@ export const SiteNav = () => {
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
   const [indicator, setIndicator] = useState<Indicator | null>(null);
 
-  // Measured, not morphed: the indicator follows the active link's real box.
+  // Measured, not morphed: the indicator follows the active link's real box. Each link reserves
+  // its bold width in CSS, so a box only changes when the row itself is laid out again.
   useEffect(() => {
+    const list = listRef.current;
+    const active = linkRefs.current.get(target);
+
     const measure = () => {
-      const active = linkRefs.current.get(target);
-      if (!active) {
+      if (!(list && active)) {
         setIndicator(null);
         return;
       }
-      setIndicator({ x: active.offsetLeft, width: active.offsetWidth });
+      // Rects, not offsets: offsetLeft/offsetWidth round to whole pixels and
+      // leave the indicator a fraction narrower than the link it traces.
+      const listBox = list.getBoundingClientRect();
+      const activeBox = active.getBoundingClientRect();
+      setIndicator({
+        x: activeBox.left - listBox.left,
+        width: activeBox.width,
+      });
     };
 
     measure();
     const observer = new ResizeObserver(measure);
-    if (listRef.current) {
-      observer.observe(listRef.current);
+    if (list) {
+      observer.observe(list);
     }
     return () => {
       observer.disconnect();
     };
   }, [target]);
 
+  // Width, not scaleX: scaling would squash the pill's end caps into ellipses
+  // while the hover background keeps true semicircles.
   const indicatorStyle: CSSProperties = indicator
     ? {
         opacity: 1,
-        transform: `translate3d(${indicator.x}px, 0, 0) scaleX(${indicator.width / INDICATOR_BASE_WIDTH})`,
+        width: `${indicator.width}px`,
+        transform: `translate3d(${indicator.x}px, 0, 0)`,
       }
     : { opacity: 0 };
 
@@ -74,6 +85,7 @@ export const SiteNav = () => {
               <FlightLink
                 href={link.href}
                 className="nav-link"
+                data-active={link.href === target}
                 aria-current={link.href === pathname ? "page" : undefined}
                 ref={(element) => {
                   if (element) {
@@ -83,7 +95,10 @@ export const SiteNav = () => {
                   }
                 }}
               >
-                {link.label}
+                {/* data-label is the width reservation: ::after re-sets it in the active weight. */}
+                <span className="nav-label" data-label={link.label}>
+                  {link.label}
+                </span>
               </FlightLink>
             </li>
           ))}
