@@ -6,7 +6,7 @@ import { projectsFor } from "@/app/_lib/projects";
 /** Next keeps the previous filter's grid mounted but hidden (React Activity): count what is shown. */
 const visibleCards = (page: Page) => page.locator(".project-card:visible");
 
-test("a service leads to its own slice of the work, and the filters swap without a flight", async ({
+test("a service leads to its own slice of the work, and the filters shuffle without a flight", async ({
   page,
 }) => {
   await page.goto("/services");
@@ -27,6 +27,14 @@ test("a service leads to its own slice of the work, and the filters swap without
     "page"
   );
   await expect(visibleCards(page)).toHaveCount(projectsFor("websites").length);
+  // Landed by a flight, the grid is dealt from the Websites chip; every card ends in its slot.
+  await expect(page.locator(".project-grid:visible")).toHaveAttribute(
+    "data-deal",
+    "landing"
+  );
+  const lastCard = visibleCards(page).last();
+  await expect(lastCard).toHaveCSS("opacity", "1");
+  await expect(lastCard).toHaveCSS("transform", "none");
   // The Work link in the pill is the active one for a Work filter.
   await expect(
     page.getByLabel("Primary").getByRole("link", { name: "Work" })
@@ -34,6 +42,11 @@ test("a service leads to its own slice of the work, and the filters swap without
 
   await filter.getByRole("link", { name: "Design" }).click();
 
+  // The clicked chip is current from the click; the cards are gathered before the URL changes.
+  await expect(filter.getByRole("link", { name: "Design" })).toHaveAttribute(
+    "aria-current",
+    "page"
+  );
   await expect(page).toHaveURL("/work/design");
   await expect(
     page.getByRole("heading", { level: 1, name: "Design work" })
@@ -44,6 +57,14 @@ test("a service leads to its own slice of the work, and the filters swap without
     "out"
   );
   await expect(visibleCards(page)).toHaveCount(projectsFor("design").length);
+  // A shuffle: the new grid is dealt from the Design chip.
+  await expect(page.locator(".project-grid:visible")).toHaveAttribute(
+    "data-deal",
+    "shuffle"
+  );
+  const lastDesignCard = visibleCards(page).last();
+  await expect(lastDesignCard).toHaveCSS("opacity", "1");
+  await expect(lastDesignCard).toHaveCSS("transform", "none");
 
   await filter.getByRole("link", { name: "All work" }).click();
 

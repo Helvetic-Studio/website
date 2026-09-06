@@ -2,6 +2,7 @@ import { ArrowIcon } from "@/app/_components/arrow-icon";
 import { FlightLink } from "@/app/_components/flight-link";
 import type { Project } from "@/app/_lib/projects";
 import type { Service } from "@/app/_lib/services";
+import { CardDeck } from "@/app/work/_components/card-deck";
 import { ProjectCard } from "@/app/work/_components/project-card";
 
 export interface ProjectGridProps {
@@ -33,10 +34,10 @@ export const ProjectGrid = ({ projects, service }: ProjectGridProps) => {
   }
 
   return (
-    <ul className="project-grid">
+    <CardDeck>
       {projects.map((project, index) => (
         <ProjectCard key={project.slug} project={project} order={index} />
       ))}
-    </ul>
+    </CardDeck>
   );
 };

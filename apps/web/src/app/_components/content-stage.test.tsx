@@ -105,7 +105,7 @@ describe(ContentStage, () => {
 
     endFadeOut();
     flushPush();
-    expect(navigation.push).toHaveBeenCalledWith("/services");
+    expect(navigation.push).toHaveBeenCalledWith("/services", { scroll: true });
     expect(screen.getByRole("main")).toHaveAttribute("data-flight", "out");
   });
 
@@ -134,7 +134,7 @@ describe(ContentStage, () => {
     act(() => {
       vi.advanceTimersByTime(1);
     });
-    expect(navigation.push).toHaveBeenCalledWith("/work");
+    expect(navigation.push).toHaveBeenCalledWith("/work", { scroll: true });
   });
 
   it("retargets a faded flight without fading again", () => {
@@ -146,7 +146,9 @@ describe(ContentStage, () => {
     fly("/about");
     flushPush();
 
-    expect(navigation.push).toHaveBeenLastCalledWith("/about");
+    expect(navigation.push).toHaveBeenLastCalledWith("/about", {
+      scroll: true,
+    });
     expect(screen.getByRole("main")).toHaveAttribute("data-flight", "out");
   });
 
@@ -175,7 +177,9 @@ describe(ContentStage, () => {
     fly("/work/websites");
     endFadeOut();
     flushPush();
-    expect(navigation.push).toHaveBeenCalledWith("/work/websites");
+    expect(navigation.push).toHaveBeenCalledWith("/work/websites", {
+      scroll: true,
+    });
 
     land("/work/websites", "websites");
 

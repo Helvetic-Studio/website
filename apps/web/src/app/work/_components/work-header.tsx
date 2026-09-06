@@ -1,8 +1,9 @@
 "use client";
 
-import { useSelectedLayoutSegment } from "next/navigation";
+import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 
 import { serviceBySlug } from "@/app/_lib/services";
+import { departingShuffle, useShuffle } from "@/app/work/_lib/shuffle";
 
 interface Heading {
   /** Keys the text so a filter change swaps it with a short rise. */
@@ -31,11 +32,15 @@ const headingFor = (segment: string | null): Heading => {
 };
 
 /**
- * The heading follows the filter. Keyed by filter so a change swaps the text with a short rise
- * instead of the words teleporting; the layout around it never remounts.
+ * The heading follows the filter. Keyed by filter so a change swaps the text: the old words go
+ * while the cards are gathered (a shuffle is leaving), the new ones rise as the cards are dealt.
+ * The layout around it never remounts.
  */
 export const WorkHeader = () => {
   const heading = headingFor(useSelectedLayoutSegment());
+  const pathname = usePathname();
+  const leaving = departingShuffle(useShuffle(), pathname) !== null;
+  const shuffleState = leaving ? "out" : undefined;
 
   return (
     <>
@@ -43,10 +48,18 @@ export const WorkHeader = () => {
         <span className="brand-dot" aria-hidden="true" />
         Work
       </p>
-      <h1 key={heading.filter} className="page-title work-title">
+      <h1
+        key={heading.filter}
+        className="page-title work-title"
+        data-shuffle={shuffleState}
+      >
         {heading.title}
       </h1>
-      <p key={`${heading.filter}-lede`} className="page-lede work-lede">
+      <p
+        key={`${heading.filter}-lede`}
+        className="page-lede work-lede"
+        data-shuffle={shuffleState}
+      >
         {heading.lede}
       </p>
     </>

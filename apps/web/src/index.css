@@ -174,6 +174,15 @@ body {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Zoom stage — the URL becomes custom properties; everything below is plain CSS
    --------------------------------------------------------------------------- */
@@ -1323,14 +1332,30 @@ html:focus-within {
    Work — the header follows the filter, the grid swaps beneath it
    --------------------------------------------------------------------------- */
 
+/* The words swap through a touch of blur: two texts crossfading read as one changing. */
 @keyframes textIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 6px, 0);
+    transform: translate3d(0, 10px, 0);
+    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+@keyframes textOut {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+    filter: blur(4px);
   }
 }
 
@@ -1355,11 +1380,17 @@ html:focus-within {
 }
 
 .work-title {
-  animation: textIn 280ms var(--rise-ease) both;
+  animation: textIn 360ms var(--rise-ease) both;
 }
 
 .work-lede {
-  animation: textIn 280ms var(--rise-ease) 40ms both;
+  animation: textIn 360ms var(--rise-ease) 50ms both;
+}
+
+/* A shuffle is leaving: the words go with the cards, and the new ones arrive with the new deal. */
+.work-title[data-shuffle="out"],
+.work-lede[data-shuffle="out"] {
+  animation: textOut 320ms var(--rise-ease) forwards;
 }
 
 .work-filter {
@@ -1423,6 +1454,12 @@ html:focus-within {
   padding: 12px 12px 22px;
   border-radius: 26px;
   animation: cardIn 480ms var(--rise-ease) calc(var(--card-order) * 60ms) both;
+}
+
+/* Landed by a flight, the grid is dealt from the active chip instead (see card-deck.tsx): the
+   cards fly by the Web Animations API, so the rise stands down and the layout is measured plain. */
+.project-grid[data-deal] > .project-card {
+  animation: none;
 }
 
 .project-cover {
@@ -1649,5 +1686,10 @@ html:focus-within {
   .project-card,
   .work-empty {
     animation-name: fadeIn;
+  }
+
+  .work-title[data-shuffle="out"],
+  .work-lede[data-shuffle="out"] {
+    animation-name: fadeOut;
   }
 }
