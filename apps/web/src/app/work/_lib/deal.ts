@@ -34,19 +34,40 @@ export interface Beat {
 }
 
 export const DEAL: Record<DealMode, Beat> = {
-  landing: { delayMs: 300, staggerMs: 60, durationMs: 640 },
-  shuffle: { delayMs: 40, staggerMs: 50, durationMs: 560 },
+  landing: { delayMs: 300, staggerMs: 55, durationMs: 600 },
+  shuffle: { delayMs: 0, staggerMs: 45, durationMs: 520 },
 };
 
-/** The gather is the system's response to a click: quicker than the deal, top card first. */
-export const GATHER = { staggerMs: 35, durationMs: 380 } as const;
+/**
+ * The gather is the system's response to a click: quicker than the deal, top card first, and
+ * pulled in rather than eased out — a card accelerates into the chip.
+ */
+export const GATHER = {
+  staggerMs: 24,
+  durationMs: 340,
+  easing: "cubic-bezier(0.5, 0, 0.2, 1)",
+} as const;
+
+/**
+ * The chip is the deck's home, so it answers the deck: it gives way as the cards land in it and
+ * lifts as they leave. The dip also carries the hand-off across the moment between the last card
+ * landing and the new page's first card leaving, where the table would otherwise read as empty.
+ */
+export const CHIP = {
+  dip: 0.94,
+  lift: 1.04,
+  /** How long the chip takes to come back up once the last card is in. */
+  releaseMs: 220,
+  emitMs: 320,
+  easing: "ease-in-out",
+} as const;
 
 /** The pile at the chip is card-sized when the chip is; never smaller than a thumbnail. */
 const PILE_SCALE = { min: 0.12, max: 0.3 } as const;
 /** The point in the deal (in eased progress) by which a card is fully opaque. */
 const OPAQUE_AT = 0.2;
 /** The point in the gather (in eased progress) until which a card is fully opaque. */
-const OPAQUE_UNTIL = 0.55;
+const OPAQUE_UNTIL = 0.8;
 const TILT = { base: 4, step: 2, cycle: 3 } as const;
 const DECIMALS = 2;
 
@@ -117,11 +138,47 @@ export const dealTiming = (
 /** Timing for one gathered card: the last dealt goes first, and the pile stays until the swap. */
 export const gatherTiming = (
   order: number,
-  count: number,
-  easing: string
+  count: number
 ): KeyframeAnimationOptions => ({
   delay: (count - 1 - order) * GATHER.staggerMs,
   duration: GATHER.durationMs,
-  easing,
+  easing: GATHER.easing,
   fill: "forwards",
+});
+
+/** The whole gather: the last card starts a beat after the first and throws for just as long. */
+export const gatherTotalMs = (count: number): number =>
+  Math.max(count - 1, 0) * GATHER.staggerMs + GATHER.durationMs;
+
+/**
+ * The chip taking the deck in. It holds still while the cards are in the air, gives way as they
+ * arrive — the first at one throw, the last at the end of the gather — then comes back up.
+ */
+export const absorbKeyframes = (count: number): DealKeyframe[] => {
+  const arriving = gatherTotalMs(count);
+  const total = arriving + CHIP.releaseMs;
+  return [
+    { transform: "scale(1)", offset: 0 },
+    { transform: "scale(1)", offset: round(GATHER.durationMs / total) },
+    { transform: `scale(${CHIP.dip})`, offset: round(arriving / total) },
+    { transform: "scale(1)", offset: 1 },
+  ];
+};
+
+export const absorbTiming = (count: number): KeyframeAnimationOptions => ({
+  duration: gatherTotalMs(count) + CHIP.releaseMs,
+  easing: CHIP.easing,
+});
+
+/** The chip letting the deck out: a short lift as the first cards leave it. */
+export const emitKeyframes = (): DealKeyframe[] => [
+  { transform: "scale(1)", offset: 0 },
+  { transform: `scale(${CHIP.lift})`, offset: 0.35 },
+  { transform: "scale(1)", offset: 1 },
+];
+
+export const emitTiming = (mode: DealMode): KeyframeAnimationOptions => ({
+  delay: DEAL[mode].delayMs,
+  duration: CHIP.emitMs,
+  easing: CHIP.easing,
 });

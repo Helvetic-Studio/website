@@ -1370,9 +1370,20 @@ html:focus-within {
   }
 }
 
-/* The block enters once; the words inside swap with the filter. */
+/* The block enters once; the words inside swap with the filter. It paints above the grid, so
+   the cards are dealt from under the chips rather than over them. */
 .work-head {
+  position: relative;
+  z-index: 20;
   animation: riseIn 800ms var(--rise-ease) 60ms both;
+}
+
+/* The words swap in place; the block's height glides to the new text (see WorkHeader). */
+.work-heading {
+  overflow: clip;
+  /* Enough slack for the swap's blur and for descenders; less than a line, so a growing block
+     still reveals its second line rather than showing it over the chips. */
+  overflow-clip-margin: 12px;
 }
 
 .work-head > .page-eyebrow {
@@ -1380,17 +1391,18 @@ html:focus-within {
 }
 
 .work-title {
-  animation: textIn 360ms var(--rise-ease) both;
+  animation: textIn 300ms var(--rise-ease) both;
 }
 
 .work-lede {
-  animation: textIn 360ms var(--rise-ease) 50ms both;
+  animation: textIn 300ms var(--rise-ease) 40ms both;
 }
 
-/* A shuffle is leaving: the words go with the cards, and the new ones arrive with the new deal. */
+/* A shuffle is leaving: the words go with the cards (a beat after the first card turns back)
+   and the new ones arrive with the new deal. */
 .work-title[data-shuffle="out"],
 .work-lede[data-shuffle="out"] {
-  animation: textOut 320ms var(--rise-ease) forwards;
+  animation: textOut 320ms var(--rise-ease) 200ms forwards;
 }
 
 .work-filter {
@@ -1460,6 +1472,23 @@ html:focus-within {
    cards fly by the Web Animations API, so the rise stands down and the layout is measured plain. */
 .project-grid[data-deal] > .project-card {
   animation: none;
+}
+
+/* In the air a card is solid and lifted, above the cards it crosses; it settles back into glass
+   on landing. The blurred backdrop stands down in flight — moving it every frame is dear. */
+.project-card {
+  transition:
+    background-color 220ms var(--rise-ease),
+    box-shadow 220ms var(--rise-ease);
+}
+
+.project-card.is-flying {
+  z-index: calc(var(--card-order) + 1);
+  background: oklch(1 0 0 / 0.97);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 34px 80px -34px oklch(0.2393 0 0 / 0.55);
+  will-change: transform, opacity;
 }
 
 .project-cover {
