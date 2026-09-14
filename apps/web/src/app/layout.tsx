@@ -28,7 +28,12 @@ export const metadata: Metadata = {
 // Landmark order: navbar, main (hero only), then the summit markers last so tab order matches
 // visual order. The ridge and the navbar are siblings: the navbar must stay sharp at 3.2×.
 const RootLayout = ({ children }: LayoutProps<"/">) => (
-  <html lang="en" className={inter.variable} suppressHydrationWarning>
+  <html
+    lang="en"
+    className={inter.variable}
+    data-scroll-behavior="smooth"
+    suppressHydrationWarning
+  >
     <body className="antialiased">
       <Providers>
         <SiteNav />

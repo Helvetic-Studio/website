@@ -80,6 +80,8 @@ export const ContentStage = ({ children }: ContentStageProps) => {
   return (
     <main
       key={summit}
+      id="main-content"
+      tabIndex={-1}
       className="site-content"
       data-flight={isLeaving(flight, pathname) ? "out" : arrival}
       onAnimationEnd={onAnimationEnd}

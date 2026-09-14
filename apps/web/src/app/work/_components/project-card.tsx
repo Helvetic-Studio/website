@@ -27,7 +27,8 @@ export const ProjectCard = ({ project, order }: ProjectCardProps) => {
       </div>
       <div className="project-body">
         <p className="project-meta">
-          {project.client} · {project.year}
+          <span>{project.client}</span>
+          <span className="project-year">{project.year}</span>
         </p>
         <h2 className="project-title">
           {project.url === undefined ? (

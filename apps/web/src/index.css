@@ -49,7 +49,8 @@
   --ridge-height: clamp(46vh, 106vh - 315px, 76vh);
 
   /* motion */
-  --zoom-duration: 1000ms; /* TODO: provisional — confirm by eye (1150ms lateral is derived below) */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --zoom-duration: 900ms;
   --zoom-ease: cubic-bezier(
     0.5,
     0,
@@ -57,12 +58,17 @@
     1
   ); /* opacity fades; the layers use log-scale easings */
   --rise-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Shared by the sticky pill and its portalled mobile menu. */
+  --nav-top: 18px;
+  --nav-gutter: 24px;
+  --nav-compact-height: 62px;
 }
 
 /* Lateral (gateway → gateway) keeps ticket 7's 1600:1400 ratio. Lives on :root because the content
    stage, a sibling of the zoom stage, shares the duration. */
 :root:has(.zoom-stage[data-lateral="true"]) {
-  --zoom-duration: 1150ms;
+  --zoom-duration: 1035ms;
 }
 
 @theme inline {
@@ -88,7 +94,7 @@
   backdrop-filter: blur(var(--glass-panel-blur));
   -webkit-backdrop-filter: blur(var(--glass-panel-blur));
   border: 1px solid var(--glass-panel-edge);
-  box-shadow: 0 26px 70px -34px oklch(0.2393 0 0 / 0.4);
+  box-shadow: 0 20px 56px -32px oklch(0.2393 0 0 / 0.24);
 }
 
 /* The small white pill: the hero badge and the Services jump links. Solid, not glass. */
@@ -106,6 +112,7 @@
 
 html {
   min-height: 100%;
+  scrollbar-gutter: stable;
   background-color: var(--surface-grad-bot);
 }
 
@@ -131,6 +138,33 @@ body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  scroll-margin-top: 104px;
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 24px;
+  z-index: 1;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--brand-charcoal);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  transform: translate(-50%, -160%);
+}
+
+.skip-link:focus-visible {
+  transform: translateX(-50%);
+  outline: 2px solid var(--brand-red);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: oklch(0.5684 0.2129 25.98 / 0.18);
+  color: var(--brand-charcoal);
 }
 
 @keyframes driftMist {
@@ -146,7 +180,7 @@ body {
 @keyframes riseIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 26px, 0);
+    transform: translate3d(0, 18px, 0);
   }
   to {
     opacity: 1;
@@ -157,7 +191,7 @@ body {
 @keyframes navDrop {
   from {
     opacity: 0;
-    transform: translate3d(0, -22px, 0);
+    transform: translate3d(0, -12px, 0);
   }
   to {
     opacity: 1;
@@ -405,16 +439,18 @@ body {
   transition:
     background 240ms ease,
     box-shadow 240ms ease;
-  animation: riseIn 800ms var(--rise-ease) var(--pin-delay) both;
+  animation: riseIn 620ms var(--rise-ease) var(--pin-delay) both;
 }
 
 .zoom-stage[data-zoomed="true"] .pin-gateway {
   pointer-events: none;
 }
 
-.pin-gateway:hover {
-  background: oklch(1 0 0 / 0.7);
-  box-shadow: 0 18px 44px -20px oklch(0.2393 0 0 / 0.3);
+@media (hover: hover) and (pointer: fine) {
+  .pin-gateway:hover {
+    background: oklch(1 0 0 / 0.7);
+    box-shadow: 0 18px 44px -20px oklch(0.2393 0 0 / 0.3);
+  }
 }
 
 .pin-gateway:focus-visible {
@@ -464,8 +500,10 @@ body {
   transition: transform 240ms var(--rise-ease);
 }
 
-.pin-gateway:hover .pin-disc {
-  transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .pin-gateway:hover .pin-disc {
+    transform: translateY(-2px);
+  }
 }
 
 .pin-label {
@@ -495,7 +533,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 60;
-  padding: 18px 24px 6px;
+  padding: var(--nav-top) var(--nav-gutter) 6px;
 }
 
 .nav-pill {
@@ -508,7 +546,7 @@ body {
   gap: 24px;
   padding: 10px 10px 10px 20px;
   border-radius: 999px;
-  animation: navDrop 700ms var(--rise-ease) both;
+  animation: navDrop 520ms var(--rise-ease) both;
 }
 
 .nav-brand {
@@ -566,9 +604,9 @@ body {
   background: oklch(0.5684 0.2129 25.98 / 0.1);
   opacity: 0;
   transition:
-    transform 520ms cubic-bezier(0.6, -0.02, 0.2, 1),
-    width 520ms cubic-bezier(0.6, -0.02, 0.2, 1),
-    opacity 320ms ease;
+    transform 300ms var(--rise-ease),
+    width 300ms var(--rise-ease),
+    opacity 180ms ease;
   pointer-events: none;
 }
 
@@ -605,9 +643,11 @@ body {
   font-weight: 600;
 }
 
-.nav-link:hover {
-  background: oklch(0.2393 0 0 / 0.05);
-  color: var(--brand-charcoal);
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    background: oklch(0.2393 0 0 / 0.05);
+    color: var(--brand-charcoal);
+  }
 }
 
 /* Driven by the flight target, not aria-current: the label lights up at the click, with the
@@ -632,17 +672,19 @@ body {
     box-shadow 220ms ease;
 }
 
-.nav-cta:hover {
-  background: var(--brand-red-hover);
-  color: var(--primary-foreground);
-  transform: translateY(-1px);
-  box-shadow: 0 14px 30px -10px oklch(0.5684 0.2129 25.98 / 0.95);
+@media (hover: hover) and (pointer: fine) {
+  .nav-cta:hover {
+    background: var(--brand-red-hover);
+    color: var(--primary-foreground);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px -10px oklch(0.5684 0.2129 25.98 / 0.95);
+  }
 }
 
 .nav-menu-button {
   display: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   border: 0;
@@ -650,10 +692,15 @@ body {
   background: transparent;
   color: var(--brand-charcoal);
   cursor: pointer;
+  transition:
+    background 180ms ease,
+    transform 140ms var(--rise-ease);
 }
 
-.nav-menu-button:hover {
-  background: oklch(0.2393 0 0 / 0.05);
+@media (hover: hover) and (pointer: fine) {
+  .nav-menu-button:hover {
+    background: oklch(0.2393 0 0 / 0.05);
+  }
 }
 
 /* Focus on glass: white halo + 2px red ring. The library's 1px 50% gray is invisible here. */
@@ -675,21 +722,51 @@ body {
     0 10px 24px -10px oklch(0.5684 0.2129 25.98 / 0.9);
 }
 
-/* Mobile sheet: the pill unrolling. Unlayered so it beats the sheet's own utilities. */
+/* Reveal from the pill's exact outline. The modal header occupies the same pixels as the
+   original header, so only the lower edge moves. Unlayered to override the Sheet's slide. */
 .menu-sheet {
   @apply glass-chrome;
-  z-index: 70; /* above the pill: the sheet repeats the pill's header row */
-  border-radius: 0 0 28px 28px;
-  padding: 18px 24px 24px;
+  z-index: 70;
+  top: var(--nav-top);
+  inset-inline: var(--nav-gutter);
+  max-width: 1160px;
+  margin-inline: auto;
+  border-radius: calc(var(--nav-compact-height) / 2);
+  padding: 0 0 max(16px, env(safe-area-inset-bottom));
+  max-height: calc(100dvh - var(--nav-top) - 12px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: oklch(0.9956 0.0021 17.19 / 0.96);
   color: var(--brand-charcoal);
+  translate: none;
+  opacity: 1;
+  clip-path: inset(0 0 0 0 round calc(var(--nav-compact-height) / 2));
+  transition: clip-path 250ms var(--ease-drawer);
+}
+
+.menu-sheet[data-starting-style],
+.menu-sheet[data-ending-style] {
+  translate: none;
+  opacity: 1;
+  clip-path: inset(
+    0 0 calc(100% - var(--nav-compact-height)) 0 round
+      calc(var(--nav-compact-height) / 2)
+  );
+}
+
+/* Keep the original out of the translucent surface throughout the exit, too. */
+body:has(.menu-sheet) .nav-pill {
+  visibility: hidden;
 }
 
 .menu-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
+  min-height: calc(var(--nav-compact-height) - 2px);
   padding: 8px 8px 8px 16px;
-  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .menu-head .nav-menu-button {
@@ -700,7 +777,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 0;
+  margin: 8px 8px 0;
   padding: 0;
   list-style: none;
 }
@@ -713,21 +790,29 @@ body {
   font-weight: 500;
   color: var(--brand-gray);
   text-decoration: none;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
 }
 
-.menu-link:hover {
-  background: oklch(0.2393 0 0 / 0.05);
-  color: var(--brand-charcoal);
+@media (hover: hover) and (pointer: fine) {
+  .menu-link:hover {
+    background: oklch(0.2393 0 0 / 0.05);
+    color: var(--brand-charcoal);
+  }
 }
 
 .menu-link[aria-current="page"] {
+  background: oklch(0.5684 0.2129 25.98 / 0.08);
   font-weight: 600;
   color: var(--brand-charcoal);
 }
 
 .menu-cta {
-  margin-top: 16px;
-  align-self: flex-start;
+  margin: 16px 16px 0;
+  align-self: stretch;
+  justify-content: center;
+  min-height: 48px;
 }
 
 /* ---------------------------------------------------------------------------
@@ -754,12 +839,13 @@ body {
   letter-spacing: -0.005em;
   color: var(--brand-gray);
   margin-bottom: clamp(10px, 1.8vh, 20px);
-  animation: riseIn 700ms var(--rise-ease) 60ms both;
+  animation: riseIn 560ms var(--rise-ease) 60ms both;
 }
 
 /* The red dot with a halo: the hero badge and the page eyebrows. */
 .brand-dot {
   display: block;
+  flex-shrink: 0;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -774,7 +860,7 @@ body {
   letter-spacing: -0.045em;
   font-weight: 800;
   text-wrap: balance;
-  animation: riseIn 800ms var(--rise-ease) 150ms both;
+  animation: riseIn 620ms var(--rise-ease) 100ms both;
 }
 
 .hero-lede {
@@ -784,7 +870,7 @@ body {
   line-height: 1.5;
   color: var(--brand-gray);
   text-wrap: balance;
-  animation: riseIn 800ms var(--rise-ease) 240ms both;
+  animation: riseIn 620ms var(--rise-ease) 160ms both;
 }
 
 .hero-actions {
@@ -794,7 +880,7 @@ body {
   justify-content: center;
   gap: 8px 18px;
   margin-top: clamp(16px, 2.6vh, 26px);
-  animation: riseIn 800ms var(--rise-ease) 330ms both;
+  animation: riseIn 620ms var(--rise-ease) 220ms both;
 }
 
 .hero-cta {
@@ -812,11 +898,13 @@ body {
     box-shadow 220ms ease;
 }
 
-.hero-cta:hover {
-  background: var(--brand-red-hover);
-  color: var(--primary-foreground);
-  transform: translateY(-1px);
-  box-shadow: 0 16px 34px -12px oklch(0.5684 0.2129 25.98 / 0.95);
+@media (hover: hover) and (pointer: fine) {
+  .hero-cta:hover {
+    background: var(--brand-red-hover);
+    color: var(--primary-foreground);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 34px -12px oklch(0.5684 0.2129 25.98 / 0.95);
+  }
 }
 
 .hero-link {
@@ -836,12 +924,16 @@ body {
   transition: transform 220ms var(--rise-ease);
 }
 
-.hero-link:hover {
-  color: var(--brand-red-text);
+@media (hover: hover) and (pointer: fine) {
+  .hero-link:hover {
+    color: var(--brand-red-text);
+  }
 }
 
-.hero-link:hover > svg {
-  transform: translateX(3px);
+@media (hover: hover) and (pointer: fine) {
+  .hero-link:hover > svg {
+    transform: translateX(3px);
+  }
 }
 
 .hero-cta:focus-visible,
@@ -865,25 +957,25 @@ body {
 
 /* ---------------------------------------------------------------------------
    Content hand-off — driven by ContentStage, not the View Transition API: Firefox paints the ridge
-   as a frozen snapshot for the whole flight and WebKit ignores the crossfade timing. A flight fades
-   the page out over the first 45%, pushes the route, then fades the new page in over the last 45%.
+   as a frozen snapshot for the whole flight and WebKit ignores the crossfade timing. The short exit
+   hands navigation over early; the new page settles while the camera completes its movement.
    --------------------------------------------------------------------------- */
 
 .site-content[data-flight="out"] {
   pointer-events: none;
-  animation: contentOut calc(var(--zoom-duration) * 0.45) linear both;
+  animation: contentOut calc(var(--zoom-duration) * 0.28) ease-out both;
 }
 
-/* Landed by a flight: the ridge is already half way, so the page follows at once. */
+/* Landed by a flight: the ridge is moving, so the page follows after a short beat. */
 .site-content[data-flight="in"] {
-  animation: contentIn calc(var(--zoom-duration) * 0.45) linear
-    calc(var(--zoom-duration) * 0.1) both;
+  animation: contentIn calc(var(--zoom-duration) * 0.5) ease-out
+    calc(var(--zoom-duration) * 0.08) both;
 }
 
 /* Landed by back/forward: the ridge only started flying with the URL, so the page waits for it. */
 .site-content[data-flight="pop"] {
-  animation: contentIn calc(var(--zoom-duration) * 0.45) linear
-    calc(var(--zoom-duration) * 0.55) both;
+  animation: contentIn calc(var(--zoom-duration) * 0.5) ease-out
+    calc(var(--zoom-duration) * 0.28) both;
 }
 
 @keyframes contentOut {
@@ -918,7 +1010,7 @@ html:focus-within {
   width: 100%;
   max-width: 1160px;
   margin: 0 auto;
-  padding: 40px 24px 96px;
+  padding: 48px 24px 96px;
   box-sizing: border-box;
 }
 
@@ -936,7 +1028,7 @@ html:focus-within {
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--brand-red-text);
-  animation: riseIn 700ms var(--rise-ease) 60ms both;
+  animation: riseIn 560ms var(--rise-ease) 60ms both;
 }
 
 .page-title {
@@ -946,7 +1038,7 @@ html:focus-within {
   letter-spacing: -0.045em;
   font-weight: 800;
   text-wrap: balance;
-  animation: riseIn 800ms var(--rise-ease) 150ms both;
+  animation: riseIn 620ms var(--rise-ease) 100ms both;
 }
 
 .page-lede {
@@ -956,7 +1048,7 @@ html:focus-within {
   line-height: 1.5;
   color: var(--brand-gray);
   text-wrap: pretty;
-  animation: riseIn 800ms var(--rise-ease) 240ms both;
+  animation: riseIn 620ms var(--rise-ease) 160ms both;
 }
 
 .section-title {
@@ -1012,13 +1104,14 @@ html:focus-within {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 26px;
-  animation: riseIn 800ms var(--rise-ease) 330ms both;
+  animation: riseIn 620ms var(--rise-ease) 220ms both;
 }
 
 .service-index-link {
   @apply badge-pill;
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
   gap: 8px;
   padding: 8px 14px 8px 12px;
   font-weight: 600;
@@ -1060,7 +1153,7 @@ html:focus-within {
   @apply glass-panel;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 28px 48px;
+  gap: 28px 40px;
   padding: clamp(26px, 3.6vw, 44px);
   border-radius: 28px;
   /* Room for the sticky pill when a jump link lands here. */
@@ -1069,7 +1162,7 @@ html:focus-within {
 
 /* The first panel enters with the header; the rest are revealed by the scroll (see below). */
 .service-panel:first-child {
-  animation: riseIn 800ms var(--rise-ease) 420ms both;
+  animation: riseIn 620ms var(--rise-ease) 280ms both;
 }
 
 .service-number {
@@ -1103,7 +1196,7 @@ html:focus-within {
   margin: 16px 0 0;
   max-width: 54ch;
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.65;
   color: var(--brand-gray);
   text-wrap: pretty;
 }
@@ -1125,7 +1218,9 @@ html:focus-within {
 
 /* Starts level with the title, under the numeral. */
 .service-aside {
-  padding-top: 33px;
+  margin-top: 33px;
+  padding-left: 32px;
+  border-left: 1px solid oklch(0.2393 0 0 / 0.08);
 }
 
 .service-aside-title {
@@ -1140,7 +1235,7 @@ html:focus-within {
 .service-deliverables {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1274,11 +1369,13 @@ html:focus-within {
     box-shadow 220ms ease;
 }
 
-.cta-button:hover {
-  background: #fff;
-  color: var(--brand-red-text);
-  transform: translateY(-1px);
-  box-shadow: 0 16px 34px -12px oklch(0.2393 0 0 / 0.55);
+@media (hover: hover) and (pointer: fine) {
+  .cta-button:hover {
+    background: #fff;
+    color: var(--brand-red-text);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 34px -12px oklch(0.2393 0 0 / 0.55);
+  }
 }
 
 .cta-link {
@@ -1375,7 +1472,7 @@ html:focus-within {
 .work-head {
   position: relative;
   z-index: 20;
-  animation: riseIn 800ms var(--rise-ease) 60ms both;
+  animation: riseIn 620ms var(--rise-ease) 60ms both;
 }
 
 /* The words swap in place; the block's height glides to the new text (see WorkHeader). */
@@ -1402,7 +1499,7 @@ html:focus-within {
    and the new ones arrive with the new deal. */
 .work-title[data-shuffle="out"],
 .work-lede[data-shuffle="out"] {
-  animation: textOut 320ms var(--rise-ease) 200ms forwards;
+  animation: textOut 180ms var(--rise-ease) 40ms forwards;
 }
 
 .work-filter {
@@ -1413,6 +1510,10 @@ html:focus-within {
 }
 
 .filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   padding: 9px 15px;
   border-radius: 999px;
   background: oklch(1 0 0 / 0.55);
@@ -1434,7 +1535,7 @@ html:focus-within {
   }
 }
 
-.filter-chip[aria-current="page"] {
+.filter-chip[data-active="true"] {
   color: var(--brand-charcoal);
   background: oklch(0.5684 0.2129 25.98 / 0.1);
   border-color: oklch(0.5684 0.2129 25.98 / 0.16);
@@ -1496,7 +1597,7 @@ html:focus-within {
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
   background: linear-gradient(
@@ -1514,14 +1615,26 @@ html:focus-within {
 }
 
 .project-body {
-  padding: 18px 12px 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px 12px 0;
 }
 
 .project-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
   margin: 0;
   font-size: 13px;
   font-weight: 500;
   color: var(--brand-gray);
+}
+
+.project-year {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .project-title {
@@ -1556,14 +1669,14 @@ html:focus-within {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 16px 0 0;
-  padding: 0;
+  margin: auto 0 0;
+  padding: 18px 0 0;
   list-style: none;
 }
 
 .project-tag {
   display: inline-block;
-  padding: 5px 11px;
+  padding: 7px 11px;
   border-radius: 999px;
   background: oklch(0.5684 0.2129 25.98 / 0.09);
   font-size: 13px;
@@ -1571,6 +1684,22 @@ html:focus-within {
   color: var(--brand-red-text);
   text-decoration: none;
   transition: background 200ms ease;
+}
+
+/* Press feedback stays on the control, never on an entire non-clickable card. */
+.nav-cta:active,
+.hero-cta:active,
+.cta-button:active,
+.nav-menu-button:active,
+.service-index-link:active {
+  transform: scale(0.97);
+  transition-duration: 120ms;
+}
+
+.filter-chip:active,
+.project-tag:active {
+  background: oklch(0.5684 0.2129 25.98 / 0.18);
+  transition-duration: 80ms;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1611,20 +1740,10 @@ html:focus-within {
 }
 
 /* ---------------------------------------------------------------------------
-   Below 768: window + shorter ridge, pins gone, pill collapses to a Sheet
+   Compact navigation below 960; single-column content and shorter ridge below 768
    --------------------------------------------------------------------------- */
 
-@media (max-width: 767px) {
-  :root {
-    /* TODO: mobile ridge height — 58vh judged by eye against the hero + CTA row at 390×844 */
-    --ridge-height: 58vh;
-  }
-
-  /* Real links: display none, never opacity or visibility. */
-  .pins {
-    display: none;
-  }
-
+@media (max-width: 959px) {
   .nav-links,
   .nav-pill > .nav-cta {
     display: none;
@@ -1636,6 +1755,51 @@ html:focus-within {
 
   .nav-pill {
     padding: 8px 8px 8px 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --nav-top: max(12px, env(safe-area-inset-top));
+    --nav-gutter: 16px;
+    /* TODO: mobile ridge height — 58vh judged by eye against the hero + CTA row at 390×844 */
+    --ridge-height: 58vh;
+  }
+
+  /* Real links: display none, never opacity or visibility. */
+  .pins {
+    display: none;
+  }
+
+  .hero {
+    padding: clamp(32px, 5svh, 52px) 20px 48px;
+  }
+
+  .hero-badge {
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+
+  .hero-title {
+    font-size: clamp(34px, 10.5vw, 64px);
+    line-height: 1.04;
+  }
+
+  .hero-lede {
+    max-width: 32ch;
+    margin-top: 20px;
+    font-size: 16px;
+  }
+
+  .hero-actions {
+    margin-top: 24px;
+  }
+
+  .filter-chip {
+    padding-inline: 12px;
+    font-size: 13px;
   }
 
   .page {
@@ -1654,7 +1818,10 @@ html:focus-within {
   }
 
   .service-aside {
-    padding-top: 0;
+    margin-top: 0;
+    padding: 22px 0 0;
+    border-left: 0;
+    border-top: 1px solid oklch(0.2393 0 0 / 0.08);
   }
 
   .process,
@@ -1664,10 +1831,33 @@ html:focus-within {
 
   .process-steps {
     grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 22px;
+  }
+
+  .process-step-number {
+    grid-row: 1 / 3;
+    margin: 3px 0 0;
+  }
+
+  .process-step-text {
+    grid-column: 2;
   }
 
   .project-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .project-tag {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 }
 
@@ -1715,10 +1905,51 @@ html:focus-within {
   .project-card,
   .work-empty {
     animation-name: fadeIn;
+    animation-duration: 160ms;
+    animation-delay: 0ms;
+    animation-timeline: auto;
   }
 
   .work-title[data-shuffle="out"],
   .work-lede[data-shuffle="out"] {
     animation-name: fadeOut;
+    animation-duration: 100ms;
+    animation-delay: 0ms;
+  }
+
+  .pin-cairn {
+    animation: none;
+  }
+
+  .nav-indicator,
+  .nav-link,
+  .nav-menu-button,
+  .nav-cta,
+  .hero-cta,
+  .hero-link > svg,
+  .page-link > svg,
+  .cta-button,
+  .cta-link > svg,
+  .service-index-link,
+  .pin-disc {
+    transition-duration: 0ms;
+  }
+
+  .menu-sheet {
+    transition: opacity 160ms ease;
+  }
+
+  .menu-sheet[data-starting-style],
+  .menu-sheet[data-ending-style] {
+    clip-path: inset(0 0 0 0 round calc(var(--nav-compact-height) / 2));
+    opacity: 0;
+  }
+
+  .nav-cta:active,
+  .hero-cta:active,
+  .cta-button:active,
+  .nav-menu-button:active,
+  .service-index-link:active {
+    transform: none;
   }
 }

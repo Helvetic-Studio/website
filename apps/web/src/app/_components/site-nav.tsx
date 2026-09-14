@@ -98,6 +98,9 @@ export const SiteNav = () => {
 
   return (
     <div className="site-nav">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <nav className="nav-pill" aria-label="Primary">
         <FlightLink href="/" className="nav-brand">
           {/* TODO: placeholder mark — the real Helvetic Studio mark does not exist yet */}

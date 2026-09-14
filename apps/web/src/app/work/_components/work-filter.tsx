@@ -50,7 +50,8 @@ export const WorkFilter = () => {
           key={chip.href}
           href={chip.href}
           className="filter-chip"
-          aria-current={chip.href === current ? "page" : undefined}
+          data-active={chip.href === current}
+          aria-current={chip.href === pathname ? "page" : undefined}
           prefetch={true}
           scroll={false}
           onNavigate={(event) => {

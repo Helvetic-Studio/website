@@ -22,7 +22,7 @@ export interface DealKeyframe extends Keyframe {
 
 /**
  * Why the cards are being dealt. Landing by a flight, the first card waits for the page and its
- * header to be mostly in (the stage fades over the first ~630ms). After a shuffle the table is
+ * header to begin settling. After a shuffle the table is
  * already set, so the new cards follow the gathered ones at once, a little tighter.
  */
 export type DealMode = "landing" | "shuffle";
@@ -34,8 +34,8 @@ export interface Beat {
 }
 
 export const DEAL: Record<DealMode, Beat> = {
-  landing: { delayMs: 300, staggerMs: 55, durationMs: 600 },
-  shuffle: { delayMs: 0, staggerMs: 45, durationMs: 520 },
+  landing: { delayMs: 200, staggerMs: 40, durationMs: 520 },
+  shuffle: { delayMs: 0, staggerMs: 30, durationMs: 420 },
 };
 
 /**
@@ -43,9 +43,9 @@ export const DEAL: Record<DealMode, Beat> = {
  * pulled in rather than eased out — a card accelerates into the chip.
  */
 export const GATHER = {
-  staggerMs: 24,
-  durationMs: 340,
-  easing: "cubic-bezier(0.5, 0, 0.2, 1)",
+  staggerMs: 12,
+  durationMs: 240,
+  easing: "cubic-bezier(0.32, 0, 0.2, 1)",
 } as const;
 
 /**
@@ -54,12 +54,12 @@ export const GATHER = {
  * landing and the new page's first card leaving, where the table would otherwise read as empty.
  */
 export const CHIP = {
-  dip: 0.94,
-  lift: 1.04,
+  dip: 0.97,
+  lift: 1.025,
   /** How long the chip takes to come back up once the last card is in. */
   releaseMs: 220,
-  emitMs: 320,
-  easing: "ease-in-out",
+  emitMs: 260,
+  easing: "cubic-bezier(0.65, 0, 0.35, 1)",
 } as const;
 
 /** The pile at the chip is card-sized when the chip is; never smaller than a thumbnail. */
