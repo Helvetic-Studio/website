@@ -12,6 +12,11 @@ const sitemap = (): MetadataRoute.Sitemap => [
     lastModified: BUILT_AT,
     priority: 0.8,
   },
+  {
+    url: "https://helvetic.studio/about",
+    lastModified: BUILT_AT,
+    priority: 0.6,
+  },
 ];
 
 export default sitemap;

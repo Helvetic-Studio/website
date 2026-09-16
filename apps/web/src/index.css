@@ -12,6 +12,9 @@
   --brand-charcoal: oklch(0.2393 0 0); /* #1F1F1F */
   --brand-gray: oklch(0.5218 0.0047 286.24); /* #69696C */
 
+  /* Warm secondary text shared by the studio map and enquiry badge. */
+  --studio-muted-warm: #77645e;
+
   /* page ground */
   --surface-grad-top: oklch(0.9956 0.0021 17.19); /* #fffdfd */
   --surface-grad-mid: oklch(0.9798 0.0098 25.07); /* #fff6f5 */
