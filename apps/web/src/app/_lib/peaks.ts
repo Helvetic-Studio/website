@@ -27,6 +27,21 @@ export const RIDGE_POLYGONS = {
   near: "0,430 60,398 150,300 245,362 330,265 425,332 520,215 588,306 622,272 664,308 720,195 822,276 920,205 992,290 1028,258 1068,292 1130,170 1242,266 1350,230 1462,330 1600,298 1600,520 0,520",
 } as const;
 
+/** Every polygon closes along the ground with these two points; the crest is what precedes them. */
+const GROUND_EDGE = ` ${VIEWBOX.width},${VIEWBOX.height} 0,${VIEWBOX.height}`;
+
+/** The skyline of a ridge polygon, without its ground edge: the line the light catches. */
+export const crestOf = (polygon: string): string =>
+  polygon.endsWith(GROUND_EDGE)
+    ? polygon.slice(0, -GROUND_EDGE.length)
+    : polygon;
+
+export const RIDGE_CRESTS = {
+  far: crestOf(RIDGE_POLYGONS.far),
+  mid: crestOf(RIDGE_POLYGONS.mid),
+  near: crestOf(RIDGE_POLYGONS.near),
+} as const;
+
 export interface Summit {
   x: number;
   y: number;

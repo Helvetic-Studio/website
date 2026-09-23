@@ -4,7 +4,7 @@
   width: 100%;
   max-width: 1160px;
   margin: 0 auto;
-  padding: 64px 24px 28px;
+  padding: 64px 24px 128px;
   color: var(--brand-charcoal);
 }
 
@@ -18,23 +18,15 @@
 
 .about-page h2 {
   font-size: clamp(32px, 3.8vw, 48px);
-  font-weight: 550;
+  font-weight: 590;
   line-height: 1.08;
   letter-spacing: -0.05em;
   text-wrap: balance;
 }
 
+/* The eyebrow pill itself is the site's (.eyebrow); About only sets its rhythm. */
 .about-page .about-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 9px;
   margin-bottom: 24px;
-  color: var(--brand-red-text);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  line-height: 1.5;
-  text-transform: uppercase;
 }
 
 .about-micro {
@@ -56,7 +48,7 @@
 .about-intro h1 {
   font-size: clamp(56px, 6.7vw, 84px);
   line-height: 0.99;
-  font-weight: 550;
+  font-weight: 600;
   letter-spacing: -0.065em;
 }
 
@@ -399,7 +391,7 @@
 .about-founder-bio h3 {
   font-size: clamp(25px, 3vw, 32px);
   line-height: 1.15;
-  font-weight: 550;
+  font-weight: 590;
   letter-spacing: -0.045em;
 }
 
@@ -469,7 +461,9 @@
   box-shadow: inset 0 1px #ffffff25;
 }
 
-.about-cta-core .about-eyebrow {
+.about-page .about-cta-core .about-eyebrow {
+  background: oklch(1 0 0 / 0.08);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.14);
   color: #eabbb2;
 }
 
@@ -524,20 +518,6 @@
   border-radius: 999px;
 }
 
-.about-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 28px 6px 0;
-  color: var(--brand-gray);
-  font-size: 11px;
-}
-
-.about-footer > span:first-child {
-  font-weight: 600;
-  color: var(--brand-charcoal);
-}
-
 .about-hero-enter,
 .about-map-enter {
   animation: riseIn 800ms var(--rise-ease) both;
@@ -570,7 +550,7 @@
 
 @media (max-width: 767px) {
   .about-page {
-    padding: 32px 16px 24px;
+    padding: 32px 16px 88px;
   }
   .about-hero {
     grid-template-columns: 1fr;
@@ -628,13 +608,6 @@
     flex-direction: column;
     align-items: start;
     padding: 36px 24px;
-  }
-  .about-footer {
-    flex-wrap: wrap;
-    gap: 12px 24px;
-  }
-  .about-footer > span:nth-child(2) {
-    display: none;
   }
 }
 

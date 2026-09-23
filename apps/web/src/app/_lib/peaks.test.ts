@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  crestOf,
   gatewayForPath,
   HOME_FOCUS,
   logScaleEasing,
   PEAKS,
   peakFocus,
+  RIDGE_CRESTS,
+  RIDGE_POLYGONS,
   pinPosition,
   summitFor,
   ZOOM_EASINGS,
@@ -211,5 +214,24 @@ describe(zoomFor, () => {
   it("focuses the destination gateway, and the home focus at the range", () => {
     expect(round(zoomFor("/contact", "/").focus.xPins)).toBe(87.5);
     expect(round(zoomFor("/", "/contact").focus.xRidge)).toBe(50);
+  });
+});
+
+describe(crestOf, () => {
+  it("drops the ground edge, keeping the skyline the light catches", () => {
+    expect(crestOf("0,10 50,2 100,10 1600,520 0,520")).toBe("0,10 50,2 100,10");
+  });
+
+  it("leaves a line without a ground edge untouched", () => {
+    expect(crestOf("0,10 50,2 100,10")).toBe("0,10 50,2 100,10");
+  });
+
+  it("traces every layer from edge to edge of the viewBox", () => {
+    for (const depth of ["far", "mid", "near"] as const) {
+      const crest = RIDGE_CRESTS[depth];
+      expect(RIDGE_POLYGONS[depth].startsWith(crest)).toBeTruthy();
+      expect(crest.startsWith("0,")).toBeTruthy();
+      expect(crest.split(" ").at(-1)?.startsWith("1600,")).toBeTruthy();
+    }
   });
 });

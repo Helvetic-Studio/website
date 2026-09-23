@@ -1,6 +1,6 @@
 import { ArrowIcon } from "@/app/_components/arrow-icon";
 import { FlightLink } from "@/app/_components/flight-link";
-import { AboutReveal } from "@/app/about/_components/about-reveal";
+import { Reveal } from "@/app/_components/reveal";
 import { StudioMap } from "@/app/about/_components/studio-map";
 
 const founders = [
@@ -44,9 +44,9 @@ const principles = [
 
 const FounderProfiles = () => (
   <section className="about-team" aria-labelledby="about-team-title">
-    <div className="about-section-heading" data-about-reveal>
+    <div className="about-section-heading" data-reveal>
       <div>
-        <p className="about-eyebrow">The people behind the studio</p>
+        <p className="eyebrow about-eyebrow">The people behind the studio</p>
         <h2 id="about-team-title">
           Two founders.
           <br />
@@ -64,8 +64,8 @@ const FounderProfiles = () => (
         <article
           className="about-founder-shell"
           key={founder.name}
-          data-about-reveal
-          data-about-delay={founder.tone === "charcoal" ? 60 : 0}
+          data-reveal
+          data-reveal-delay={founder.tone === "charcoal" ? 60 : 0}
         >
           <div className={`about-founder-core about-founder-${founder.tone}`}>
             <div
@@ -92,10 +92,10 @@ const FounderProfiles = () => (
 );
 
 export const AboutStory = () => (
-  <AboutReveal>
+  <Reveal>
     <header className="about-hero">
       <div className="about-intro">
-        <p className="about-eyebrow about-hero-enter">
+        <p className="eyebrow about-eyebrow about-hero-enter">
           <span className="brand-dot" aria-hidden="true" /> About Helvetic
           Studio
         </p>
@@ -128,9 +128,9 @@ export const AboutStory = () => (
       id="the-story"
       className="about-story"
       aria-labelledby="about-story-title"
-      data-about-reveal
+      data-reveal
     >
-      <p className="about-eyebrow">Why we started</p>
+      <p className="eyebrow about-eyebrow">Why we started</p>
       <div>
         <h2 id="about-story-title">For us, this is personal.</h2>
         <p className="about-story-copy">
@@ -153,8 +153,8 @@ export const AboutStory = () => (
       className="about-principles"
       aria-labelledby="about-principles-title"
     >
-      <div data-about-reveal>
-        <p className="about-eyebrow">What that means for you</p>
+      <div data-reveal>
+        <p className="eyebrow about-eyebrow">What that means for you</p>
         <h2 id="about-principles-title">
           Your business.
           <br />
@@ -167,7 +167,7 @@ export const AboutStory = () => (
       </div>
       <ol className="about-principle-list">
         {principles.map((principle) => (
-          <li key={principle.number} data-about-reveal>
+          <li key={principle.number} data-reveal>
             <span className="about-principle-number" aria-hidden="true">
               {principle.number}
             </span>
@@ -183,11 +183,13 @@ export const AboutStory = () => (
     <section
       className="about-cta-shell"
       aria-labelledby="about-cta-title"
-      data-about-reveal
+      data-reveal
     >
       <div className="about-cta-core">
         <div>
-          <p className="about-eyebrow">Good things start with a conversation</p>
+          <p className="eyebrow about-eyebrow">
+            Good things start with a conversation
+          </p>
           <h2 id="about-cta-title">
             Let’s build something
             <br />
@@ -206,10 +208,5 @@ export const AboutStory = () => (
         </FlightLink>
       </div>
     </section>
-    <footer className="about-footer">
-      <span>Helvetic Studio</span>
-      <span>Swiss roots. Shared ambition.</span>
-      <span>Wil SG · Switzerland</span>
-    </footer>
-  </AboutReveal>
+  </Reveal>
 );

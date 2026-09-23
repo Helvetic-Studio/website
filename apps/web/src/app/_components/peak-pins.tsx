@@ -4,7 +4,8 @@ import { FlightLink } from "@/app/_components/flight-link";
 import type { Cairn, Gateway } from "@/app/_lib/peaks";
 import { PEAKS, pinPosition } from "@/app/_lib/peaks";
 
-const ENTRANCE_DELAY_MS = 200;
+// The summits arrive after the headline has risen, so the eye reads the title, then the range.
+const ENTRANCE_DELAY_MS = 620;
 const ENTRANCE_STAGGER_MS = 90;
 
 const GATEWAY_ICONS: Record<string, ReactNode> = {

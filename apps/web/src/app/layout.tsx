@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 
 import "../index.css";
 import { ContentStage } from "@/app/_components/content-stage";
@@ -9,10 +9,13 @@ import { SiteNav } from "@/app/_components/site-nav";
 import { ZoomStage } from "@/app/_components/zoom-stage";
 import { Providers } from "@/app/providers";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+// Geist, self-hosted: one variable face for the whole site, so display and text share one voice
+// and every weight between them is available to the type scale.
+const geist = localFont({
+  src: "../_assets/geist-variable.ttf",
+  variable: "--font-geist",
   display: "swap",
+  weight: "100 900",
 });
 
 // Hardcoded so preview deploys advertise the production URL, not a *.workers.dev host.
@@ -30,7 +33,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: LayoutProps<"/">) => (
   <html
     lang="en"
-    className={inter.variable}
+    className={geist.variable}
     data-scroll-behavior="smooth"
     suppressHydrationWarning
   >

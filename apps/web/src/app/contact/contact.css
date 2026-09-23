@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 96px 40px 28px;
+  padding: 96px 40px 128px;
   color: var(--brand-charcoal);
 }
 
@@ -46,7 +46,7 @@
 
 .contact-intro h1 {
   font-size: clamp(48px, 5.2vw, 70px);
-  font-weight: 520;
+  font-weight: 600;
   line-height: 1.04;
   letter-spacing: -0.065em;
 }
@@ -480,24 +480,6 @@
   display: block;
 }
 
-.contact-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: 88px;
-  padding-top: 22px;
-  box-shadow: 0 -1px 0 #ad706718;
-  font-size: 10px;
-  line-height: 1.6;
-  color: var(--brand-gray);
-}
-
-.contact-footer > :first-child {
-  color: var(--brand-charcoal);
-  font-weight: 550;
-}
-
 .contact-link:focus-visible,
 .contact-submit:focus-visible,
 .contact-project-input:focus-visible + .contact-project-face,
@@ -589,7 +571,7 @@
 
 @media (max-width: 767px) {
   .contact-page {
-    padding: 32px 16px;
+    padding: 32px 16px 88px;
   }
   .contact-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -664,15 +646,6 @@
   }
   .contact-link {
     min-height: 68px;
-  }
-  .contact-footer {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 8px 20px;
-    margin-top: 48px;
-  }
-  .contact-footer > :last-child {
-    flex-basis: 100%;
   }
 }
 

@@ -12,6 +12,12 @@
   --brand-charcoal: oklch(0.2393 0 0); /* #1F1F1F */
   --brand-gray: oklch(0.5218 0.0047 286.24); /* #69696C */
 
+  /* ink — warm neutrals that sit on the blush ground */
+  --ink: var(--brand-charcoal);
+  --ink-soft: oklch(0.36 0.008 30);
+  --ink-muted: var(--brand-gray);
+  --hairline: oklch(0.42 0.06 28 / 0.1);
+
   /* Warm secondary text shared by the studio map and enquiry badge. */
   --studio-muted-warm: #77645e;
 
@@ -20,20 +26,30 @@
   --surface-grad-mid: oklch(0.9798 0.0098 25.07); /* #fff6f5 */
   --surface-grad-bot: oklch(0.9437 0.0219 21.01); /* #fbe7e6 */
 
-  /* ridge */
-  --ridge-layer-1: oklch(0.5684 0.2129 25.98 / 0.16);
-  --ridge-layer-2: oklch(0.5684 0.2129 25.98 / 0.28);
-  --ridge-layer-3: oklch(0.5684 0.2129 25.98 / 0.44);
+  /* ridge — each layer is lit from above: denser at the summit, thinning into the valley */
+  --ridge-far-top: oklch(0.5684 0.2129 25.98 / 0.2);
+  --ridge-far-bottom: oklch(0.5684 0.2129 25.98 / 0.08);
+  --ridge-mid-top: oklch(0.5684 0.2129 25.98 / 0.34);
+  --ridge-mid-bottom: oklch(0.5684 0.2129 25.98 / 0.16);
+  --ridge-near-top: oklch(0.5684 0.2129 25.98 / 0.56);
+  --ridge-near-bottom: oklch(0.5684 0.2129 25.98 / 0.3);
+  --ridge-crest: oklch(1 0.01 40 / 0.62);
   --ridge-mist: oklch(0.9868 0.0074 25 / 0.85);
   --ridge-scrim: oklch(0.9829 0.0086 25 / 0.9);
+  --alpenglow: oklch(0.88 0.08 48 / 0.62);
 
-  /* glass — exactly two tiers */
-  --glass-chrome: oklch(1 0 0 / 0.7);
-  --glass-chrome-edge: oklch(1 0 0 / 0.9);
-  --glass-chrome-blur: 16px;
-  --glass-panel: oklch(1 0 0 / 0.62);
-  --glass-panel-edge: oklch(1 0 0 / 0.88);
-  --glass-panel-blur: 24px;
+  /* Surfaces. The double bezel: a translucent shell holding a solid core, like a plate set in a
+     tray. The core's radius is the shell's minus the bezel, so the curves stay concentric. */
+  --shell: oklch(0.9 0.025 32 / 0.26);
+  --shell-edge: inset 0 0 0 1px oklch(1 0 0 / 0.62);
+  --shell-shadow:
+    0 1px 2px oklch(0.35 0.06 30 / 0.04),
+    0 28px 70px -44px oklch(0.35 0.08 30 / 0.34);
+  --core: oklch(0.99 0.006 45);
+  --core-edge: inset 0 1px 0 oklch(1 0 0), inset 0 0 0 1px oklch(1 0 0 / 0.85);
+  --bezel: 7px;
+  --radius-shell: 32px;
+  --radius-core: calc(var(--radius-shell) - var(--bezel));
 
   /* shadcn contract overrides */
   --background: var(--surface-grad-top);
@@ -51,8 +67,10 @@
      the range gives ground to the hero (it must clear the Work summit, 62.5% down the ridge). */
   --ridge-height: clamp(46vh, 106vh - 315px, 76vh);
 
-  /* motion */
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* motion — three curves, each with one job */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entrances, presses, hovers */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* things moving on screen */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* sheets and the menu */
   --zoom-duration: 900ms;
   --zoom-ease: cubic-bezier(
     0.5,
@@ -60,6 +78,7 @@
     0.15,
     1
   ); /* opacity fades; the layers use log-scale easings */
+  /* Read by JS too (motion.ts): the deal, the reveals. */
   --rise-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   /* Shared by the sticky pill and its portalled mobile menu. */
@@ -76,37 +95,12 @@
 
 @theme inline {
   --color-brand-red: var(--brand-red-text);
-  /* The fallback lives inside var(), not in a :root declaration: next/font sets --font-inter on a
+  /* The fallback lives inside var(), not in a :root declaration: next/font sets --font-geist on a
      class on <html>, and a :root declaration of the same specificity coming later in the sheet
-     would win and mask Inter for the whole site. */
+     would win and mask Geist for the whole site. */
   /* noinspection CssUnresolvedCustomProperty */
   --font-sans:
-    var(--font-inter, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
-}
-
-@utility glass-chrome {
-  background: var(--glass-chrome);
-  backdrop-filter: blur(var(--glass-chrome-blur));
-  -webkit-backdrop-filter: blur(var(--glass-chrome-blur));
-  border: 1px solid var(--glass-chrome-edge);
-  box-shadow: 0 16px 40px -20px oklch(0.2393 0 0 / 0.34);
-}
-
-@utility glass-panel {
-  background: var(--glass-panel);
-  backdrop-filter: blur(var(--glass-panel-blur));
-  -webkit-backdrop-filter: blur(var(--glass-panel-blur));
-  border: 1px solid var(--glass-panel-edge);
-  box-shadow: 0 20px 56px -32px oklch(0.2393 0 0 / 0.24);
-}
-
-/* The small white pill: the hero badge and the Services jump links. Solid, not glass. */
-@utility badge-pill {
-  border-radius: 999px;
-  background: oklch(1 0 0 / 0.72);
-  border: 1px solid oklch(1 0 0 / 0.95);
-  box-shadow: 0 10px 24px -16px oklch(0.2393 0 0 / 0.3);
-  font-size: 13px;
+    var(--font-geist, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ---------------------------------------------------------------------------
@@ -124,7 +118,10 @@ body {
   flex-direction: column;
   min-height: 100dvh;
   overflow-x: hidden;
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
   /* The gradient is painted here, not on --background: shadcn components assume a flat colour. */
   background-image: linear-gradient(
     180deg,
@@ -132,6 +129,20 @@ body {
     var(--surface-grad-mid) 46%,
     var(--surface-grad-bot) 100%
   );
+}
+
+/* Paper grain: one fixed, inert layer between the ridge and the content, so the blush ground reads
+   as a surface rather than a flat fill. Never on a scrolling element — it would repaint. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.2 0 0 0 0 0.15 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
 /* A constant box across routes, so the content hand-off never morphs its group. */
@@ -152,7 +163,7 @@ body {
   z-index: 1;
   padding: 12px 20px;
   border-radius: 999px;
-  background: var(--brand-charcoal);
+  background: var(--ink);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
@@ -167,7 +178,7 @@ body {
 
 ::selection {
   background: oklch(0.5684 0.2129 25.98 / 0.18);
-  color: var(--brand-charcoal);
+  color: var(--ink);
 }
 
 @keyframes driftMist {
@@ -221,6 +232,224 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+   Shared primitives — surfaces, eyebrows, buttons, the Swiss cross
+   --------------------------------------------------------------------------- */
+
+.bezel {
+  padding: var(--bezel);
+  border-radius: var(--radius-shell);
+  background: var(--shell);
+  box-shadow: var(--shell-edge), var(--shell-shadow);
+}
+
+.bezel-core {
+  border-radius: var(--radius-core);
+  background: var(--core);
+  box-shadow: var(--core-edge);
+}
+
+/* The small pill above a heading. The red dot with a halo marks the brand's voice. */
+.eyebrow,
+.page-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 22px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.62);
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.95),
+    0 6px 16px -12px oklch(0.35 0.08 30 / 0.4);
+  color: var(--brand-red-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.brand-dot {
+  display: block;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-red);
+  box-shadow: 0 0 0 3px oklch(0.5684 0.2129 25.98 / 0.14);
+}
+
+.swiss-cross {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--brand-red);
+}
+
+.swiss-cross::before,
+.swiss-cross::after {
+  content: "";
+  position: absolute;
+  inset: 7.5px 3.5px;
+  background: #fff;
+}
+
+.swiss-cross::after {
+  inset: 3.5px 7.5px;
+}
+
+/* Buttons are pills; a trailing arrow never sits naked, it rides in its own disc flush with the
+   pill's inner edge. The press is felt on pointer-down; the arrow leans towards where it goes. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 50px;
+  padding: 6px 22px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    color 200ms ease;
+}
+
+.button:has(> .button-icon) {
+  padding: 6px 6px 6px 22px;
+}
+
+.button-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  transition: transform 260ms var(--ease-out);
+}
+
+.button-icon > svg {
+  width: 15px;
+  height: 15px;
+}
+
+.button:active {
+  transform: scale(0.97);
+  transition-duration: 100ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover > .button-icon {
+    transform: translateX(3px) scale(1.05);
+  }
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--brand-red);
+}
+
+.button-primary {
+  background: var(--brand-red);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.24),
+    0 12px 26px -14px oklch(0.5684 0.2129 25.98 / 0.85);
+}
+
+.button-primary > .button-icon {
+  background: oklch(1 0 0 / 0.16);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button-primary:hover {
+    background: var(--brand-red-hover);
+  }
+}
+
+.button-ghost {
+  background: oklch(1 0 0 / 0.64);
+  color: var(--ink);
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.95),
+    0 10px 24px -18px oklch(0.35 0.08 30 / 0.45);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button-ghost:hover {
+    background: oklch(1 0 0 / 0.92);
+  }
+}
+
+/* Inside a card: a tinted pill that doesn't compete with the page's one red button. */
+.button-quiet {
+  min-height: 46px;
+  font-size: 14px;
+  background: oklch(0.5684 0.2129 25.98 / 0.07);
+  color: var(--ink);
+}
+
+.button-quiet > .button-icon {
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  color: var(--brand-red-text);
+  box-shadow: 0 4px 12px -6px oklch(0.35 0.08 30 / 0.35);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button-quiet:hover {
+    background: oklch(0.5684 0.2129 25.98 / 0.12);
+  }
+}
+
+/* On the red panel. */
+.button-light {
+  background: #fff;
+  color: var(--brand-red-text);
+  box-shadow: 0 14px 30px -16px oklch(0.25 0.08 25 / 0.6);
+}
+
+.button-light > .button-icon {
+  background: oklch(0.5684 0.2129 25.98 / 0.1);
+}
+
+.button-on-red {
+  background: oklch(1 0 0 / 0.1);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.28);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button-on-red:hover {
+    background: oklch(1 0 0 / 0.18);
+  }
+}
+
+.button-light:focus-visible,
+.button-on-red:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--brand-red),
+    0 0 0 4px #fff;
+}
+
+/* ---------------------------------------------------------------------------
    Zoom stage — the URL becomes custom properties; everything below is plain CSS
    --------------------------------------------------------------------------- */
 
@@ -238,7 +467,7 @@ body {
   --ease-mid: var(--zoom-ease);
   --ease-near: var(--zoom-ease);
   --ease-pin: var(--zoom-ease);
-  --scrim-opacity: 0.16;
+  --scrim-opacity: 0.12;
   --mist-opacity: 1;
   --pins-opacity: 1;
 }
@@ -259,6 +488,24 @@ body {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
+}
+
+/* Alpenglow: warm light low behind the range. It belongs to the view from the valley, so it goes
+   with the mist when the camera flies in. */
+.ridge-glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--ridge-height) * 1.3);
+  background: radial-gradient(
+    58% 46% at 50% 64%,
+    var(--alpenglow) 0%,
+    oklch(0.93 0.05 40 / 0.28) 48%,
+    oklch(0.95 0.03 35 / 0) 78%
+  );
+  opacity: var(--mist-opacity);
+  transition: opacity var(--zoom-duration) var(--zoom-ease);
 }
 
 /* The camera is one transform per layer: scale about the focus, written as
@@ -285,33 +532,49 @@ body {
   display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 
 .ridge-far {
   --layer-zoom: var(--zoom-far);
   --layer-ease: var(--ease-far);
+  --stop-top: var(--ridge-far-top);
+  --stop-bottom: var(--ridge-far-bottom);
+  --crest-opacity: 0.5;
 }
 
 .ridge-mid {
   --layer-zoom: var(--zoom-mid);
   --layer-ease: var(--ease-mid);
+  --stop-top: var(--ridge-mid-top);
+  --stop-bottom: var(--ridge-mid-bottom);
+  --crest-opacity: 0.7;
 }
 
 .ridge-near {
   --layer-zoom: var(--zoom-near);
   --layer-ease: var(--ease-near);
+  --stop-top: var(--ridge-near-top);
+  --stop-bottom: var(--ridge-near-bottom);
+  --crest-opacity: 1;
 }
 
-.ridge-far > svg {
-  fill: var(--ridge-layer-1);
+.ridge-stop-top {
+  stop-color: var(--stop-top);
 }
 
-.ridge-mid > svg {
-  fill: var(--ridge-layer-2);
+.ridge-stop-bottom {
+  stop-color: var(--stop-bottom);
 }
 
-.ridge-near > svg {
-  fill: var(--ridge-layer-3);
+/* Where the light catches the ridge. A screen-space hairline (non-scaling), so it stays crisp at
+   every zoom, and round joins are safe here: they are drawn after the stretch, not before. */
+.ridge-crest {
+  fill: none;
+  stroke: var(--ridge-crest);
+  stroke-width: 1.25px;
+  stroke-linejoin: round;
+  opacity: var(--crest-opacity);
 }
 
 /* Mist tracks the near layer's height, drifts, never scales, and fades out when zoomed. */
@@ -347,7 +610,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 34vh; /* TODO: judge the bottom fade by eye against the raised ridge */
+  height: 34vh;
   background: linear-gradient(
     180deg,
     oklch(0.9437 0.0219 21.01 / 0) 0%,
@@ -429,49 +692,53 @@ body {
 }
 
 .pin-gateway {
-  --pin-delay: 200ms; /* overridden inline per pin for entrance stagger */
+  --pin-delay: 620ms; /* overridden inline per pin for entrance stagger */
   pointer-events: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 7px;
   padding: 10px 14px 12px;
-  border-radius: 16px;
-  color: var(--brand-charcoal);
+  border-radius: 20px;
+  color: var(--ink);
   text-decoration: none;
-  transition:
-    background 240ms ease,
-    box-shadow 240ms ease;
-  animation: riseIn 620ms var(--rise-ease) var(--pin-delay) both;
+  -webkit-tap-highlight-color: transparent;
+  animation: pinIn 700ms var(--ease-out) var(--pin-delay) both;
+}
+
+/* A marker is set down on its summit: it drops the last few pixels and settles. */
+@keyframes pinIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .zoom-stage[data-zoomed="true"] .pin-gateway {
   pointer-events: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .pin-gateway:hover {
-    background: oklch(1 0 0 / 0.7);
-    box-shadow: 0 18px 44px -20px oklch(0.2393 0 0 / 0.3);
-  }
-}
-
 .pin-gateway:focus-visible {
   outline: none;
-  background: oklch(1 0 0 / 0.7);
   box-shadow:
     0 0 0 2px #fff,
-    0 0 0 4px var(--primary),
-    0 18px 44px -20px oklch(0.2393 0 0 / 0.3);
+    0 0 0 4px var(--brand-red);
 }
 
 .pin-dot {
+  position: relative;
   flex: 0 0 auto;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--brand-red);
-  box-shadow: 0 0 0 4px oklch(0.5684 0.2129 25.98 / 0.14);
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 5px oklch(0.5684 0.2129 25.98 / 0.16);
 }
 
 .pin-stem {
@@ -481,40 +748,70 @@ body {
   background: linear-gradient(
     180deg,
     oklch(0.5684 0.2129 25.98 / 0),
-    oklch(0.5684 0.2129 25.98 / 0.45)
+    oklch(0.5684 0.2129 25.98 / 0.5)
   );
+  transform-origin: top;
+  transition: transform 320ms var(--ease-out);
 }
 
-/* A solid disc, not glass: four backdrop blurs riding a scaling layer cost frames during the zoom. */
+/* A solid disc in a pale ring, not glass: four backdrop blurs riding a scaling layer cost frames
+   during the zoom. The ring is the disc's bezel. */
 .pin-disc {
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--brand-red);
-  background: oklch(1 0 0 / 0.9);
-  border: 1px solid oklch(1 0 0);
+  background: oklch(1 0 0);
   box-shadow:
-    0 1px 2px oklch(0.2393 0 0 / 0.06),
-    0 12px 28px -14px oklch(0.2393 0 0 / 0.35);
-  transition: transform 240ms var(--rise-ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .pin-gateway:hover .pin-disc {
-    transform: translateY(-2px);
-  }
+    0 0 0 5px oklch(1 0 0 / 0.42),
+    0 1px 2px oklch(0.2393 0 0 / 0.08),
+    0 14px 30px -14px oklch(0.35 0.1 28 / 0.55);
+  transition:
+    transform 320ms var(--ease-out),
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
 .pin-label {
   flex: 0 0 auto;
-  font-size: 14px;
-  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.78);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.95);
+  font-size: 13.5px;
+  font-weight: 580;
   letter-spacing: -0.01em;
   white-space: nowrap;
+  transition:
+    transform 320ms var(--ease-out),
+    color 200ms ease;
+}
+
+/* The summit answers the pointer: the stem lengthens, the marker slides down it and lights up. */
+@media (hover: hover) and (pointer: fine) {
+  .pin-gateway:hover .pin-stem {
+    transform: scaleY(1.5);
+  }
+
+  .pin-gateway:hover .pin-disc {
+    transform: translateY(8px);
+    background: var(--brand-red);
+    color: #fff;
+  }
+
+  .pin-gateway:hover .pin-label {
+    transform: translateY(8px);
+    color: var(--brand-red-text);
+  }
+}
+
+.pin-gateway:active .pin-disc {
+  transform: scale(0.94);
+  transition-duration: 100ms;
 }
 
 /* Cairn: a quiet dot only. Not a link, no stop, no label. */
@@ -525,11 +822,11 @@ body {
   border-radius: 50%;
   background: oklch(0.5684 0.2129 25.98 / 0.42);
   box-shadow: 0 0 0 3px oklch(0.5684 0.2129 25.98 / 0.08);
-  animation: fadeIn 800ms var(--rise-ease) 560ms both;
+  animation: fadeIn 800ms var(--ease-out) 980ms both;
 }
 
 /* ---------------------------------------------------------------------------
-   Navbar
+   Navbar — a floating island of glass; content scrolls beneath it
    --------------------------------------------------------------------------- */
 
 .site-nav {
@@ -540,57 +837,85 @@ body {
 }
 
 .nav-pill {
-  @apply glass-chrome;
   max-width: 1160px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 10px 10px 10px 20px;
+  padding: 7px 7px 7px 18px;
   border-radius: 999px;
-  animation: navDrop 520ms var(--rise-ease) both;
+  background: oklch(1 0 0 / 0.66);
+  backdrop-filter: blur(20px) saturate(170%);
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.9),
+    0 1px 2px oklch(0.2393 0 0 / 0.04),
+    0 18px 40px -26px oklch(0.35 0.08 30 / 0.45);
+  animation: navDrop 620ms var(--ease-out) both;
+}
+
+/* As the page scrolls under it, the glass thickens: more opaque, a deeper shadow. Driven by the
+   scroll position itself, no listener. */
+@supports (animation-timeline: scroll()) {
+  .nav-pill {
+    animation:
+      navDrop 620ms var(--ease-out) both,
+      navThicken linear both;
+    animation-timeline: auto, scroll(root);
+    animation-range:
+      normal,
+      0 160px;
+  }
+}
+
+@keyframes navThicken {
+  to {
+    background: oklch(1 0 0 / 0.84);
+    box-shadow:
+      inset 0 0 0 1px oklch(1 0 0 / 0.95),
+      0 1px 2px oklch(0.2393 0 0 / 0.05),
+      0 20px 44px -22px oklch(0.35 0.08 30 / 0.5);
+  }
 }
 
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 11px;
-  font-weight: 800;
+  gap: 10px;
+  font-weight: 650;
   font-size: 17px;
-  letter-spacing: -0.03em;
-  color: var(--brand-charcoal);
+  letter-spacing: -0.04em;
+  color: var(--ink);
   text-decoration: none;
   border-radius: 999px;
 }
 
+/* TODO: placeholder mark — the real Helvetic Studio mark does not exist yet. Two summits. */
 .nav-mark {
+  position: relative;
   width: 28px;
   height: 28px;
   border-radius: 9px;
-  background: linear-gradient(150deg, #d8232a, #ff8b7f);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  background: var(--brand-red);
   overflow: hidden;
-  box-shadow: 0 6px 14px -6px oklch(0.5684 0.2129 25.98 / 0.8);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.3),
+    0 6px 14px -7px oklch(0.5684 0.2129 25.98 / 0.9);
 }
 
 .nav-mark::before {
   content: "";
-  display: block;
-  width: 20px;
-  height: 14px;
-  margin-bottom: 5px;
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-  background: oklch(1 0 0 / 0.92);
+  position: absolute;
+  inset: 8px 4px 0;
+  clip-path: polygon(0% 100%, 34% 28%, 50% 58%, 70% 0%, 100% 100%);
+  background: oklch(1 0 0 / 0.95);
 }
 
 .nav-links {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -604,11 +929,14 @@ body {
   left: 0;
   width: 0;
   border-radius: 999px;
-  background: oklch(0.5684 0.2129 25.98 / 0.1);
+  background: oklch(1 0 0 / 0.95);
+  box-shadow:
+    0 1px 2px oklch(0.2393 0 0 / 0.06),
+    0 6px 16px -8px oklch(0.35 0.08 30 / 0.35);
   opacity: 0;
   transition:
-    transform 300ms var(--rise-ease),
-    width 300ms var(--rise-ease),
+    transform 380ms var(--ease-drawer),
+    width 380ms var(--ease-drawer),
     opacity 180ms ease;
   pointer-events: none;
 }
@@ -616,18 +944,18 @@ body {
 .nav-link {
   position: relative;
   display: block;
-  padding: 9px 15px;
+  padding: 10px 16px;
   border-radius: 999px;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--brand-gray);
+  font-weight: 480;
+  letter-spacing: -0.01em;
+  color: var(--ink-muted);
   text-decoration: none;
-  /* Inter is variable, so the active weight interpolates instead of snapping; it rides the same
+  /* Geist is variable, so the active weight interpolates instead of snapping; it rides the same
      clock as the colour and lands with the indicator rather than a beat behind it. */
   transition:
     color 260ms ease,
-    font-weight 260ms ease,
-    background 200ms ease;
+    font-weight 260ms ease;
 }
 
 /* Every label reserves its own bold width (see .nav-label::after), so going active never widens
@@ -648,8 +976,7 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .nav-link:hover {
-    background: oklch(0.2393 0 0 / 0.05);
-    color: var(--brand-charcoal);
+    color: var(--ink);
   }
 }
 
@@ -657,94 +984,127 @@ body {
    indicator. aria-current still waits for the real URL, which is what it describes. */
 .nav-link[data-active="true"] {
   font-weight: 600;
-  color: var(--brand-charcoal);
+  color: var(--ink);
 }
 
 .nav-cta {
-  padding: 11px 20px;
-  border-radius: 999px;
-  height: auto;
-  background: var(--primary);
-  color: var(--primary-foreground);
+  min-height: 44px;
+  gap: 12px;
   font-size: 14px;
-  font-weight: 600;
-  box-shadow: 0 10px 24px -10px oklch(0.5684 0.2129 25.98 / 0.9);
-  transition:
-    background 220ms ease,
-    transform 220ms var(--rise-ease),
-    box-shadow 220ms ease;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .nav-cta:hover {
-    background: var(--brand-red-hover);
-    color: var(--primary-foreground);
-    transform: translateY(-1px);
-    box-shadow: 0 14px 30px -10px oklch(0.5684 0.2129 25.98 / 0.95);
-  }
+.nav-cta:has(> .button-icon) {
+  padding: 5px 5px 5px 18px;
+}
+
+.nav-cta > .button-icon {
+  width: 34px;
+  height: 34px;
 }
 
 .nav-menu-button {
   display: none;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   align-items: center;
   justify-content: center;
   border: 0;
   border-radius: 999px;
-  background: transparent;
-  color: var(--brand-charcoal);
+  background: oklch(0.2393 0 0 / 0.04);
+  color: var(--ink);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background 180ms ease,
-    transform 140ms var(--rise-ease);
+    transform 140ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .nav-menu-button:hover {
-    background: oklch(0.2393 0 0 / 0.05);
+    background: oklch(0.2393 0 0 / 0.08);
   }
+}
+
+.nav-menu-button:active {
+  transform: scale(0.94);
+}
+
+/* Two lines. The close button's cross, when the sheet opens, starts from these two level lines:
+   the burger folds into the X in the same pixels. */
+.menu-glyph {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 12px;
+}
+
+.menu-glyph > span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 360ms var(--ease-drawer);
+}
+
+.menu-glyph > span:first-child {
+  top: 2.5px;
+}
+
+.menu-glyph > span:last-child {
+  bottom: 2.5px;
+}
+
+.is-close .menu-glyph > span:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
+
+.is-close .menu-glyph > span:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
+.menu-sheet[data-starting-style] .is-close .menu-glyph > span,
+.menu-sheet[data-ending-style] .is-close .menu-glyph > span {
+  transform: none;
 }
 
 /* Focus on glass: white halo + 2px red ring. The library's 1px 50% gray is invisible here. */
 .nav-brand:focus-visible,
 .nav-link:focus-visible,
-.nav-cta:focus-visible,
 .nav-menu-button:focus-visible,
-.menu-link:focus-visible {
+.menu-link:focus-visible,
+.footer-link:focus-visible {
   outline: none;
   box-shadow:
     0 0 0 2px #fff,
-    0 0 0 4px var(--primary);
-}
-
-.nav-cta:focus-visible {
-  box-shadow:
-    0 0 0 2px #fff,
-    0 0 0 4px var(--primary),
-    0 10px 24px -10px oklch(0.5684 0.2129 25.98 / 0.9);
+    0 0 0 4px var(--brand-red);
 }
 
 /* Reveal from the pill's exact outline. The modal header occupies the same pixels as the
    original header, so only the lower edge moves. Unlayered to override the Sheet's slide. */
 .menu-sheet {
-  @apply glass-chrome;
   z-index: 70;
   top: var(--nav-top);
   inset-inline: var(--nav-gutter);
   max-width: 1160px;
   margin-inline: auto;
+  border: 0;
   border-radius: calc(var(--nav-compact-height) / 2);
-  padding: 0 0 max(16px, env(safe-area-inset-bottom));
+  padding: 0 0 max(14px, env(safe-area-inset-bottom));
   max-height: calc(100dvh - var(--nav-top) - 12px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: oklch(0.9956 0.0021 17.19 / 0.96);
-  color: var(--brand-charcoal);
+  background: oklch(0.9956 0.0021 17.19 / 0.97);
+  backdrop-filter: blur(28px) saturate(170%);
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.9),
+    0 30px 60px -30px oklch(0.35 0.08 30 / 0.45);
+  color: var(--ink);
   translate: none;
   opacity: 1;
   clip-path: inset(0 0 0 0 round calc(var(--nav-compact-height) / 2));
-  transition: clip-path 250ms var(--ease-drawer);
+  transition: clip-path 380ms var(--ease-drawer);
 }
 
 .menu-sheet[data-starting-style],
@@ -755,6 +1115,10 @@ body {
     0 0 calc(100% - var(--nav-compact-height)) 0 round
       calc(var(--nav-compact-height) / 2)
   );
+}
+
+.menu-sheet[data-ending-style] {
+  transition-duration: 260ms;
 }
 
 /* Keep the original out of the translucent surface throughout the exit, too. */
@@ -768,7 +1132,7 @@ body:has(.menu-sheet) .nav-pill {
   justify-content: space-between;
   flex-shrink: 0;
   min-height: calc(var(--nav-compact-height) - 2px);
-  padding: 8px 8px 8px 16px;
+  padding: 7px 7px 7px 16px;
   line-height: 1.5;
 }
 
@@ -779,43 +1143,88 @@ body:has(.menu-sheet) .nav-pill {
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin: 8px 8px 0;
+  gap: 2px;
+  margin: 10px 8px 0;
   padding: 0;
   list-style: none;
 }
 
+/* The links come up out of the unrolling sheet one after another. */
+.menu-item {
+  transition:
+    opacity 320ms var(--ease-out) calc(70ms + var(--item) * 45ms),
+    transform 520ms var(--ease-out) calc(70ms + var(--item) * 45ms);
+}
+
+.menu-sheet[data-starting-style] .menu-item {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+}
+
+.menu-sheet[data-ending-style] .menu-item {
+  opacity: 0;
+  transition-duration: 140ms;
+  transition-delay: 0ms;
+}
+
 .menu-link {
-  display: block;
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--brand-gray);
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 30px;
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+  color: var(--ink);
   text-decoration: none;
   transition:
     background 180ms ease,
     color 180ms ease;
 }
 
+.menu-link-number {
+  min-width: 1.6em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .menu-link:hover {
-    background: oklch(0.2393 0 0 / 0.05);
-    color: var(--brand-charcoal);
+    background: oklch(0.2393 0 0 / 0.04);
   }
 }
 
-.menu-link[aria-current="page"] {
-  background: oklch(0.5684 0.2129 25.98 / 0.08);
-  font-weight: 600;
-  color: var(--brand-charcoal);
+.menu-link:active {
+  background: oklch(0.2393 0 0 / 0.06);
 }
 
-.menu-cta {
-  margin: 16px 16px 0;
-  align-self: stretch;
-  justify-content: center;
-  min-height: 48px;
+.menu-link[aria-current="page"] {
+  color: var(--brand-red-text);
+}
+
+.menu-link[aria-current="page"] > .menu-link-number {
+  color: var(--brand-red-text);
+}
+
+.menu-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 12px 0 16px;
+  padding-top: 18px;
+  box-shadow: 0 -1px 0 var(--hairline);
+}
+
+.menu-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -825,7 +1234,7 @@ body:has(.menu-sheet) .nav-pill {
 /* Every vertical size is in vh so the block shrinks with the viewport and stays clear of the
    summits; --ridge-height (on :root) is derived from the same budget. */
 .hero {
-  max-width: 1000px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: clamp(20px, 4.5vh, 48px) 24px 0;
   box-sizing: border-box;
@@ -833,47 +1242,115 @@ body:has(.menu-sheet) .nav-pill {
 }
 
 .hero-badge {
-  @apply badge-pill;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 7px 14px;
-  font-weight: 500;
+  gap: 10px;
+  margin: 0 0 clamp(12px, 2.2vh, 24px);
+  padding: 7px 14px 7px 11px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.66);
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.95),
+    0 10px 24px -18px oklch(0.35 0.08 30 / 0.5);
+  font-size: 13px;
+  font-weight: 520;
   letter-spacing: -0.005em;
-  color: var(--brand-gray);
-  margin-bottom: clamp(10px, 1.8vh, 20px);
-  animation: riseIn 560ms var(--rise-ease) 60ms both;
+  color: var(--ink-soft);
+  animation: riseIn 700ms var(--ease-out) 60ms both;
 }
 
-/* The red dot with a halo: the hero badge and the page eyebrows. */
-.brand-dot {
+.hero-badge-rule {
+  width: 1px;
+  height: 12px;
+  background: var(--hairline);
+}
+
+.hero-badge-note {
+  color: var(--ink-muted);
+}
+
+/* Available: a dot that breathes, slowly, with a ring that leaves it. */
+.live-dot {
+  position: relative;
   display: block;
   flex-shrink: 0;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--brand-red);
-  box-shadow: 0 0 0 3px oklch(0.5684 0.2129 25.98 / 0.14);
+}
+
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--brand-red);
+  animation: livePulse 2.4s var(--ease-out) 1.2s infinite;
+}
+
+@keyframes livePulse {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3);
+  }
 }
 
 .hero-title {
   margin: 0;
-  font-size: clamp(34px, min(7.4vw, 9vh), 84px);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-  font-weight: 800;
+  font-size: clamp(38px, min(7.8vw, 9.4vh), 92px);
+  line-height: 1;
+  letter-spacing: -0.058em;
+  font-weight: 620;
   text-wrap: balance;
-  animation: riseIn 620ms var(--rise-ease) 100ms both;
+}
+
+.hero-line {
+  display: block;
+}
+
+/* Each word rises out of its own mask. The mask is padded below so descenders are never clipped
+   once the word is home, and pulled back so the line box doesn't grow. */
+.hero-word-mask {
+  display: inline-block;
+  overflow: clip;
+  padding: 0 0.02em 0.1em;
+  margin: 0 -0.02em -0.1em;
+  vertical-align: top;
+}
+
+.hero-word {
+  display: inline-block;
+  animation: wordRise 1000ms var(--ease-out) calc(140ms + var(--word) * 65ms)
+    both;
+}
+
+@keyframes wordRise {
+  from {
+    transform: translate3d(0, 108%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-accent {
+  color: var(--brand-red-text);
 }
 
 .hero-lede {
-  margin: clamp(10px, 1.8vh, 18px) auto 0;
-  max-width: 560px;
-  font-size: clamp(15px, 2vh, 19px);
+  margin: clamp(12px, 2.2vh, 22px) auto 0;
+  max-width: 520px;
+  font-size: clamp(16px, 2.1vh, 20px);
   line-height: 1.5;
-  color: var(--brand-gray);
+  letter-spacing: -0.01em;
+  color: var(--ink-muted);
   text-wrap: balance;
-  animation: riseIn 620ms var(--rise-ease) 160ms both;
+  animation: riseIn 800ms var(--ease-out) 460ms both;
 }
 
 .hero-actions {
@@ -881,81 +1358,9 @@ body:has(.menu-sheet) .nav-pill {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px 18px;
-  margin-top: clamp(16px, 2.6vh, 26px);
-  animation: riseIn 620ms var(--rise-ease) 220ms both;
-}
-
-.hero-cta {
-  padding: 13px 22px;
-  height: auto;
-  border-radius: 999px;
-  background: var(--primary);
-  color: var(--primary-foreground);
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 12px 28px -12px oklch(0.5684 0.2129 25.98 / 0.9);
-  transition:
-    background 220ms ease,
-    transform 220ms var(--rise-ease),
-    box-shadow 220ms ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hero-cta:hover {
-    background: var(--brand-red-hover);
-    color: var(--primary-foreground);
-    transform: translateY(-1px);
-    box-shadow: 0 16px 34px -12px oklch(0.5684 0.2129 25.98 / 0.95);
-  }
-}
-
-.hero-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 6px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--brand-charcoal);
-  text-decoration: none;
-  border-radius: 999px;
-  transition: color 200ms ease;
-}
-
-.hero-link > svg {
-  transition: transform 220ms var(--rise-ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hero-link:hover {
-    color: var(--brand-red-text);
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hero-link:hover > svg {
-    transform: translateX(3px);
-  }
-}
-
-.hero-cta:focus-visible,
-.hero-link:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px #fff,
-    0 0 0 4px var(--primary);
-}
-
-/* Stub routes carry a single heading so a landed navigation is distinguishable from a broken one. */
-.stub-title {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 56px 24px 0;
-  font-size: clamp(30px, 6vw, 64px);
-  line-height: 1.04;
-  letter-spacing: -0.045em;
-  font-weight: 800;
+  gap: 10px;
+  margin-top: clamp(16px, 2.8vh, 30px);
+  animation: riseIn 800ms var(--ease-out) 560ms both;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1013,53 +1418,51 @@ html:focus-within {
   width: 100%;
   max-width: 1160px;
   margin: 0 auto;
-  padding: 48px 24px 96px;
+  padding: 72px 24px 128px;
   box-sizing: border-box;
 }
 
 .page-head {
-  max-width: 760px;
-  margin-bottom: 40px;
+  max-width: 940px;
+  margin-bottom: 56px;
 }
 
 .page-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0 0 14px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--brand-red-text);
-  animation: riseIn 560ms var(--rise-ease) 60ms both;
+  animation: riseIn 700ms var(--ease-out) 60ms both;
 }
 
 .page-title {
   margin: 0;
-  font-size: clamp(34px, 5.4vw, 64px);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-  font-weight: 800;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1;
+  letter-spacing: -0.056em;
+  font-weight: 600;
   text-wrap: balance;
-  animation: riseIn 620ms var(--rise-ease) 100ms both;
+  animation: riseIn 800ms var(--ease-out) 110ms both;
 }
 
 .page-lede {
-  margin: 18px 0 0;
+  margin: 22px 0 0;
   max-width: 600px;
-  font-size: clamp(16px, 1.4vw, 19px);
-  line-height: 1.5;
-  color: var(--brand-gray);
+  font-size: clamp(17px, 1.45vw, 20px);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: var(--ink-muted);
   text-wrap: pretty;
-  animation: riseIn 620ms var(--rise-ease) 160ms both;
+  animation: riseIn 800ms var(--ease-out) 170ms both;
+}
+
+.section-head {
+  max-width: 760px;
+  margin-bottom: 56px;
 }
 
 .section-title {
   margin: 0;
-  font-size: clamp(26px, 3vw, 36px);
-  line-height: 1.08;
-  letter-spacing: -0.035em;
-  font-weight: 800;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  font-weight: 600;
   text-wrap: balance;
 }
 
@@ -1070,15 +1473,15 @@ html:focus-within {
   gap: 6px;
   padding: 8px 0;
   font-size: 15px;
-  font-weight: 600;
-  color: var(--brand-charcoal);
+  font-weight: 560;
+  color: var(--ink);
   text-decoration: none;
   border-radius: 8px;
   transition: color 200ms ease;
 }
 
 .page-link > svg {
-  transition: transform 220ms var(--rise-ease);
+  transition: transform 220ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1095,337 +1498,358 @@ html:focus-within {
   outline: none;
   box-shadow:
     0 0 0 2px #fff,
-    0 0 0 4px var(--primary);
+    0 0 0 4px var(--brand-red);
 }
 
 /* ---------------------------------------------------------------------------
-   Services — the jump list, one panel per service, the process, the close
+   Services — the jump list, one spread per service, the route, the close
    --------------------------------------------------------------------------- */
 
 .service-index {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 26px;
-  animation: riseIn 620ms var(--rise-ease) 220ms both;
+  margin-top: 32px;
+  animation: riseIn 800ms var(--ease-out) 230ms both;
 }
 
 .service-index-link {
-  @apply badge-pill;
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  gap: 8px;
-  padding: 8px 14px 8px 12px;
-  font-weight: 600;
-  color: var(--brand-charcoal);
+  gap: 9px;
+  padding: 8px 16px 8px 12px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.6);
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.95),
+    0 8px 20px -16px oklch(0.35 0.08 30 / 0.45);
+  font-size: 14px;
+  font-weight: 540;
+  letter-spacing: -0.01em;
+  color: var(--ink);
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background 200ms ease,
-    transform 200ms var(--rise-ease);
+    transform 160ms var(--ease-out);
 }
 
 .service-index-number {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-red-text);
   font-variant-numeric: tabular-nums;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .service-index-link:hover {
-    background: oklch(1 0 0 / 0.96);
-    transform: translateY(-1px);
+    background: oklch(1 0 0 / 0.95);
   }
+}
+
+.service-index-link:active {
+  transform: scale(0.97);
 }
 
 .service-index-link:focus-visible {
   outline: none;
   box-shadow:
     0 0 0 2px #fff,
-    0 0 0 4px var(--primary);
+    0 0 0 4px var(--brand-red);
 }
 
 .service-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .service-panel {
-  @apply glass-panel;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 28px 40px;
-  padding: clamp(26px, 3.6vw, 44px);
-  border-radius: 28px;
   /* Room for the sticky pill when a jump link lands here. */
   scroll-margin-top: 104px;
 }
 
-/* The first panel enters with the header; the rest are revealed by the scroll (see below). */
+/* The first panel enters with the header; the rest rise as they scroll into view (Reveal). */
 .service-panel:first-child {
-  animation: riseIn 620ms var(--rise-ease) 280ms both;
+  animation: riseIn 800ms var(--ease-out) 300ms both;
+}
+
+.service-core {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px clamp(40px, 6vw, 88px);
+  padding: clamp(28px, 4.4vw, 60px);
+}
+
+.service-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .service-number {
-  margin: 0 0 14px;
+  display: flex;
+  gap: 6px;
+  margin: 0 0 22px;
   font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--brand-red-text);
   font-variant-numeric: tabular-nums;
 }
 
+.service-number-total {
+  color: oklch(0.52 0.005 286 / 0.55);
+}
+
 .service-title {
   margin: 0;
-  font-size: clamp(28px, 3.2vw, 40px);
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  font-weight: 800;
+  font-size: clamp(32px, 3.8vw, 50px);
+  line-height: 1;
+  letter-spacing: -0.052em;
+  font-weight: 600;
 }
 
 .service-promise {
-  margin: 10px 0 0;
-  font-size: clamp(17px, 1.5vw, 20px);
+  margin: 14px 0 36px;
+  max-width: 24ch;
+  font-size: clamp(17px, 1.45vw, 20px);
   line-height: 1.35;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: var(--brand-charcoal);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink-soft);
   text-wrap: balance;
 }
 
+/* Under the promise, pinned to the bottom of the spread so it lines up with the list's end. */
+.service-link {
+  margin-top: auto;
+}
+
+.service-body {
+  padding-top: 38px;
+}
+
 .service-description {
-  margin: 16px 0 0;
-  max-width: 54ch;
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--brand-gray);
+  margin: 0;
+  max-width: 58ch;
+  font-size: 17px;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+  color: var(--ink-soft);
   text-wrap: pretty;
 }
 
 .service-good-for {
-  margin: 18px 0 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--brand-gray);
+  margin: 16px 0 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-muted);
   text-wrap: pretty;
 }
 
 .service-good-for-label {
   display: inline-block;
-  margin-right: 6px;
+  margin-right: 8px;
   font-weight: 600;
-  color: var(--brand-charcoal);
+  color: var(--ink);
 }
 
-/* Starts level with the title, under the numeral. */
 .service-aside {
-  margin-top: 33px;
-  padding-left: 32px;
-  border-left: 1px solid oklch(0.2393 0 0 / 0.08);
+  margin-top: 30px;
+  padding-top: 26px;
+  box-shadow: 0 -1px 0 var(--hairline);
 }
 
 .service-aside-title {
-  margin: 0 0 12px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  margin: 0 0 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--brand-gray);
+  color: var(--ink-muted);
 }
 
 .service-deliverables {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .service-deliverable {
-  position: relative;
-  padding-left: 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
   font-size: 15px;
   line-height: 1.45;
   font-weight: 500;
-  color: var(--brand-charcoal);
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
-/* The Services gateway's diamond, as a bullet. */
-.service-deliverable::before {
-  content: "";
-  position: absolute;
-  left: 3px;
-  top: 0.55em;
-  width: 7px;
-  height: 7px;
-  border-radius: 1.5px;
-  background: var(--brand-red);
-  transform: rotate(45deg);
+.service-tick {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 21px;
+  height: 21px;
+  margin-top: -0.5px;
+  border-radius: 50%;
+  background: oklch(0.5684 0.2129 25.98 / 0.09);
+  color: var(--brand-red-text);
 }
 
-.service-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 22px;
-  padding-top: 14px;
-  border-top: 1px solid oklch(0.2393 0 0 / 0.08);
-}
-
+/* The route: a hairline from the first waypoint to the last, with the ink drawn over it. */
 .process {
-  margin-top: 72px;
+  margin-top: 136px;
+}
+
+.process-route {
+  position: relative;
+}
+
+.process-track {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  /* To the last waypoint: four columns, 32px gaps, the node's centre 22px in. */
+  right: calc(25% - 46px);
+  height: 1px;
+  background: var(--hairline);
+}
+
+.process-track-ink {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--brand-red),
+    oklch(0.5684 0.2129 25.98 / 0.45)
+  );
+  /* Constant speed, so each waypoint is reached on a known beat (see ProcessSteps). */
+  --rise-ease: linear;
 }
 
 .process-steps {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-  margin: 28px 0 0;
+  gap: 32px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.process-step {
-  @apply glass-panel;
-  padding: 24px 24px 26px;
-  border-radius: 22px;
-}
-
-.process-step-number {
-  display: block;
-  margin-bottom: 14px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+.process-node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 26px;
+  border-radius: 50%;
+  background: var(--core);
+  box-shadow:
+    0 0 0 6px oklch(1 0 0 / 0.5),
+    inset 0 0 0 1px oklch(0.5684 0.2129 25.98 / 0.22),
+    0 10px 24px -14px oklch(0.35 0.1 28 / 0.5);
+  font-size: 12px;
+  font-weight: 600;
   color: var(--brand-red-text);
   font-variant-numeric: tabular-nums;
+  --rise-ease: var(--ease-out);
 }
 
 .process-step-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
 }
 
 .process-step-text {
-  margin: 8px 0 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--brand-gray);
+  margin: 10px 0 0;
+  max-width: 30ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-muted);
   text-wrap: pretty;
 }
 
-/* The one solid surface on the site: the brand red, kept for the moment of decision. */
+/* The close. The one solid red surface on the site, kept for the moment of decision, with the home
+   range standing in its lower edge. */
 .cta-panel {
-  margin-top: 72px;
-  padding: clamp(32px, 5vw, 56px);
-  border-radius: 28px;
-  background: var(--brand-red);
+  margin-top: 136px;
+}
+
+.cta-core {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(52px, 7vw, 96px) 24px clamp(128px, 15vw, 200px);
+  border-radius: var(--radius-core);
+  background:
+    radial-gradient(
+      90% 70% at 50% 0%,
+      oklch(0.64 0.2 30) 0%,
+      oklch(0.64 0.2 30 / 0) 70%
+    ),
+    var(--brand-red);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.28),
+    0 30px 70px -40px oklch(0.5684 0.2129 25.98 / 0.9);
   color: #fff;
-  box-shadow: 0 30px 70px -34px oklch(0.5684 0.2129 25.98 / 0.8);
   text-align: center;
 }
 
+.cta-ridge {
+  position: absolute;
+  left: -10%;
+  bottom: 0;
+  width: 120%;
+  height: 62%;
+  pointer-events: none;
+}
+
+.cta-ridge-back {
+  fill: oklch(1 0 0 / 0.07);
+}
+
+.cta-ridge-front {
+  fill: oklch(1 0 0 / 0.11);
+}
+
 .cta-title {
-  margin: 0;
-  font-size: clamp(28px, 3.6vw, 44px);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  font-weight: 800;
+  position: relative;
+  max-width: 16ch;
+  margin: 0 auto;
+  font-size: clamp(34px, 4.8vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  font-weight: 600;
   text-wrap: balance;
 }
 
 .cta-text {
-  margin: 14px auto 0;
-  max-width: 560px;
-  font-size: clamp(15px, 1.3vw, 18px);
-  line-height: 1.5;
+  position: relative;
+  margin: 20px auto 0;
+  max-width: 520px;
+  font-size: clamp(16px, 1.35vw, 18px);
+  line-height: 1.55;
   color: oklch(1 0 0 / 0.86);
   text-wrap: balance;
 }
 
 .cta-actions {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 8px 18px;
-  margin-top: 26px;
-}
-
-.cta-button {
-  padding: 13px 22px;
-  height: auto;
-  border-radius: 999px;
-  background: #fff;
-  color: var(--brand-red-text);
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 12px 28px -12px oklch(0.2393 0 0 / 0.5);
-  transition:
-    transform 220ms var(--rise-ease),
-    box-shadow 220ms ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .cta-button:hover {
-    background: #fff;
-    color: var(--brand-red-text);
-    transform: translateY(-1px);
-    box-shadow: 0 16px 34px -12px oklch(0.2393 0 0 / 0.55);
-  }
-}
-
-.cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 6px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 999px;
-  transition: color 200ms ease;
-}
-
-.cta-link > svg {
-  transition: transform 220ms var(--rise-ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .cta-link:hover {
-    color: oklch(1 0 0 / 0.8);
-  }
-
-  .cta-link:hover > svg {
-    transform: translateX(3px);
-  }
-}
-
-.cta-button:focus-visible,
-.cta-link:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px var(--brand-red),
-    0 0 0 4px #fff;
-}
-
-/* Below-the-fold panels rise as they scroll into view: no JS, no observer, nothing hidden where
-   the browser cannot drive an animation by scroll. Panels already in view start revealed. */
-@supports (animation-timeline: view()) {
-  .service-panel:not(:first-child),
-  .process,
-  .cta-panel {
-    animation: riseIn linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 40%;
-  }
+  gap: 10px;
+  margin-top: 34px;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1462,7 +1886,7 @@ html:focus-within {
 @keyframes cardIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    transform: translate3d(0, 18px, 0);
   }
   to {
     opacity: 1;
@@ -1475,7 +1899,7 @@ html:focus-within {
 .work-head {
   position: relative;
   z-index: 20;
-  animation: riseIn 620ms var(--rise-ease) 60ms both;
+  animation: riseIn 700ms var(--rise-ease) 60ms both;
 }
 
 /* The words swap in place; the block's height glides to the new text (see WorkHeader). */
@@ -1505,11 +1929,19 @@ html:focus-within {
   animation: textOut 180ms var(--rise-ease) 40ms forwards;
 }
 
+/* A segmented tray: the chips sit in one recessed track, the current one raised out of it. The
+   track is opaque — the deck deals its cards from under it, and they must not show through. */
 .work-filter {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 26px;
+  gap: 2px;
+  margin-top: 32px;
+  padding: 5px;
+  border-radius: 28px;
+  background: oklch(0.962 0.014 28);
+  box-shadow:
+    inset 0 1px 2px oklch(0.35 0.08 30 / 0.08),
+    0 1px 0 oklch(1 0 0 / 0.9);
 }
 
 .filter-chip {
@@ -1517,59 +1949,64 @@ html:focus-within {
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 9px 15px;
+  padding: 9px 17px;
   border-radius: 999px;
-  background: oklch(1 0 0 / 0.55);
-  border: 1px solid oklch(1 0 0 / 0.9);
   font-size: 14px;
   font-weight: 500;
-  color: var(--brand-gray);
+  letter-spacing: -0.01em;
+  color: var(--ink-muted);
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   transition:
     color 200ms ease,
-    background 200ms ease,
-    border-color 200ms ease;
+    background-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .filter-chip:hover {
-    color: var(--brand-charcoal);
-    background: oklch(1 0 0 / 0.86);
+    color: var(--ink);
+    background: oklch(1 0 0 / 0.5);
   }
 }
 
 .filter-chip[data-active="true"] {
-  color: var(--brand-charcoal);
-  background: oklch(0.5684 0.2129 25.98 / 0.1);
-  border-color: oklch(0.5684 0.2129 25.98 / 0.16);
+  color: var(--ink);
+  font-weight: 560;
+  background: oklch(1 0 0);
+  box-shadow:
+    0 1px 2px oklch(0.2393 0 0 / 0.06),
+    0 8px 18px -10px oklch(0.35 0.08 30 / 0.4);
 }
 
 .filter-chip:focus-visible {
   outline: none;
   box-shadow:
     0 0 0 2px #fff,
-    0 0 0 4px var(--primary);
+    0 0 0 4px var(--brand-red);
 }
 
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 24px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Each card enters a beat after the one before it (--card-order is set per card). */
+/* Each card enters a beat after the one before it (--card-order is set per card). The card is the
+   shell; its core holds the cover and the words. */
 .project-card {
-  @apply glass-panel;
   --card-order: 0;
   --cover-hue: 25;
   display: flex;
-  flex-direction: column;
-  padding: 12px 12px 22px;
-  border-radius: 26px;
-  animation: cardIn 480ms var(--rise-ease) calc(var(--card-order) * 60ms) both;
+  padding: var(--bezel);
+  border-radius: var(--radius-shell);
+  background: var(--shell);
+  box-shadow: var(--shell-edge), var(--shell-shadow);
+  animation: cardIn 560ms var(--rise-ease) calc(var(--card-order) * 60ms) both;
+  transition: box-shadow 220ms var(--rise-ease);
 }
 
 /* Landed by a flight, the grid is dealt from the active chip instead (see card-deck.tsx): the
@@ -1578,50 +2015,241 @@ html:focus-within {
   animation: none;
 }
 
-/* In the air a card is solid and lifted, above the cards it crosses; it settles back into glass
-   on landing. The blurred backdrop stands down in flight — moving it every frame is dear. */
-.project-card {
-  transition:
-    background-color 220ms var(--rise-ease),
-    box-shadow 220ms var(--rise-ease);
-}
-
+/* In the air a card is lifted above the cards it crosses; it settles back on landing. */
 .project-card.is-flying {
   z-index: calc(var(--card-order) + 1);
-  background: oklch(1 0 0 / 0.97);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: 0 34px 80px -34px oklch(0.2393 0 0 / 0.55);
+  box-shadow:
+    var(--shell-edge),
+    0 40px 80px -36px oklch(0.25 0.06 28 / 0.55);
   will-change: transform, opacity;
+}
+
+.project-core {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: 8px 8px 26px;
+  border-radius: var(--radius-core);
+  background: var(--core);
+  box-shadow: var(--core-edge);
 }
 
 .project-cover {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 16 / 9;
-  border-radius: 16px;
+  aspect-ratio: 16 / 10;
+  border-radius: calc(var(--radius-core) - 8px);
   overflow: hidden;
-  background: linear-gradient(
-    150deg,
-    oklch(0.955 0.025 var(--cover-hue)) 0%,
-    oklch(0.86 0.075 var(--cover-hue)) 100%
-  );
+  container-type: inline-size;
+  background:
+    radial-gradient(
+      80% 90% at 12% 0%,
+      oklch(0.985 0.012 var(--cover-hue)) 0%,
+      oklch(0.985 0.012 var(--cover-hue) / 0) 60%
+    ),
+    linear-gradient(
+      155deg,
+      oklch(0.95 0.03 var(--cover-hue)) 0%,
+      oklch(0.85 0.08 var(--cover-hue)) 100%
+    );
 }
 
-.project-monogram {
-  font-size: clamp(64px, 9vw, 120px);
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  color: oklch(1 0 0 / 0.6);
+/* A browser window, cropped by the cover's bottom-right edge like a product shot. */
+.cover-window {
+  position: absolute;
+  top: 14%;
+  left: 11%;
+  right: -3%;
+  bottom: -10%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 2.4cqi 2.4cqi 0 0;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.7),
+    0 6cqi 12cqi -6cqi oklch(0.32 0.1 var(--cover-hue) / 0.45);
+}
+
+.cover-chrome {
+  display: flex;
+  align-items: center;
+  gap: 3cqi;
+  height: 6.4cqi;
+  padding: 0 2.4cqi;
+  background: oklch(0.975 0.006 var(--cover-hue));
+  box-shadow: 0 1px 0 oklch(0.9 0.012 var(--cover-hue));
+}
+
+.cover-lights {
+  display: flex;
+  gap: 1cqi;
+}
+
+.cover-lights > span {
+  width: 1.5cqi;
+  height: 1.5cqi;
+  border-radius: 50%;
+  background: oklch(0.86 0.01 var(--cover-hue));
+}
+
+.cover-address {
+  padding: 0.6cqi 3cqi;
+  border-radius: 1.2cqi;
+  background: #fff;
+  font-size: 2.1cqi;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+}
+
+.cover-screen {
+  position: relative;
+  flex: 1;
+  padding: 6cqi 7cqi;
+  color: var(--ink);
+}
+
+.cover-kicker {
+  display: block;
+  font-size: 1.9cqi;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: oklch(0.5 0.13 var(--cover-hue));
+}
+
+.cover-wordmark {
+  display: block;
+  margin-top: 1.6cqi;
+  font-size: 6.4cqi;
+  font-weight: 620;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.cover-line {
+  display: block;
+  width: 62%;
+  height: 1.4cqi;
+  margin-top: 3.4cqi;
+  border-radius: 1cqi;
+  background: oklch(0.93 0.01 var(--cover-hue));
+}
+
+.cover-line-short {
+  width: 42%;
+  margin-top: 1.6cqi;
+}
+
+.cover-pill {
+  display: block;
+  width: 17cqi;
+  height: 5cqi;
+  margin-top: 4cqi;
+  border-radius: 999px;
+  background: oklch(0.6 0.19 var(--cover-hue));
+}
+
+.cover-screen-shop .cover-wordmark {
+  margin-top: 0;
+  font-size: 4.6cqi;
+}
+
+.cover-products {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.4cqi;
+  margin-top: 4cqi;
+}
+
+.cover-products > span {
+  aspect-ratio: 4 / 5;
+  border-radius: 1.6cqi;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      oklch(0.72 0.14 var(--cover-hue)) 0 18%,
+      transparent 19%
+    ),
+    oklch(0.95 0.025 var(--cover-hue));
+}
+
+.cover-screen-app {
+  display: grid;
+  grid-template-columns: 20% minmax(0, 1fr);
+  padding: 0;
+}
+
+.cover-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqi;
+  padding: 5cqi 3cqi;
+  background: oklch(0.975 0.008 var(--cover-hue));
+}
+
+.cover-sidebar > span {
+  height: 1.4cqi;
+  border-radius: 1cqi;
+  background: oklch(0.9 0.015 var(--cover-hue));
+}
+
+.cover-sidebar > span:first-child {
+  width: 70%;
+  background: oklch(0.6 0.19 var(--cover-hue));
+}
+
+.cover-dashboard {
+  display: flex;
+  flex-direction: column;
+  padding: 5cqi 5cqi 0;
+}
+
+.cover-screen-app .cover-wordmark {
+  margin-top: 0;
+  font-size: 4.4cqi;
+}
+
+.cover-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2cqi;
+  height: 20cqi;
+  margin-top: auto;
+  padding-bottom: 12cqi;
+}
+
+.cover-bars > span {
+  flex: 1;
+  border-radius: 1cqi 1cqi 0 0;
+  background: oklch(0.6 0.19 var(--cover-hue) / 0.85);
+}
+
+.cover-bars > span:nth-child(1) {
+  height: 42%;
+  opacity: 0.45;
+}
+.cover-bars > span:nth-child(2) {
+  height: 70%;
+  opacity: 0.6;
+}
+.cover-bars > span:nth-child(3) {
+  height: 54%;
+  opacity: 0.5;
+}
+.cover-bars > span:nth-child(4) {
+  height: 100%;
+}
+.cover-bars > span:nth-child(5) {
+  height: 78%;
+  opacity: 0.7;
 }
 
 .project-body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 20px 12px 0;
+  padding: 22px 16px 0;
 }
 
 .project-meta {
@@ -1632,7 +2260,7 @@ html:focus-within {
   margin: 0;
   font-size: 13px;
   font-weight: 500;
-  color: var(--brand-gray);
+  color: var(--ink-muted);
 }
 
 .project-year {
@@ -1641,11 +2269,11 @@ html:focus-within {
 }
 
 .project-title {
-  margin: 6px 0 0;
-  font-size: 22px;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  font-weight: 800;
+  margin: 8px 0 0;
+  font-size: 25px;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+  font-weight: 600;
 }
 
 .project-title > a {
@@ -1663,8 +2291,8 @@ html:focus-within {
 .project-summary {
   margin: 8px 0 0;
   font-size: 15px;
-  line-height: 1.5;
-  color: var(--brand-gray);
+  line-height: 1.55;
+  color: var(--ink-muted);
   text-wrap: pretty;
 }
 
@@ -1673,41 +2301,31 @@ html:focus-within {
   flex-wrap: wrap;
   gap: 6px;
   margin: auto 0 0;
-  padding: 18px 0 0;
+  padding: 20px 0 0;
   list-style: none;
 }
 
 .project-tag {
   display: inline-block;
-  padding: 7px 11px;
+  padding: 7px 12px;
   border-radius: 999px;
-  background: oklch(0.5684 0.2129 25.98 / 0.09);
+  background: oklch(0.5684 0.2129 25.98 / 0.08);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 560;
   color: var(--brand-red-text);
   text-decoration: none;
   transition: background 200ms ease;
 }
 
-/* Press feedback stays on the control, never on an entire non-clickable card. */
-.nav-cta:active,
-.hero-cta:active,
-.cta-button:active,
-.nav-menu-button:active,
-.service-index-link:active {
-  transform: scale(0.97);
-  transition-duration: 120ms;
-}
-
 .filter-chip:active,
 .project-tag:active {
-  background: oklch(0.5684 0.2129 25.98 / 0.18);
+  background: oklch(0.5684 0.2129 25.98 / 0.16);
   transition-duration: 80ms;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .project-tag:hover {
-    background: oklch(0.5684 0.2129 25.98 / 0.16);
+    background: oklch(0.5684 0.2129 25.98 / 0.14);
   }
 }
 
@@ -1716,22 +2334,23 @@ html:focus-within {
   outline: none;
   box-shadow:
     0 0 0 2px #fff,
-    0 0 0 4px var(--primary);
+    0 0 0 4px var(--brand-red);
 }
 
 .work-empty {
-  @apply glass-panel;
-  padding: 40px 24px;
-  border-radius: 28px;
+  padding: 48px 24px;
+  border-radius: var(--radius-shell);
+  background: var(--core);
+  box-shadow: var(--core-edge), var(--shell-shadow);
   text-align: center;
-  animation: cardIn 480ms var(--rise-ease) both;
+  animation: cardIn 560ms var(--rise-ease) both;
 }
 
 .work-empty-title {
   margin: 0;
-  font-size: 22px;
-  letter-spacing: -0.03em;
-  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  font-weight: 600;
 }
 
 .work-empty-text {
@@ -1739,7 +2358,103 @@ html:focus-within {
   max-width: 440px;
   font-size: 15px;
   line-height: 1.5;
-  color: var(--brand-gray);
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Footer — every content page closes the same way
+   --------------------------------------------------------------------------- */
+
+.site-footer {
+  position: relative;
+  margin-top: auto;
+  padding: 0 24px;
+  overflow: hidden;
+}
+
+.footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 56px 0 28px;
+  box-shadow: 0 -1px 0 var(--hairline);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr) auto;
+  gap: 48px;
+  align-items: start;
+}
+
+.footer-tagline {
+  max-width: 28ch;
+  margin: 16px 0 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+.footer-nav ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-link {
+  display: inline-block;
+  padding: 5px 0;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .footer-link:hover {
+    color: var(--brand-red-text);
+  }
+}
+
+.footer-contact-title {
+  margin: 0 0 18px;
+  font-size: 22px;
+  font-weight: 580;
+  letter-spacing: -0.04em;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 64px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.footer-place {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The name, set large and faint, sinking into the page's lower edge. */
+.footer-wordmark {
+  margin: 0 auto -0.2em;
+  max-width: 1160px;
+  font-size: clamp(96px, 23vw, 330px);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.075em;
+  text-align: center;
+  white-space: nowrap;
+  color: oklch(0.5684 0.2129 25.98 / 0.07);
+  user-select: none;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1757,7 +2472,7 @@ html:focus-within {
   }
 
   .nav-pill {
-    padding: 8px 8px 8px 16px;
+    padding: 7px 7px 7px 16px;
   }
 }
 
@@ -1767,11 +2482,40 @@ html:focus-within {
     --nav-gutter: 16px;
     /* TODO: mobile ridge height — 58vh judged by eye against the hero + CTA row at 390×844 */
     --ridge-height: 58vh;
+    --radius-shell: 26px;
+    --bezel: 5px;
   }
 
-  /* Real links: display none, never opacity or visibility. */
-  .pins {
-    display: none;
+  /* The summits stay doors on a phone too: smaller markers, same range. */
+  .pin-body {
+    --pin-anchor: 11.5px; /* 8px padding + 3.5px radius */
+  }
+
+  .pin-body-cairn {
+    --pin-anchor: 3px;
+  }
+
+  .pin-gateway {
+    gap: 5px;
+    padding: 8px 6px 10px;
+  }
+
+  .pin-disc {
+    width: 38px;
+    height: 38px;
+    box-shadow:
+      0 0 0 4px oklch(1 0 0 / 0.42),
+      0 10px 24px -12px oklch(0.35 0.1 28 / 0.55);
+  }
+
+  .pin-disc > svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pin-label {
+    padding: 3px 8px;
+    font-size: 12px;
   }
 
   .hero {
@@ -1782,17 +2526,16 @@ html:focus-within {
     max-width: 100%;
     font-size: 12px;
     line-height: 1.5;
-    text-wrap: balance;
   }
 
   .hero-title {
-    font-size: clamp(34px, 10.5vw, 64px);
-    line-height: 1.04;
+    font-size: clamp(38px, 11.4vw, 64px);
+    line-height: 1.02;
   }
 
   .hero-lede {
-    max-width: 32ch;
-    margin-top: 20px;
+    max-width: 30ch;
+    margin-top: 18px;
     font-size: 16px;
   }
 
@@ -1801,60 +2544,103 @@ html:focus-within {
   }
 
   .filter-chip {
-    padding-inline: 12px;
+    padding-inline: 13px;
     font-size: 13px;
   }
 
   .page {
-    padding: 28px 16px 72px;
+    padding: 36px 16px 88px;
   }
 
   .page-head {
-    margin-bottom: 32px;
+    margin-bottom: 36px;
   }
 
   .service-panel {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 22px;
-    border-radius: 22px;
     scroll-margin-top: 84px;
   }
 
-  .service-aside {
-    margin-top: 0;
-    padding: 22px 0 0;
-    border-left: 0;
-    border-top: 1px solid oklch(0.2393 0 0 / 0.08);
+  .service-core {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 26px 22px 24px;
+  }
+
+  .service-promise {
+    margin-bottom: 0;
+  }
+
+  .service-link {
+    order: 1;
+    justify-self: start;
+    margin-top: 28px;
+  }
+
+  .service-head {
+    display: contents;
+  }
+
+  .service-body {
+    padding-top: 20px;
+  }
+
+  .service-deliverables {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .process,
   .cta-panel {
-    margin-top: 56px;
+    margin-top: 88px;
+  }
+
+  .section-head {
+    margin-bottom: 36px;
+  }
+
+  /* The route turns vertical: one waypoint per row, the track down their left edge. */
+  .process-track {
+    top: 22px;
+    bottom: 60px;
+    left: 22px;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .process-track-ink {
+    background: linear-gradient(
+      180deg,
+      var(--brand-red),
+      oklch(0.5684 0.2129 25.98 / 0.45)
+    );
   }
 
   .process-steps {
     grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    gap: 32px;
   }
 
   .process-step {
     display: grid;
-    grid-template-columns: 28px minmax(0, 1fr);
-    column-gap: 14px;
-    padding: 22px;
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 20px;
   }
 
-  .process-step-number {
-    grid-row: 1 / 3;
-    margin: 3px 0 0;
+  .process-node {
+    margin: 0;
   }
 
-  .process-step-text {
-    grid-column: 2;
+  .process-step-title {
+    padding-top: 9px;
+  }
+
+  .cta-core {
+    padding-inline: 20px;
   }
 
   .project-grid {
     grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 
   .project-tag {
@@ -1862,16 +2648,42 @@ html:focus-within {
     display: inline-flex;
     align-items: center;
   }
+
+  .footer-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .footer-inner {
+    padding-top: 44px;
+  }
+
+  .footer-bottom {
+    margin-top: 44px;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .process-steps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .process-track {
+    right: calc(25% - 37px);
+  }
+
+  .footer-top {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .footer-contact {
+    grid-column: 1 / -1;
   }
 }
 
 /* ---------------------------------------------------------------------------
-   Reduced motion — zoom at full scale in 200ms (accepted risk, decided by the user)
+   Reduced motion — zoom at full scale in 200ms (accepted risk, decided by the user). Everything
+   else keeps its fades and loses its travel.
    --------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1880,7 +2692,9 @@ html:focus-within {
     --zoom-duration: 200ms;
   }
 
-  .ridge-mist {
+  .ridge-mist,
+  .live-dot::after,
+  .pin-cairn {
     animation: none;
   }
 
@@ -1890,7 +2704,7 @@ html:focus-within {
 
   .nav-pill,
   .hero-badge,
-  .hero-title,
+  .hero-word,
   .hero-lede,
   .hero-actions,
   .pin-gateway,
@@ -1899,9 +2713,6 @@ html:focus-within {
   .page-lede,
   .service-index,
   .service-panel:first-child,
-  .service-panel:not(:first-child),
-  .process,
-  .cta-panel,
   .work-head,
   .work-title,
   .work-lede,
@@ -1910,6 +2721,9 @@ html:focus-within {
     animation-name: fadeIn;
     animation-duration: 160ms;
     animation-delay: 0ms;
+  }
+
+  .nav-pill {
     animation-timeline: auto;
   }
 
@@ -1920,21 +2734,17 @@ html:focus-within {
     animation-delay: 0ms;
   }
 
-  .pin-cairn {
-    animation: none;
-  }
-
   .nav-indicator,
   .nav-link,
   .nav-menu-button,
-  .nav-cta,
-  .hero-cta,
-  .hero-link > svg,
+  .button,
+  .button-icon,
   .page-link > svg,
-  .cta-button,
-  .cta-link > svg,
   .service-index-link,
-  .pin-disc {
+  .pin-stem,
+  .pin-disc,
+  .pin-label,
+  .menu-glyph > span {
     transition-duration: 0ms;
   }
 
@@ -1948,11 +2758,30 @@ html:focus-within {
     opacity: 0;
   }
 
-  .nav-cta:active,
-  .hero-cta:active,
-  .cta-button:active,
-  .nav-menu-button:active,
-  .service-index-link:active {
+  .menu-item {
+    transition: opacity 160ms ease;
+  }
+
+  .menu-sheet[data-starting-style] .menu-item {
     transform: none;
+  }
+
+  .button:active,
+  .nav-menu-button:active,
+  .service-index-link:active,
+  .pin-gateway:active .pin-disc,
+  .button:hover > .button-icon,
+  .pin-gateway:hover .pin-stem,
+  .pin-gateway:hover .pin-disc,
+  .pin-gateway:hover .pin-label {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .nav-pill,
+  .menu-sheet {
+    background: var(--surface-grad-top);
+    backdrop-filter: none;
   }
 }

@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 
+import { SiteFooter } from "@/app/_components/site-footer";
 import { AboutStory } from "@/app/about/_components/about-story";
 
 import "./about.css";
-
-const geist = localFont({
-  src: "./_assets/geist-variable.ttf",
-  display: "swap",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "About",
@@ -19,9 +13,12 @@ export const metadata: Metadata = {
 };
 
 const AboutPage = () => (
-  <div className={`about-page ${geist.className}`}>
-    <AboutStory />
-  </div>
+  <>
+    <div className="about-page">
+      <AboutStory />
+    </div>
+    <SiteFooter />
+  </>
 );
 
 export default AboutPage;

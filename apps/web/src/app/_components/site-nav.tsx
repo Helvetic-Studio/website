@@ -1,11 +1,10 @@
 "use client";
 
-import { buttonVariants } from "@website/ui/components/button";
-import { cn } from "@website/ui/lib/utils";
 import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
+import { ArrowIcon } from "@/app/_components/arrow-icon";
 import { FlightLink } from "@/app/_components/flight-link";
 import { MobileMenu } from "@/app/_components/mobile-menu";
 import type { Flight } from "@/app/_lib/flight";
@@ -134,8 +133,11 @@ export const SiteNav = () => {
             </li>
           ))}
         </ul>
-        <FlightLink href="/contact" className={cn(buttonVariants(), "nav-cta")}>
+        <FlightLink href="/contact" className="button button-primary nav-cta">
           Get in touch
+          <span className="button-icon">
+            <ArrowIcon />
+          </span>
         </FlightLink>
         <MobileMenu pathname={pathname} />
       </nav>

@@ -102,7 +102,7 @@ test("reduced motion still lands on the gateway", async ({ page }) => {
 
   await expect(page).toHaveURL("/about");
   await expect(
-    page.getByRole("heading", { level: 1, name: "About" })
+    page.getByRole("heading", { level: 1, name: /Small studio/u })
   ).toBeVisible();
   await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
   await expect

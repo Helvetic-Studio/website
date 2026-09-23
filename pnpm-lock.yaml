@@ -205,12 +205,6 @@ settings:
 
 catalogs:
   default:
-    '@hugeicons/core-free-icons':
-      specifier: 4.2.3
-      version: 4.2.3
-    '@hugeicons/react':
-      specifier: 1.1.9
-      version: 1.1.9
     '@tailwindcss/postcss':
       specifier: 4.3.3
       version: 4.3.3
@@ -325,12 +319,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@hugeicons/core-free-icons':
-        specifier: 'catalog:'
-        version: 4.2.3
-      '@hugeicons/react':
-        specifier: 'catalog:'
-        version: 1.1.9(react@19.2.8)
       '@opennextjs/cloudflare':
         specifier: ^1.20.2
         version: 1.20.2(next@16.3.0(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(supports-color@10.2.2)(wrangler@4.119.0)

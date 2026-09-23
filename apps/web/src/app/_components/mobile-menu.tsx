@@ -1,8 +1,5 @@
 "use client";
 
-import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { buttonVariants } from "@website/ui/components/button";
 import {
   Sheet,
   SheetClose,
@@ -10,9 +7,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@website/ui/components/sheet";
-import { cn } from "@website/ui/lib/utils";
+import type { CSSProperties } from "react";
 import { useState } from "react";
 
+import { ArrowIcon } from "@/app/_components/arrow-icon";
 import { FlightLink } from "@/app/_components/flight-link";
 import { isWithinRoute } from "@/app/_lib/routes";
 import { SITE_LINKS } from "@/app/_lib/site-links";
@@ -21,7 +19,22 @@ export interface MobileMenuProps {
   pathname: string;
 }
 
-// Below 768 the pill unrolls into a top Sheet. Not a Drawer: five links want no drag physics.
+type ItemStyle = CSSProperties & Record<"--item", string>;
+
+/**
+ * Two lines drawn in CSS. The trigger shows them level; the sheet's close button shows the same
+ * two lines crossed and starts from level, so opening reads as one icon morphing into an X.
+ */
+const MenuGlyph = () => (
+  <span className="menu-glyph" aria-hidden="true">
+    <span />
+    <span />
+  </span>
+);
+
+const numeral = (position: number) => String(position).padStart(2, "0");
+
+// Below 960 the pill unrolls into a top Sheet. Not a Drawer: five links want no drag physics.
 // The sheet covers the pill and repeats its header row, because a modal dialog hides everything
 // outside itself from assistive technology — the pill's own trigger cannot be the close control.
 export const MobileMenu = ({ pathname }: MobileMenuProps) => {
@@ -41,7 +54,7 @@ export const MobileMenu = ({ pathname }: MobileMenuProps) => {
           />
         }
       >
-        <HugeiconsIcon icon={Menu01Icon} size={22} strokeWidth={2} />
+        <MenuGlyph />
       </SheetTrigger>
       <SheetContent side="top" className="menu-sheet" showCloseButton={false}>
         <SheetTitle className="sr-only">Menu</SheetTitle>
@@ -54,37 +67,49 @@ export const MobileMenu = ({ pathname }: MobileMenuProps) => {
             render={
               <button
                 type="button"
-                className="nav-menu-button"
+                className="nav-menu-button is-close"
                 aria-label="Close menu"
               />
             }
           >
-            <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={2} />
+            <MenuGlyph />
           </SheetClose>
         </div>
         <ul className="menu-list">
-          {SITE_LINKS.map((link) => (
-            <li key={link.href}>
-              <FlightLink
-                href={link.href}
-                className="menu-link"
-                aria-current={
-                  isWithinRoute(pathname, link.href) ? "page" : undefined
-                }
-                onClick={close}
-              >
-                {link.label}
-              </FlightLink>
-            </li>
-          ))}
+          {SITE_LINKS.map((link, index) => {
+            const style: ItemStyle = { "--item": String(index) };
+            return (
+              <li key={link.href} className="menu-item" style={style}>
+                <FlightLink
+                  href={link.href}
+                  className="menu-link"
+                  aria-current={
+                    isWithinRoute(pathname, link.href) ? "page" : undefined
+                  }
+                  onClick={close}
+                >
+                  <span className="menu-link-number" aria-hidden="true">
+                    {numeral(index + 1)}
+                  </span>
+                  {link.label}
+                </FlightLink>
+              </li>
+            );
+          })}
         </ul>
-        <FlightLink
-          href="/contact"
-          className={cn(buttonVariants(), "nav-cta menu-cta")}
-          onClick={close}
-        >
-          Get in touch
-        </FlightLink>
+        <div className="menu-foot">
+          <FlightLink
+            href="/contact"
+            className="button button-primary menu-cta"
+            onClick={close}
+          >
+            Get in touch
+            <span className="button-icon">
+              <ArrowIcon />
+            </span>
+          </FlightLink>
+          <p className="menu-note">Wil SG · Switzerland</p>
+        </div>
       </SheetContent>
     </Sheet>
   );

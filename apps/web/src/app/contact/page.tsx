@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 
+import { SiteFooter } from "@/app/_components/site-footer";
 import { ContactArrow } from "@/app/contact/_components/contact-arrow";
 import { ProjectEnquiry } from "@/app/contact/_components/project-enquiry";
 import { CONTACT } from "@/app/contact/_lib/contact";
 
 import "./contact.css";
-
-const geist = localFont({
-  src: "../../_assets/geist-variable.ttf",
-  display: "swap",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -50,64 +44,62 @@ const directLinks = [
 ];
 
 const ContactPage = () => (
-  <div className={`contact-page ${geist.className}`}>
-    <div className="contact-layout">
-      <div className="contact-intro">
-        <p className="contact-eyebrow">
-          <span aria-hidden="true" className="contact-spark">
-            ✳
-          </span>
-          A good place to begin
-        </p>
-        <h1>
-          Small hello.
-          <br />{" "}
-          <span className="contact-title-accent">Big possibilities.</span>
-        </h1>
-        <p className="contact-lede">
-          Every good project starts with a conversation. Tell us what you have
-          in mind. We’ll figure out the next step together.
-        </p>
-      </div>
-      <div className="contact-form-shell">
-        <ProjectEnquiry email={CONTACT.email} />
-      </div>
-      <div className="contact-direct">
-        <h2>More of a conversation person?</h2>
-        <p>Skip the form. Reach us directly.</p>
-        <ul className="contact-links">
-          {directLinks.map(({ label, value, href, note }) => (
-            <li className="contact-link-item" key={label}>
-              {href === null ? (
-                <div className="contact-link">
-                  <span className="contact-link-label">{label}</span>
-                  <span className="contact-link-detail">{note}</span>
-                  <span className="contact-coming-soon">Soon</span>
-                </div>
-              ) : (
-                <a className="contact-link" href={href}>
-                  <span className="contact-link-label">{label}</span>
-                  <span className="contact-link-detail">{value}</span>
-                  <span className="contact-link-arrow">
-                    <ContactArrow />
-                  </span>
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
-        <p className="contact-location">
-          <span className="contact-cross" aria-hidden="true" />
-          Based in Switzerland. Built around you.
-        </p>
+  <>
+    <div className="contact-page">
+      <div className="contact-layout">
+        <div className="contact-intro">
+          <p className="contact-eyebrow">
+            <span aria-hidden="true" className="contact-spark">
+              ✳
+            </span>
+            A good place to begin
+          </p>
+          <h1>
+            Small hello.
+            <br />{" "}
+            <span className="contact-title-accent">Big possibilities.</span>
+          </h1>
+          <p className="contact-lede">
+            Every good project starts with a conversation. Tell us what you have
+            in mind. We’ll figure out the next step together.
+          </p>
+        </div>
+        <div className="contact-form-shell">
+          <ProjectEnquiry email={CONTACT.email} />
+        </div>
+        <div className="contact-direct">
+          <h2>More of a conversation person?</h2>
+          <p>Skip the form. Reach us directly.</p>
+          <ul className="contact-links">
+            {directLinks.map(({ label, value, href, note }) => (
+              <li className="contact-link-item" key={label}>
+                {href === null ? (
+                  <div className="contact-link">
+                    <span className="contact-link-label">{label}</span>
+                    <span className="contact-link-detail">{note}</span>
+                    <span className="contact-coming-soon">Soon</span>
+                  </div>
+                ) : (
+                  <a className="contact-link" href={href}>
+                    <span className="contact-link-label">{label}</span>
+                    <span className="contact-link-detail">{value}</span>
+                    <span className="contact-link-arrow">
+                      <ContactArrow />
+                    </span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="contact-location">
+            <span className="contact-cross" aria-hidden="true" />
+            Based in Switzerland. Built around you.
+          </p>
+        </div>
       </div>
     </div>
-    <footer className="contact-footer">
-      <span>Helvetic Studio</span>
-      <span>A little ambition goes a long way.</span>
-      <span>Design with purpose. Build with care.</span>
-    </footer>
-  </div>
+    <SiteFooter invite={false} />
+  </>
 );
 
 export default ContactPage;
