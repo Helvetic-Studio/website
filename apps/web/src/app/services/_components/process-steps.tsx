@@ -8,7 +8,7 @@ const STEPS = [
   },
   {
     title: "Design",
-    text: "Wireframes first, then the visual design. Nothing gets built before you've approved it.",
+    text: "Wireframes first, then the visual design. Nothing gets built before you’ve approved it.",
   },
   {
     title: "Build",

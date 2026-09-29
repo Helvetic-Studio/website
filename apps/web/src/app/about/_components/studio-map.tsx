@@ -1,11 +1,11 @@
 import Image from "next/image";
 
 export const StudioMap = () => (
-  <figure className="about-map-shell">
-    <div className="about-map-core">
+  <figure className="about-map bezel">
+    <div className="about-map-core bezel-core">
       <div className="about-map-topline">
         <span className="about-micro">Our corner of Switzerland</span>
-        <span className="about-swiss-cross" aria-hidden="true" />
+        <span className="swiss-cross" aria-hidden="true" />
       </div>
       <div className="about-map-art">
         <Image
@@ -20,7 +20,7 @@ export const StudioMap = () => (
             Wil SG <span>We’re here</span>
           </span>
           <span className="about-map-pin-stem" />
-          <span className="about-map-pin-dot" />
+          <span className="about-map-pin-dot live-dot" />
         </div>
         <span className="about-map-country" aria-hidden="true">
           Switzerland

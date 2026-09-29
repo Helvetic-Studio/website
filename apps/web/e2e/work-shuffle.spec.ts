@@ -58,7 +58,7 @@ test("a second chip clicked mid-gather lands on the last one, with every card se
     filter.getByRole("link", { name: "Online shops" })
   ).toHaveAttribute("aria-current", "page");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Shops we've built" })
+    page.getByRole("heading", { level: 1, name: "Shops we’ve built" })
   ).toBeVisible();
   await expectSettled(page, projectsFor("shops").length);
   await expectChipsAtRest(filter.getByRole("link"));
@@ -79,7 +79,7 @@ test("back after a shuffle brings the whole catalogue out again", async ({
 
   await expect(page).toHaveURL("/work");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Work we're proud of." })
+    page.getByRole("heading", { level: 1, name: "Work we’re proud of." })
   ).toBeVisible();
   await expectSettled(page, PROJECTS.length);
   await expectChipsAtRest(filter.getByRole("link"));
@@ -92,7 +92,7 @@ test("the heading keeps one set of words on screen through a shuffle", async ({
   await expect(page.locator(".nav-indicator")).toHaveCSS("opacity", "1");
 
   const title = page.locator(".work-title");
-  await expect(title).toHaveText("Websites we've built");
+  await expect(title).toHaveText("Websites we’ve built");
 
   await filterOf(page).getByRole("link", { name: "Care & growth" }).click();
 

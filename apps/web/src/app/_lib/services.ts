@@ -34,7 +34,7 @@ export const SERVICES: readonly Service[] = [
   {
     slug: "websites",
     title: "Websites",
-    promise: "Your company's front door.",
+    promise: "Your company’s front door.",
     description:
       "A company site should load fast, read clearly and make the next step obvious. We plan the structure, write around your content, design in your brand and build it to last — on a CMS you can edit yourself.",
     deliverables: [
@@ -46,16 +46,16 @@ export const SERVICES: readonly Service[] = [
     ],
     goodFor:
       "Companies that need a site customers trust and search engines can find.",
-    workTitle: "Websites we've built",
+    workTitle: "Websites we’ve built",
     workLede: "Company sites, landing pages and relaunches.",
-    workLinkLabel: "See websites we've built",
+    workLinkLabel: "See websites we’ve built",
   },
   {
     slug: "shops",
     title: "Online shops",
     promise: "Sell in Switzerland without friction.",
     description:
-      "A shop that fits how Swiss customers actually pay: TWINT, cards and invoice, with shipping and VAT handled correctly. Connected to your stock and accounting, so orders don't turn into admin.",
+      "A shop that fits how Swiss customers actually pay: TWINT, cards and invoice, with shipping and VAT handled correctly. Connected to your stock and accounting, so orders don’t turn into admin.",
     deliverables: [
       "Product catalogue and checkout",
       "TWINT, cards and invoice",
@@ -65,14 +65,14 @@ export const SERVICES: readonly Service[] = [
     ],
     goodFor:
       "Retailers and brands that want to sell online without hiring an admin team.",
-    workTitle: "Shops we've built",
+    workTitle: "Shops we’ve built",
     workLede: "Online shops with Swiss payment methods built in.",
-    workLinkLabel: "See shops we've built",
+    workLinkLabel: "See shops we’ve built",
   },
   {
     slug: "applications",
     title: "Web applications",
-    promise: "Custom tools for the work off-the-shelf software can't do.",
+    promise: "Custom tools for the work off-the-shelf software can’t do.",
     description:
       "Customer portals, booking systems, dashboards and internal tools — built on the web, so there is nothing to install and everyone sees the same data. We start with a prototype you can click through, then build in short, reviewed iterations.",
     deliverables: [
@@ -84,9 +84,9 @@ export const SERVICES: readonly Service[] = [
     ],
     goodFor:
       "Companies replacing spreadsheets, email chains or a tool that no longer fits.",
-    workTitle: "Applications we've built",
+    workTitle: "Applications we’ve built",
     workLede: "Portals, booking systems and internal tools.",
-    workLinkLabel: "See applications we've built",
+    workLinkLabel: "See applications we’ve built",
   },
   {
     slug: "design",
@@ -121,7 +121,7 @@ export const SERVICES: readonly Service[] = [
       "Monthly report and check-in",
     ],
     goodFor:
-      "Any site or app that matters to the business and shouldn't quietly decay.",
+      "Any site or app that matters to the business and shouldn’t quietly decay.",
     workTitle: "Sites and apps we look after",
     workLede: "Ongoing care, improvements and growth.",
     workLinkLabel: "See what we look after",

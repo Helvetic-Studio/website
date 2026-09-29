@@ -12,13 +12,13 @@ test("a service leads to its own slice of the work, and the filters shuffle with
   await page.goto("/services");
   await expect(page.locator(".nav-indicator")).toHaveCSS("opacity", "1");
 
-  const door = page.getByRole("link", { name: "See websites we've built" });
+  const door = page.getByRole("link", { name: "See websites we’ve built" });
   await door.scrollIntoViewIfNeeded();
   await door.click();
 
   await expect(page).toHaveURL("/work/websites");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Websites we've built" })
+    page.getByRole("heading", { level: 1, name: "Websites we’ve built" })
   ).toBeVisible();
   await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
   const filter = page.getByRole("navigation", { name: "Filter by service" });
@@ -70,7 +70,7 @@ test("a service leads to its own slice of the work, and the filters shuffle with
 
   await expect(page).toHaveURL("/work");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Work we're proud of." })
+    page.getByRole("heading", { level: 1, name: "Work we’re proud of." })
   ).toBeVisible();
 });
 

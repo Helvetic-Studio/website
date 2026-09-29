@@ -86,7 +86,7 @@ test("a summit pin lands on its gateway", async ({ page }) => {
 
   await expect(page).toHaveURL("/work");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Work we're proud of." })
+    page.getByRole("heading", { level: 1, name: "Work we’re proud of." })
   ).toBeVisible();
   await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
   await expect

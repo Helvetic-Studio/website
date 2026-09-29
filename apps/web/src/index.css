@@ -868,9 +868,18 @@ body::after {
   }
 }
 
+/* Without a scroll timeline the glass never thickens, so it starts thick: over the red and ink
+   closing panels the thin glass drops the links below AA. */
+@supports not (animation-timeline: scroll()) {
+  .nav-pill {
+    background: oklch(1 0 0 / 0.92);
+  }
+}
+
+/* 0.92 keeps the muted links at AA (≥ 4.5:1) even over the red and ink closing panels. */
 @keyframes navThicken {
   to {
-    background: oklch(1 0 0 / 0.84);
+    background: oklch(1 0 0 / 0.92);
     box-shadow:
       inset 0 0 0 1px oklch(1 0 0 / 0.95),
       0 1px 2px oklch(0.2393 0 0 / 0.05),
@@ -1309,13 +1318,17 @@ body:has(.menu-sheet) .nav-pill {
   text-wrap: balance;
 }
 
-.hero-line {
+/* ---------------------------------------------------------------------------
+   Masked title (MaskedTitle) — every page's display heading
+   --------------------------------------------------------------------------- */
+
+.mask-line {
   display: block;
 }
 
 /* Each word rises out of its own mask. The mask is padded below so descenders are never clipped
    once the word is home, and pulled back so the line box doesn't grow. */
-.hero-word-mask {
+.mask-word-wrap {
   display: inline-block;
   overflow: clip;
   padding: 0 0.02em 0.1em;
@@ -1323,10 +1336,10 @@ body:has(.menu-sheet) .nav-pill {
   vertical-align: top;
 }
 
-.hero-word {
+.mask-word {
   display: inline-block;
-  animation: wordRise 1000ms var(--ease-out) calc(140ms + var(--word) * 65ms)
-    both;
+  animation: wordRise 1000ms var(--ease-out)
+    calc(var(--words-delay, 140ms) + var(--word) * 65ms) both;
 }
 
 @keyframes wordRise {
@@ -1338,7 +1351,7 @@ body:has(.menu-sheet) .nav-pill {
   }
 }
 
-.hero-accent {
+.mask-accent {
   color: var(--brand-red-text);
 }
 
@@ -1779,8 +1792,8 @@ html:focus-within {
   text-wrap: pretty;
 }
 
-/* The close. The one solid red surface on the site, kept for the moment of decision, with the home
-   range standing in its lower edge. */
+/* The close (ClosingPanel). Red is the site's one solid red surface, kept for the moment of
+   decision; ink is the quieter, personal close. Both carry the home range in their lower edge. */
 .cta-panel {
   margin-top: 136px;
 }
@@ -1790,6 +1803,11 @@ html:focus-within {
   overflow: hidden;
   padding: clamp(52px, 7vw, 96px) 24px clamp(128px, 15vw, 200px);
   border-radius: var(--radius-core);
+  color: #fff;
+  text-align: center;
+}
+
+.cta-core-red {
   background:
     radial-gradient(
       90% 70% at 50% 0%,
@@ -1800,8 +1818,29 @@ html:focus-within {
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.28),
     0 30px 70px -40px oklch(0.5684 0.2129 25.98 / 0.9);
-  color: #fff;
-  text-align: center;
+}
+
+/* Night over the range: the front ridge keeps the last of the alpenglow. */
+.cta-core-ink {
+  --ridge-back: oklch(1 0 0 / 0.05);
+  --ridge-front: oklch(0.5684 0.2129 25.98 / 0.55);
+  background:
+    radial-gradient(
+      90% 70% at 50% 0%,
+      oklch(0.36 0.02 30) 0%,
+      oklch(0.36 0.02 30 / 0) 70%
+    ),
+    oklch(0.24 0.008 30);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.14),
+    0 30px 70px -40px oklch(0.2 0.02 30 / 0.8);
+}
+
+.cta-eyebrow {
+  position: relative;
+  background: oklch(1 0 0 / 0.1);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.18);
+  color: oklch(1 0 0 / 0.88);
 }
 
 .cta-ridge {
@@ -1814,11 +1853,11 @@ html:focus-within {
 }
 
 .cta-ridge-back {
-  fill: oklch(1 0 0 / 0.07);
+  fill: var(--ridge-back, oklch(1 0 0 / 0.07));
 }
 
 .cta-ridge-front {
-  fill: oklch(1 0 0 / 0.11);
+  fill: var(--ridge-front, oklch(1 0 0 / 0.11));
 }
 
 .cta-title {
@@ -1838,7 +1877,9 @@ html:focus-within {
   max-width: 520px;
   font-size: clamp(16px, 1.35vw, 18px);
   line-height: 1.55;
-  color: oklch(1 0 0 / 0.86);
+  color: oklch(
+    1 0 0 / 0.96
+  ); /* 0.86 fell to ~3:1 on the gradient's lighter top */
   text-wrap: balance;
 }
 
@@ -2704,7 +2745,7 @@ html:focus-within {
 
   .nav-pill,
   .hero-badge,
-  .hero-word,
+  .mask-word,
   .hero-lede,
   .hero-actions,
   .pin-gateway,
@@ -2723,8 +2764,21 @@ html:focus-within {
     animation-delay: 0ms;
   }
 
+  /* The thickening is a scroll-linked state, not motion: keep it, only the drop becomes a fade. */
   .nav-pill {
     animation-timeline: auto;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .nav-pill {
+      animation:
+        fadeIn 160ms ease both,
+        navThicken linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range:
+        normal,
+        0 160px;
+    }
   }
 
   .work-title[data-shuffle="out"],

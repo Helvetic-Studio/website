@@ -18,7 +18,7 @@ interface Heading {
 
 const ALL_WORK: Heading = {
   filter: "all",
-  title: "Work we're proud of.",
+  title: "Work we’re proud of.",
   lede: "Websites, shops, applications and design for companies across Switzerland. Filter by service, or browse the lot.",
 };
 

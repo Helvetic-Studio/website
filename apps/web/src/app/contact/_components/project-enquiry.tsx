@@ -81,7 +81,7 @@ export const ProjectEnquiry = ({ email }: { email: string | null }) => {
 
   return (
     <form
-      className="contact-form"
+      className="contact-form bezel-core"
       onSubmit={prepareEnquiry}
       onChange={() => {
         setDraftReady(false);
@@ -213,13 +213,12 @@ export const ProjectEnquiry = ({ email }: { email: string | null }) => {
       </fieldset>
       <div className="contact-submit-row">
         <p>
-          A starting point.
-          <br className="contact-submit-break" />
+          A starting point. <br className="contact-submit-break" />
           No commitment needed.
         </p>
-        <button className="contact-submit" type="submit">
+        <button className="button button-primary contact-submit" type="submit">
           {email === null ? "Prepare your enquiry" : "Create email enquiry"}
-          <span>
+          <span className="button-icon">
             <ContactArrow />
           </span>
         </button>

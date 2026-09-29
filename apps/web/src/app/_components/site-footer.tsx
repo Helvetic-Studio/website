@@ -21,7 +21,8 @@ export const SiteFooter = ({ invite = true }: SiteFooterProps) => (
             helvetic.studio
           </FlightLink>
           <p className="footer-tagline">
-            Thoughtfully designed. Precisely built. In Switzerland.
+            {/* Non-breaking spaces keep each phrase whole: never "… In / Switzerland." */}
+            Thoughtfully designed. Precisely&nbsp;built. In&nbsp;Switzerland.
           </p>
         </div>
         <nav aria-label="Footer" className="footer-nav">
