@@ -1,5 +1,6 @@
 import { ArrowIcon } from "@/app/_components/arrow-icon";
 import { FlightLink } from "@/app/_components/flight-link";
+import { FADE_WHEN_REDUCED, PAGE_LINK } from "@/app/_components/styles";
 import type { Project } from "@/app/_lib/projects";
 import type { Service } from "@/app/_lib/services";
 import { CardDeck } from "@/app/work/_components/card-deck";
@@ -12,16 +13,18 @@ export interface ProjectGridProps {
 }
 
 const WorkEmpty = ({ service }: { service: Service | undefined }) => (
-  <div className="work-empty">
-    <h2 className="work-empty-title">
+  <div
+    className={`rounded-shell bg-core px-6 py-12 text-center shadow-[inset_0_1px_0_oklch(1_0_0),inset_0_0_0_1px_oklch(1_0_0/0.85),0_1px_2px_oklch(0.35_0.06_30/0.04),0_28px_70px_-44px_oklch(0.35_0.08_30/0.34)] animate-[cardIn_560ms_var(--rise-ease)_both] ${FADE_WHEN_REDUCED}`}
+  >
+    <h2 className="text-[24px] font-semibold tracking-[-0.04em]">
       {service === undefined
         ? "Nothing published yet."
         : `No ${service.title.toLowerCase()} case studies published yet.`}
     </h2>
-    <p className="work-empty-text">
+    <p className="mx-auto mt-2 mb-3 max-w-[440px] text-[15px] leading-[1.5] text-ink-muted">
       Ask us for references — we&rsquo;ll happily walk you through recent work.
     </p>
-    <FlightLink href="/contact" className="page-link">
+    <FlightLink href="/contact" className={PAGE_LINK}>
       Get in touch
       <ArrowIcon />
     </FlightLink>

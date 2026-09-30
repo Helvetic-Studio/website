@@ -23,8 +23,8 @@ const percent = (value: number) => `${value.toFixed(4)}%`;
 /**
  * The camera looks at the flight's target while one is in progress, otherwise at the URL — the
  * URL alone would start the zoom only after the content had faded out, and browser back/forward
- * carries no click, so a click-driven ridge would never fly back out. Everything downstream is
- * plain CSS on custom properties, so the ridge, mist, scrim and pins can stay Server Components.
+ * carries no click, so a click-driven ridge would never fly back out. Everything downstream reads
+ * these custom properties, so the ridge, mist, scrim and pins can stay Server Components.
  */
 export const ZoomStage = ({ children }: ZoomStageProps) => {
   const pathname = usePathname();
@@ -59,7 +59,8 @@ export const ZoomStage = ({ children }: ZoomStageProps) => {
 
   return (
     <div
-      className="zoom-stage"
+      data-slot="zoom-stage"
+      className="contents [--mist-opacity:1] [--pins-opacity:1] [--scrim-opacity:0.12] data-[zoomed=true]:[--mist-opacity:0] data-[zoomed=true]:[--pins-opacity:0] data-[zoomed=true]:[--scrim-opacity:0.55]"
       data-zoomed={zoomed}
       data-lateral={lateral}
       style={style}

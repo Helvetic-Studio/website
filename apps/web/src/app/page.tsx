@@ -1,7 +1,8 @@
-import { ArrowIcon } from "@/app/_components/arrow-icon";
+import { ButtonIcon } from "@/app/_components/button-icon";
 import { FlightLink } from "@/app/_components/flight-link";
 import type { TitleWord } from "@/app/_components/masked-title";
 import { RangeHero } from "@/app/_components/range-hero";
+import { buttonClass } from "@/app/_components/styles";
 
 const TITLE: readonly (readonly TitleWord[])[] = [
   [{ text: "Build" }, { text: "a" }, { text: "website." }],
@@ -19,13 +20,11 @@ const Page = () => (
     title={TITLE}
     lede="Sharp, fast websites that turn visitors into customers."
   >
-    <FlightLink href="/contact" className="button button-primary">
+    <FlightLink href="/contact" className={buttonClass("primary")}>
       Start a project
-      <span className="button-icon">
-        <ArrowIcon />
-      </span>
+      <ButtonIcon />
     </FlightLink>
-    <FlightLink href="/work" className="button button-ghost">
+    <FlightLink href="/work" className={buttonClass("ghost")}>
       See our work
     </FlightLink>
   </RangeHero>

@@ -58,8 +58,9 @@ const handoffFor = (
 
 /** The chip of a Work page: the filter link whose href is that page. */
 const chipFor = (grid: HTMLElement, pathname: string): Element | null =>
-  grid.closest(".page")?.querySelector(`.work-filter a[href="${pathname}"]`) ??
-  null;
+  grid
+    .closest('[data-slot="work-page"]')
+    ?.querySelector(`[data-slot="work-filter"] a[href="${pathname}"]`) ?? null;
 
 /**
  * The element's box as laid out. At mount the header is still at the start of its rise, so the
@@ -81,13 +82,11 @@ const layoutBox = (element: Element): Box => {
 };
 
 /**
- * Plays one card's flight. In the air the card is solid and lifted (see `.is-flying`): the glass
- * would show the cards it crosses, and a blurred backdrop is dear to move every frame. Only the
- * card's own latest flight settles it, so a deal turned back mid-way stays in the air until the
- * gather that superseded it is over.
+ * Plays one card's flight. In the air the card is solid and lifted (`data-flying`, see
+ * ProjectCard): the glass would show the cards it crosses, and a blurred backdrop is dear to move
+ * every frame. Only the card's own latest flight settles it, so a deal turned back mid-way stays in
+ * the air until the gather that superseded it is over.
  */
-const FLYING = "is-flying";
-
 const latestFlight = new WeakMap<HTMLElement, Animation>();
 
 const fly = (
@@ -95,12 +94,12 @@ const fly = (
   keyframes: Keyframe[],
   timing: KeyframeAnimationOptions
 ): Animation => {
-  card.classList.add(FLYING);
+  card.dataset["flying"] = "";
   const animation = card.animate(keyframes, timing);
   latestFlight.set(card, animation);
   const landed = () => {
     if (latestFlight.get(card) === animation) {
-      card.classList.remove(FLYING);
+      delete card.dataset["flying"];
     }
   };
   animation.addEventListener("finish", landed);
@@ -257,7 +256,7 @@ const nextDeal = (
 /**
  * The project grid, dealt from its chip when it lands by a flight or a shuffle, and gathered back
  * into the chip when a shuffle leaves. Back/forward carries no hand-off, so the cards rise as
- * usual (see `.project-card`).
+ * usual (see ProjectCard).
  */
 export const CardDeck = ({ children }: CardDeckProps) => {
   const pathname = usePathname();
@@ -305,7 +304,12 @@ export const CardDeck = ({ children }: CardDeckProps) => {
   }, [leaving, pathname]);
 
   return (
-    <ul ref={grid} className="project-grid" data-deal={dealing ?? undefined}>
+    <ul
+      ref={grid}
+      data-slot="project-grid"
+      className="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-4"
+      data-deal={dealing ?? undefined}
+    >
       {children}
     </ul>
   );

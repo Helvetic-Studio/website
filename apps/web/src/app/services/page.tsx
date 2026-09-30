@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 
 import { Reveal } from "@/app/_components/reveal";
 import { SiteFooter } from "@/app/_components/site-footer";
+import {
+  BRAND_DOT,
+  PAGE,
+  PAGE_EYEBROW,
+  PAGE_HEAD,
+  PAGE_LEDE,
+  PAGE_TITLE,
+} from "@/app/_components/styles";
 import { SERVICES } from "@/app/_lib/services";
 import { CtaPanel } from "@/app/services/_components/cta-panel";
 import { ProcessSteps } from "@/app/services/_components/process-steps";
@@ -18,22 +26,22 @@ export const metadata: Metadata = {
 const ServicesPage = () => (
   <>
     <Reveal>
-      <div className="page">
-        <header className="page-head">
-          <p className="eyebrow page-eyebrow">
-            <span className="brand-dot" aria-hidden="true" />
+      <div className={PAGE}>
+        <header className={PAGE_HEAD}>
+          <p className={PAGE_EYEBROW}>
+            <span className={BRAND_DOT} aria-hidden="true" />
             Services
           </p>
-          <h1 className="page-title">
+          <h1 className={PAGE_TITLE}>
             Everything your company needs on the web.
           </h1>
-          <p className="page-lede">
+          <p className={PAGE_LEDE}>
             Five services, one team, no hand-offs. Pick the one that fits your
             project, or start with the goal and we&rsquo;ll suggest the route.
           </p>
           <ServiceIndex />
         </header>
-        <div className="service-list">
+        <div className="flex flex-col gap-5">
           {SERVICES.map((service, index) => (
             <ServicePanel
               key={service.slug}

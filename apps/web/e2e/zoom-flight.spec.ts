@@ -11,7 +11,9 @@ declare global {
 
 const nearScale = async (page: Page) =>
   await page.evaluate(() => {
-    const layer = document.querySelector(".ridge-near");
+    const layer = document.querySelector(
+      '[data-slot="ridge-layer"][data-depth="near"]'
+    );
     if (!layer) {
       throw new Error("ridge-near missing");
     }
@@ -21,7 +23,9 @@ const nearScale = async (page: Page) =>
 /** Records the near layer's scale on every frame into `window.ridgeSamples`. */
 const startSampling = async (page: Page) => {
   await page.evaluate(() => {
-    const layer = document.querySelector(".ridge-near");
+    const layer = document.querySelector(
+      '[data-slot="ridge-layer"][data-depth="near"]'
+    );
     if (!layer) {
       throw new Error("ridge-near missing");
     }
@@ -38,7 +42,10 @@ const startSampling = async (page: Page) => {
 const openHome = async (page: Page) => {
   await page.goto("/");
   // Hydrated once the nav indicator has been measured.
-  await expect(page.locator(".nav-indicator")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="nav-indicator"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
 };
 
 test("a gateway click flies the ridge in while the page fades, then flies back out", async ({
@@ -57,11 +64,14 @@ test("a gateway click flies the ridge in while the page fades, then flies back o
   await expect(
     page.getByRole("heading", { level: 1, name: /Everything your company/u })
   ).toBeVisible();
-  await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="site-content"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
   await expect
     .poll(async () => await nearScale(page))
     .toBeCloseTo(NEAR_ZOOM, 3);
-  await expect(page.locator(".pins")).toBeHidden();
+  await expect(page.locator('[data-slot="pins"]')).toBeHidden();
   // The camera passes through the middle of its flight instead of snapping.
   const samples = await page.evaluate(() => window.ridgeSamples ?? []);
   expect(samples.some((scale) => scale > 1.2 && scale < 3)).toBe(true);
@@ -71,9 +81,12 @@ test("a gateway click flies the ridge in while the page fades, then flies back o
   await expect(
     page.getByRole("heading", { level: 1, name: /Build a website/u })
   ).toBeVisible();
-  await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="site-content"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
   await expect.poll(async () => await nearScale(page)).toBe(1);
-  await expect(page.locator(".pins")).toBeVisible();
+  await expect(page.locator('[data-slot="pins"]')).toBeVisible();
 });
 
 test("a summit pin lands on its gateway", async ({ page }) => {
@@ -88,7 +101,10 @@ test("a summit pin lands on its gateway", async ({ page }) => {
   await expect(
     page.getByRole("heading", { level: 1, name: "Work we’re proud of." })
   ).toBeVisible();
-  await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="site-content"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
   await expect
     .poll(async () => await nearScale(page))
     .toBeCloseTo(NEAR_ZOOM, 3);
@@ -104,7 +120,10 @@ test("reduced motion still lands on the gateway", async ({ page }) => {
   await expect(
     page.getByRole("heading", { level: 1, name: /Small studio/u })
   ).toBeVisible();
-  await expect(page.locator(".site-content")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="site-content"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
   await expect
     .poll(async () => await nearScale(page))
     .toBeCloseTo(NEAR_ZOOM, 3);

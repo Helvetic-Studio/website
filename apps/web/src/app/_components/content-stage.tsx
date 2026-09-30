@@ -82,7 +82,13 @@ export const ContentStage = ({ children }: ContentStageProps) => {
       key={summit}
       id="main-content"
       tabIndex={-1}
-      className="site-content"
+      data-slot="site-content"
+      // A constant box across routes, so the content hand-off never morphs its group. The hand-off
+      // is driven here, not by the View Transition API: Firefox paints the ridge as a frozen
+      // snapshot for the whole flight and WebKit ignores the crossfade timing. The short exit hands
+      // navigation over early; a flight lands after a short beat (the ridge is already moving),
+      // back/forward waits for the ridge, which only starts flying with the URL.
+      className="relative z-20 flex flex-auto scroll-mt-[104px] flex-col outline-none data-[flight=in]:animate-[contentIn_calc(var(--zoom-duration)*0.5)_ease-out_calc(var(--zoom-duration)*0.08)_both] data-[flight=out]:pointer-events-none data-[flight=out]:animate-[contentOut_calc(var(--zoom-duration)*0.28)_ease-out_both] data-[flight=pop]:animate-[contentIn_calc(var(--zoom-duration)*0.5)_ease-out_calc(var(--zoom-duration)*0.28)_both]"
       data-flight={isLeaving(flight, pathname) ? "out" : arrival}
       onAnimationEnd={onAnimationEnd}
     >

@@ -3,8 +3,6 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/app/_components/site-footer";
 import { AboutStory } from "@/app/about/_components/about-story";
 
-import "./about.css";
-
 export const metadata: Metadata = {
   title: "About",
   description:
@@ -14,7 +12,7 @@ export const metadata: Metadata = {
 
 const AboutPage = () => (
   <>
-    <div className="about-page">
+    <div className="mx-auto box-border w-full max-w-[1160px] px-6 pt-16 pb-32 max-md:px-4 max-md:pt-8 max-md:pb-[88px]">
       <AboutStory />
     </div>
     <SiteFooter />

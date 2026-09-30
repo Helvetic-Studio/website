@@ -4,7 +4,8 @@ import { expect, test } from "@playwright/test";
 import { PROJECTS, projectsFor } from "@/app/_lib/projects";
 
 /** Next keeps the previous filter's grid mounted but hidden (React Activity): count what is shown. */
-const visibleCards = (page: Page) => page.locator(".project-card:visible");
+const visibleCards = (page: Page) =>
+  page.locator('[data-slot="project-card"]:visible');
 
 const filterOf = (page: Page) =>
   page.getByRole("navigation", { name: "Filter by service" });
@@ -28,7 +29,9 @@ const expectSettled = async (page: Page, count: number) => {
       expect(card).toHaveCSS("transform", IN_PLACE),
     ])
   );
-  await expect(page.locator(".project-card.is-flying")).toHaveCount(0);
+  await expect(
+    page.locator('[data-slot="project-card"][data-flying]')
+  ).toHaveCount(0);
 };
 
 /** The chips return to their resting size once the deck has been handed over. */
@@ -45,7 +48,10 @@ test("a second chip clicked mid-gather lands on the last one, with every card se
   page,
 }) => {
   await page.goto("/work");
-  await expect(page.locator(".nav-indicator")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="nav-indicator"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
   await expectSettled(page, PROJECTS.length);
 
   const filter = filterOf(page);
@@ -68,7 +74,10 @@ test("back after a shuffle brings the whole catalogue out again", async ({
   page,
 }) => {
   await page.goto("/work");
-  await expect(page.locator(".nav-indicator")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="nav-indicator"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
 
   const filter = filterOf(page);
   await filter.getByRole("link", { name: "Web applications" }).click();
@@ -89,9 +98,12 @@ test("the heading keeps one set of words on screen through a shuffle", async ({
   page,
 }) => {
   await page.goto("/work/websites");
-  await expect(page.locator(".nav-indicator")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="nav-indicator"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
 
-  const title = page.locator(".work-title");
+  const title = page.locator('[data-slot="work-title"]');
   await expect(title).toHaveText("Websites we’ve built");
 
   await filterOf(page).getByRole("link", { name: "Care & growth" }).click();
@@ -100,5 +112,8 @@ test("the heading keeps one set of words on screen through a shuffle", async ({
   // The old words never come back once they have gone: the swap reads as one change, not two.
   await expect(title).toHaveText("Sites and apps we look after");
   await expect(title).toHaveCSS("opacity", "1");
-  await expect(page.locator(".work-lede")).toHaveCSS("opacity", "1");
+  await expect(page.locator('[data-slot="work-lede"]')).toHaveCSS(
+    "opacity",
+    "1"
+  );
 });

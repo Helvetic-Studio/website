@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 
 const zoomNear = async (page: Page) =>
   await page
-    .locator(".zoom-stage")
+    .locator('[data-slot="zoom-stage"]')
     .evaluate((stage) =>
       getComputedStyle(stage).getPropertyValue("--zoom-near").trim()
     );

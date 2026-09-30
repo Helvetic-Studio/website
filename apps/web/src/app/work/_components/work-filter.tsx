@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
+import { FOCUS_RING } from "@/app/_components/styles";
 import { SERVICES, workRouteFor } from "@/app/_lib/services";
 import type { WorkPath } from "@/app/work/_lib/shuffle";
 import {
@@ -44,12 +45,18 @@ export const WorkFilter = () => {
   useSettleShuffleOnLanding(shuffle, pathname);
 
   return (
-    <nav className="work-filter" aria-label="Filter by service">
+    // A segmented tray: the chips sit in one recessed track, the current one raised out of it. The
+    // track is opaque — the deck deals its cards from under it, and they must not show through.
+    <nav
+      data-slot="work-filter"
+      className="mt-8 inline-flex flex-wrap gap-0.5 rounded-[28px] bg-[oklch(0.962_0.014_28)] p-[5px] shadow-[inset_0_1px_2px_oklch(0.35_0.08_30/0.08),0_1px_0_oklch(1_0_0/0.9)]"
+      aria-label="Filter by service"
+    >
       {CHIPS.map((chip) => (
         <Link
           key={chip.href}
           href={chip.href}
-          className="filter-chip"
+          className={`inline-flex min-h-11 items-center justify-center rounded-full px-[17px] py-[9px] text-[14px] font-medium tracking-[-0.01em] text-ink-muted [-webkit-tap-highlight-color:transparent] [transition:color_200ms_ease,background-color_220ms_ease,box-shadow_220ms_ease] pointer-fine:data-[active=false]:hover:bg-white/50 pointer-fine:data-[active=false]:hover:text-ink data-[active=true]:font-[560] data-[active=true]:text-ink data-[active=true]:shadow-[0_1px_2px_oklch(0.2393_0_0/0.06),0_8px_18px_-10px_oklch(0.35_0.08_30/0.4)] data-[active=true]:not-active:bg-white active:bg-brand/16 active:duration-[80ms] ${FOCUS_RING} max-md:px-[13px] max-md:text-[13px]`}
           data-active={chip.href === current}
           aria-current={chip.href === pathname ? "page" : undefined}
           prefetch={true}

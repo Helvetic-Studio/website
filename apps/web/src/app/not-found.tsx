@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
-import { ArrowIcon } from "@/app/_components/arrow-icon";
+import { ButtonIcon } from "@/app/_components/button-icon";
 import { FlightLink } from "@/app/_components/flight-link";
 import type { TitleWord } from "@/app/_components/masked-title";
 import { RangeHero } from "@/app/_components/range-hero";
+import { buttonClass } from "@/app/_components/styles";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -23,13 +24,11 @@ const NotFound = () => (
     title={TITLE}
     lede="This page doesn’t exist, or it has moved. Every summit below leads somewhere real."
   >
-    <FlightLink href="/" className="button button-primary">
+    <FlightLink href="/" className={buttonClass("primary")}>
       Back to the start
-      <span className="button-icon">
-        <ArrowIcon />
-      </span>
+      <ButtonIcon />
     </FlightLink>
-    <FlightLink href="/contact" className="button button-ghost">
+    <FlightLink href="/contact" className={buttonClass("ghost")}>
       Ask us instead
     </FlightLink>
   </RangeHero>
