@@ -17,6 +17,8 @@ export type WorkRoute = `/work/${ServiceSlug}`;
 export interface Service {
   slug: ServiceSlug;
   title: string;
+  /** The visitor's situation in their own words, finishing the sentence "I need…". */
+  need: string;
   /** The outcome in one line, under the title. */
   promise: string;
   description: string;
@@ -34,6 +36,7 @@ export const SERVICES: readonly Service[] = [
   {
     slug: "websites",
     title: "Websites",
+    need: "a website customers trust",
     promise: "Your company’s front door.",
     description:
       "A company site should load fast, read clearly and make the next step obvious. We plan the structure, write around your content, design in your brand and build it to last — on a CMS you can edit yourself.",
@@ -53,6 +56,7 @@ export const SERVICES: readonly Service[] = [
   {
     slug: "shops",
     title: "Online shops",
+    need: "to sell online in Switzerland",
     promise: "Sell in Switzerland without friction.",
     description:
       "A shop that fits how Swiss customers actually pay: TWINT, cards and invoice, with shipping and VAT handled correctly. Connected to your stock and accounting, so orders don’t turn into admin.",
@@ -72,6 +76,7 @@ export const SERVICES: readonly Service[] = [
   {
     slug: "applications",
     title: "Web applications",
+    need: "to replace spreadsheets and email chains",
     promise: "Custom tools for the work off-the-shelf software can’t do.",
     description:
       "Customer portals, booking systems, dashboards and internal tools — built on the web, so there is nothing to install and everyone sees the same data. We start with a prototype you can click through, then build in short, reviewed iterations.",
@@ -91,6 +96,7 @@ export const SERVICES: readonly Service[] = [
   {
     slug: "design",
     title: "Design",
+    need: "a clearer interface for our product",
     promise: "Interfaces people understand at first glance.",
     description:
       "Web design, UI and UX — from the first wireframe to a design system your team can build on. We design in Figma, test the flows with real content, and hand over files developers can actually use. Yours, or ours.",
@@ -110,6 +116,7 @@ export const SERVICES: readonly Service[] = [
   {
     slug: "care",
     title: "Care & growth",
+    need: "someone to look after our site",
     promise: "Launch is the start, not the finish.",
     description:
       "We keep what we built fast, secure and up to date, and use real usage data to make it better every month. Content changes, new features and SEO work happen on a plan, not in emergencies.",

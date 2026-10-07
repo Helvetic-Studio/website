@@ -1,58 +1,51 @@
 import type { Metadata } from "next";
 
+import { ButtonIcon } from "@/app/_components/button-icon";
+import { ClosingPanel } from "@/app/_components/closing-panel";
+import { FlightLink } from "@/app/_components/flight-link";
 import { Reveal } from "@/app/_components/reveal";
 import { SiteFooter } from "@/app/_components/site-footer";
-import {
-  BRAND_DOT,
-  PAGE,
-  PAGE_EYEBROW,
-  PAGE_HEAD,
-  PAGE_LEDE,
-  PAGE_TITLE,
-} from "@/app/_components/styles";
-import { SERVICES } from "@/app/_lib/services";
-import { CtaPanel } from "@/app/services/_components/cta-panel";
-import { ProcessSteps } from "@/app/services/_components/process-steps";
-import { ServiceIndex } from "@/app/services/_components/service-index";
-import { ServicePanel } from "@/app/services/_components/service-panel";
+import { buttonClass, PAGE } from "@/app/_components/styles";
+import { ProcessClimb } from "@/app/services/_components/process-climb";
+import { ServiceQuestions } from "@/app/services/_components/service-questions";
+import { ServiceTour } from "@/app/services/_components/service-tour";
+import { ServicesHero } from "@/app/services/_components/services-hero";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
     "Websites, online shops, web applications, design and ongoing care — one Swiss team from the first sketch to launch and beyond.",
+  alternates: { canonical: "/services" },
 };
 
-// One panel per service, in the order they are sold; each links into its own slice of the Work page.
+/**
+ * The page answers an owner's questions in the order they come: which service fits my situation
+ * (the hero), what exactly is in it (the tour, each service linking to its own work), how does a
+ * project run (the climb), what about cost and after launch (the questions) — then the door.
+ */
 const ServicesPage = () => (
   <>
     <Reveal>
       <div className={PAGE}>
-        <header className={PAGE_HEAD}>
-          <p className={PAGE_EYEBROW}>
-            <span className={BRAND_DOT} aria-hidden="true" />
-            Services
-          </p>
-          <h1 className={PAGE_TITLE}>
-            Everything your company needs on the web.
-          </h1>
-          <p className={PAGE_LEDE}>
-            Five services, one team, no hand-offs. Pick the one that fits your
-            project, or start with the goal and we&rsquo;ll suggest the route.
-          </p>
-          <ServiceIndex />
-        </header>
-        <div className="flex flex-col gap-5">
-          {SERVICES.map((service, index) => (
-            <ServicePanel
-              key={service.slug}
-              service={service}
-              position={index + 1}
-              reveal={index > 0}
-            />
-          ))}
-        </div>
-        <ProcessSteps />
-        <CtaPanel />
+        <ServicesHero />
+        <ServiceTour />
+        <ProcessClimb />
+        <ServiceQuestions />
+        <ClosingPanel
+          tone="red"
+          id="services-cta-title"
+          eyebrow="Not sure which service fits?"
+          title="Tell us the goal. We’ll find the route."
+          text="Describe what you want to achieve. We’ll suggest the right approach and give you a price range before you commit to anything."
+        >
+          <FlightLink href="/contact" className={buttonClass("light")}>
+            Start a project
+            <ButtonIcon />
+          </FlightLink>
+          <FlightLink href="/work" className={buttonClass("onRed")}>
+            See all our work
+          </FlightLink>
+        </ClosingPanel>
       </div>
     </Reveal>
     <SiteFooter />

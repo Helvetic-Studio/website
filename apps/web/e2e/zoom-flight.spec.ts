@@ -62,7 +62,7 @@ test("a gateway click flies the ridge in while the page fades, then flies back o
 
   await expect(page).toHaveURL("/services");
   await expect(
-    page.getByRole("heading", { level: 1, name: /Everything your company/u })
+    page.getByRole("heading", { level: 1, name: /Five services/u })
   ).toBeVisible();
   await expect(page.locator('[data-slot="site-content"]')).toHaveCSS(
     "opacity",
