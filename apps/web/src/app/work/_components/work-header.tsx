@@ -4,12 +4,7 @@ import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 import type { RefObject } from "react";
 import { useLayoutEffect, useRef } from "react";
 
-import {
-  BRAND_DOT,
-  EYEBROW,
-  PAGE_LEDE_TYPE,
-  PAGE_TITLE_TYPE,
-} from "@/app/_components/styles";
+import { BRAND_DOT, EYEBROW, PAGE_LEDE_TYPE } from "@/app/_components/styles";
 import { prefersReducedMotion, riseEaseOf } from "@/app/_lib/motion";
 import { serviceBySlug } from "@/app/_lib/services";
 import { glideKeyframes, HEADING_GLIDE_MS } from "@/app/work/_lib/heading";
@@ -93,6 +88,10 @@ const useGlidingHeight = (
   }, [block, filter]);
 };
 
+/** The page's title runs larger than the other pages': the work is the studio's loudest claim. */
+const WORK_TITLE_TYPE =
+  "m-0 text-[clamp(48px,7.4vw,108px)] leading-[0.96] font-semibold tracking-[-0.06em] text-balance";
+
 /**
  * The words swap through a touch of blur: two texts crossfading read as one changing. A shuffle
  * that is leaving takes the words with the cards (a beat after the first card turns back); the new
@@ -131,7 +130,7 @@ export const WorkHeader = () => {
         <h1
           key={heading.filter}
           data-slot="work-title"
-          className={`${PAGE_TITLE_TYPE} ${TITLE_SWAP}`}
+          className={`${WORK_TITLE_TYPE} ${TITLE_SWAP}`}
           data-shuffle={shuffleState}
         >
           {heading.title}

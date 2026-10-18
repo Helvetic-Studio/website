@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { FOCUS_RING } from "@/app/_components/styles";
+import { PROJECTS, projectsFor } from "@/app/_lib/projects";
 import { SERVICES, workRouteFor } from "@/app/_lib/services";
 import type { WorkPath } from "@/app/work/_lib/shuffle";
 import {
@@ -17,13 +18,16 @@ import {
 interface Chip {
   href: WorkPath;
   label: string;
+  /** How many projects the filter shows, so a visitor knows before the click. */
+  count: number;
 }
 
 const CHIPS: readonly Chip[] = [
-  { href: "/work", label: "All work" },
+  { href: "/work", label: "All work", count: PROJECTS.length },
   ...SERVICES.map((service) => ({
     href: workRouteFor(service.slug),
     label: service.title,
+    count: projectsFor(service.slug).length,
   })),
 ];
 
@@ -70,6 +74,12 @@ export const WorkFilter = () => {
           }}
         >
           {chip.label}
+          <span
+            className="ml-2 text-[13px] text-ink-muted tabular-nums"
+            aria-hidden="true"
+          >
+            {chip.count}
+          </span>
         </Link>
       ))}
     </nav>

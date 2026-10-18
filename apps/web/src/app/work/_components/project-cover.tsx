@@ -1,105 +1,89 @@
+import Image from "next/image";
+import type { CSSProperties } from "react";
+
 import type { Project } from "@/app/_lib/projects";
+import { ProjectScreen } from "@/app/work/_components/project-screens";
+import { PLACES } from "@/app/work/_lib/places";
+import type { TileSize } from "@/app/work/_lib/tiles";
 
-type CoverLayout = "site" | "shop" | "app";
+export interface ProjectCoverProps {
+  project: Project;
+  size: TileSize;
+  /** The first tile is the largest thing on the page: its photograph loads first. */
+  lead: boolean;
+}
 
-/** The cover shows the kind of thing that was built, read from the project's lead service. */
-const layoutOf = (project: Project): CoverLayout => {
-  const [lead] = project.services;
-  if (lead === "shops") {
-    return "shop";
-  }
-  return lead === "applications" ? "app" : "site";
+// One height per size, so the two tiles of a pair line up; below lg every tile is full width.
+const FRAME: Record<TileSize, string> = {
+  full: "h-[clamp(440px,46vw,620px)]",
+  wide: "h-[clamp(400px,38vw,520px)]",
+  narrow: "h-[clamp(400px,38vw,520px)]",
 };
 
-// Everything inside the cover is sized in container units, so the drawing scales with the card.
-const SCREEN = "relative flex-1 text-ink";
-const WORDMARK = "block leading-none font-[620] tracking-[-0.055em]";
-const LINE =
-  "block h-[1.4cqi] rounded-[1cqi] bg-[oklch(0.93_0.01_var(--cover-hue))]";
+const WINDOW: Record<TileSize, string> = {
+  full: "top-[14%] right-[5%] w-[50%] max-lg:right-[7%] max-lg:w-[86%]",
+  wide: "top-[17%] right-[9%] w-[82%]",
+  narrow: "top-[17%] right-[7%] w-[86%]",
+};
 
-const SiteScreen = ({ project }: { project: Project }) => (
-  <div className={`${SCREEN} px-[7cqi] py-[6cqi]`}>
-    <span className="block text-[1.9cqi] font-semibold tracking-[0.14em] text-[oklch(0.5_0.13_var(--cover-hue))] uppercase">
-      {project.client}
-    </span>
-    <span className={`${WORDMARK} mt-[1.6cqi] text-[6.4cqi]`}>
-      {project.title}
-    </span>
-    <span className={`${LINE} mt-[3.4cqi] w-[62%]`} />
-    <span className={`${LINE} mt-[1.6cqi] w-[42%]`} />
-    <span className="mt-[4cqi] block h-[5cqi] w-[17cqi] rounded-full bg-[oklch(0.6_0.19_var(--cover-hue))]" />
-  </div>
-);
+const SIZES: Record<TileSize, string> = {
+  full: "(min-width: 1160px) 1120px, 100vw",
+  wide: "(min-width: 1024px) 640px, 100vw",
+  narrow: "(min-width: 1024px) 460px, 100vw",
+};
 
-const ShopScreen = ({ project }: { project: Project }) => (
-  <div className={`${SCREEN} px-[7cqi] py-[6cqi]`}>
-    <span className={`${WORDMARK} text-[4.6cqi]`}>{project.title}</span>
-    <span className="mt-[4cqi] grid grid-cols-3 gap-[2.4cqi] *:aspect-[4/5] *:rounded-[1.6cqi] *:[background:radial-gradient(circle_at_50%_42%,oklch(0.72_0.14_var(--cover-hue))_0_18%,transparent_19%),oklch(0.95_0.025_var(--cover-hue))]">
-      <span />
-      <span />
-      <span />
-    </span>
-  </div>
-);
+type CoverVariables = Record<"--accent-hue", string>;
 
-/** The dashboard's bars, left to right. */
-const BARS = [
-  "h-[42%] opacity-45",
-  "h-[70%] opacity-60",
-  "h-[54%] opacity-50",
-  "h-full",
-  "h-[78%] opacity-70",
-] as const;
-
-const AppScreen = ({ project }: { project: Project }) => (
-  <div className={`${SCREEN} grid grid-cols-[20%_minmax(0,1fr)]`}>
-    <span className="flex flex-col gap-[2cqi] bg-[oklch(0.975_0.008_var(--cover-hue))] px-[3cqi] py-[5cqi] *:h-[1.4cqi] *:rounded-[1cqi] *:bg-[oklch(0.9_0.015_var(--cover-hue))] *:first:w-[70%] *:first:bg-[oklch(0.6_0.19_var(--cover-hue))]">
-      <span />
-      <span />
-      <span />
-    </span>
-    <span className="flex flex-col px-[5cqi] pt-[5cqi]">
-      <span className={`${WORDMARK} text-[4.4cqi]`}>{project.title}</span>
-      <span className="mt-auto flex h-[20cqi] items-end gap-[2cqi] pb-[12cqi]">
-        {BARS.map((bar) => (
-          <span
-            key={bar}
-            className={`flex-1 rounded-t-[1cqi] bg-[oklch(0.6_0.19_var(--cover-hue)/0.85)] ${bar}`}
-          />
-        ))}
-      </span>
-    </span>
-  </div>
-);
-
-const SCREENS = { site: SiteScreen, shop: ShopScreen, app: AppScreen } as const;
-
-// TODO: placeholder art — replace with real screenshots via next/image once case studies exist.
+// TODO: placeholder art — replace the drawn window with a real screenshot once case studies exist.
 /**
- * A browser window drawn with utilities, tinted by the project's hue (`--cover-hue`, set on the
- * card) and cropped by the cover's bottom-right edge like a product shot. Decorative: the card
- * names it.
+ * The work, standing in its place: a photograph of where the client works, and in front of it the
+ * first screen of what was built, in a browser window cropped by the frame's lower edge. The
+ * photograph is the client's surroundings, captioned as such; the window is drawn (see
+ * ProjectScreen) and decorative, since the tile names the project.
  */
-export const ProjectCover = ({ project }: { project: Project }) => {
-  const Screen = SCREENS[layoutOf(project)];
+export const ProjectCover = ({ project, size, lead }: ProjectCoverProps) => {
+  const place = PLACES[project.place];
+  const style: CSSProperties & CoverVariables = {
+    "--accent-hue": String(project.accentHue),
+  };
 
   return (
     <div
-      className="@container relative aspect-[16/10] overflow-hidden rounded-[calc(var(--radius-core)-8px)] [background:radial-gradient(80%_90%_at_12%_0%,oklch(0.985_0.012_var(--cover-hue))_0%,oklch(0.985_0.012_var(--cover-hue)/0)_60%),linear-gradient(155deg,oklch(0.95_0.03_var(--cover-hue))_0%,oklch(0.85_0.08_var(--cover-hue))_100%)]"
-      aria-hidden="true"
+      className={`relative isolate overflow-hidden rounded-[calc(var(--radius-core)-8px)] bg-[oklch(0.86_0.03_40)] ${FRAME[size]} max-lg:aspect-[4/3] max-lg:h-auto max-md:aspect-[4/5]`}
+      style={style}
     >
-      <div className="absolute top-[14%] right-[-3%] bottom-[-10%] left-[11%] flex flex-col overflow-hidden rounded-t-[2.4cqi] bg-white shadow-[0_0_0_1px_oklch(1_0_0/0.7),0_6cqi_12cqi_-6cqi_oklch(0.32_0.1_var(--cover-hue)/0.45)]">
-        <div className="flex h-[6.4cqi] items-center gap-[3cqi] bg-[oklch(0.975_0.006_var(--cover-hue))] px-[2.4cqi] shadow-[0_1px_0_oklch(0.9_0.012_var(--cover-hue))]">
-          <span className="flex gap-[1cqi] *:size-[1.5cqi] *:rounded-full *:bg-[oklch(0.86_0.01_var(--cover-hue))]">
+      <Image
+        src={place.photo}
+        alt={place.alt}
+        fill
+        sizes={SIZES[size]}
+        placeholder="blur"
+        preload={lead}
+        className="-z-10 object-cover [transition:scale_1400ms_var(--ease-out)] motion-safe:pointer-fine:group-hover/tile:scale-[1.04]"
+      />
+      <p className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-[7px] text-[13px] leading-none font-medium text-ink max-md:top-3 max-md:left-3">
+        {place.caption}
+      </p>
+      <div
+        data-ui
+        aria-hidden="true"
+        className={`@container absolute bottom-[-6%] flex flex-col overflow-hidden rounded-t-[12px] bg-white text-ink shadow-[0_0_0_1px_oklch(0.2_0.02_30/0.08),0_36px_70px_-34px_oklch(0.18_0.04_30/0.7)] [transition:translate_800ms_var(--ease-out)] motion-safe:pointer-fine:group-hover/tile:-translate-y-2 ${WINDOW[size]}`}
+      >
+        <div className="flex h-[6cqi] shrink-0 items-center gap-[3cqi] bg-[oklch(0.975_0.004_60)] px-[2.4cqi] shadow-[0_1px_0_oklch(0.92_0.006_60)]">
+          <span className="flex gap-[1cqi] *:size-[1.5cqi] *:rounded-full *:bg-[oklch(0.86_0.008_60)]">
             <span />
             <span />
             <span />
           </span>
-          <span className="rounded-[1.2cqi] bg-white px-[3cqi] py-[0.6cqi] text-[2.1cqi] tracking-normal text-ink-muted">
+          <span className="rounded-[1.2cqi] bg-white px-[3cqi] py-[0.7cqi] text-[2cqi] text-ink-muted">
             {project.slug}.ch
           </span>
         </div>
-        <Screen project={project} />
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <div className="pb-[12cqi] [transition:translate_1600ms_var(--ease-in-out)] motion-safe:pointer-fine:group-hover/tile:-translate-y-[16cqi]">
+            <ProjectScreen project={project} />
+          </div>
+        </div>
       </div>
     </div>
   );

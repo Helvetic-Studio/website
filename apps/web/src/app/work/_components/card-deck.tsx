@@ -307,7 +307,7 @@ export const CardDeck = ({ children }: CardDeckProps) => {
     <ul
       ref={grid}
       data-slot="project-grid"
-      className="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-4"
+      className="grid grid-cols-12 gap-6 max-md:gap-4"
       data-deal={dealing ?? undefined}
     >
       {children}

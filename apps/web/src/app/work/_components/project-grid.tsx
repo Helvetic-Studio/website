@@ -5,6 +5,7 @@ import type { Project } from "@/app/_lib/projects";
 import type { Service } from "@/app/_lib/services";
 import { CardDeck } from "@/app/work/_components/card-deck";
 import { ProjectCard } from "@/app/work/_components/project-card";
+import { tileSize } from "@/app/work/_lib/tiles";
 
 export interface ProjectGridProps {
   projects: readonly Project[];
@@ -39,7 +40,12 @@ export const ProjectGrid = ({ projects, service }: ProjectGridProps) => {
   return (
     <CardDeck>
       {projects.map((project, index) => (
-        <ProjectCard key={project.slug} project={project} order={index} />
+        <ProjectCard
+          key={project.slug}
+          project={project}
+          order={index}
+          size={tileSize(index, projects.length)}
+        />
       ))}
     </CardDeck>
   );
