@@ -23,6 +23,8 @@ import { SITE_LINKS } from "@/app/_lib/site-links";
 
 export interface MobileMenuProps {
   pathname: string;
+  /** True from the tap that opens the sheet until it has rolled back up and unmounted. */
+  onPresenceChange: (present: boolean) => void;
 }
 
 type ItemStyle = CSSProperties & Record<"--item", string>;
@@ -68,14 +70,25 @@ const numeral = (position: number) => String(position).padStart(2, "0");
 // Below 960 the pill unrolls into a top Sheet. Not a Drawer: five links want no drag physics.
 // The sheet covers the pill and repeats its header row, because a modal dialog hides everything
 // outside itself from assistive technology — the pill's own trigger cannot be the close control.
-export const MobileMenu = ({ pathname }: MobileMenuProps) => {
+export const MobileMenu = ({ pathname, onPresenceChange }: MobileMenuProps) => {
   const [open, setOpen] = useState(false);
+  const changeOpen = (next: boolean) => {
+    setOpen(next);
+    if (next) {
+      onPresenceChange(true);
+    }
+  };
   const close = () => {
     setOpen(false);
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    // Presence ends on Base UI's close-complete, which fires as the sheet unmounts, whatever closed it.
+    <Sheet
+      open={open}
+      onOpenChange={changeOpen}
+      onOpenChangeComplete={onPresenceChange}
+    >
       <SheetTrigger
         render={
           <button

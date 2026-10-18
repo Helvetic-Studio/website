@@ -99,9 +99,11 @@ const activeLinkFor = (flight: Flight | null, pathname: string): string => {
  * (Tailwind emits them in that order). Without scroll timelines the thickening has no duration and
  * fills to its end: the glass starts thick, keeping the links at AA over the closing panels. With
  * reduced motion the drop becomes a fade; the thickening is a state, not motion, and stays.
+ * While the menu sheet is present it stands in for the pill, so the pill hides. That is React
+ * state, not `body:has(...)`: Firefox kept the stale match after the sheet unmounted.
  */
 const NAV_PILL =
-  "mx-auto flex max-w-[1160px] items-center justify-between gap-6 rounded-full bg-white/66 py-[7px] pr-[7px] pl-[18px] shadow-[inset_0_0_0_1px_oklch(1_0_0/0.9),0_1px_2px_oklch(0.2393_0_0/0.04),0_18px_40px_-26px_oklch(0.35_0.08_30/0.45)] backdrop-blur-[20px] backdrop-saturate-[170%] [animation:navDrop_620ms_var(--ease-out)_both,navThicken_linear_both] [animation-range:normal,0_160px] [animation-timeline:auto,scroll(root)] motion-reduce:[animation:fadeIn_160ms_ease_both,navThicken_linear_both] motion-reduce:[animation-range:normal,0_160px] motion-reduce:[animation-timeline:auto,scroll(root)] max-nav:pl-4 [@media(prefers-reduced-transparency:reduce)]:bg-surface-top [@media(prefers-reduced-transparency:reduce)]:backdrop-filter-none [body:has([data-slot=menu-sheet])_&]:invisible";
+  "mx-auto flex max-w-[1160px] items-center justify-between gap-6 rounded-full bg-white/66 py-[7px] pr-[7px] pl-[18px] shadow-[inset_0_0_0_1px_oklch(1_0_0/0.9),0_1px_2px_oklch(0.2393_0_0/0.04),0_18px_40px_-26px_oklch(0.35_0.08_30/0.45)] backdrop-blur-[20px] backdrop-saturate-[170%] [animation:navDrop_620ms_var(--ease-out)_both,navThicken_linear_both] [animation-range:normal,0_160px] [animation-timeline:auto,scroll(root)] motion-reduce:[animation:fadeIn_160ms_ease_both,navThicken_linear_both] motion-reduce:[animation-range:normal,0_160px] motion-reduce:[animation-timeline:auto,scroll(root)] max-nav:pl-4 [@media(prefers-reduced-transparency:reduce)]:bg-surface-top [@media(prefers-reduced-transparency:reduce)]:backdrop-filter-none data-menu-present:invisible";
 
 export const SiteNav = () => {
   const pathname = usePathname();
@@ -111,6 +113,7 @@ export const SiteNav = () => {
     style: indicatorStyle,
     registerLink,
   } = useIndicator(activeHref);
+  const [menuPresent, setMenuPresent] = useState(false);
 
   return (
     <div className="sticky top-0 z-60 px-(--nav-gutter) pt-(--nav-top) pb-1.5">
@@ -120,7 +123,11 @@ export const SiteNav = () => {
       >
         Skip to content
       </a>
-      <nav className={NAV_PILL} aria-label="Primary">
+      <nav
+        className={NAV_PILL}
+        aria-label="Primary"
+        data-menu-present={menuPresent || undefined}
+      >
         <FlightLink href="/" className={NAV_BRAND}>
           {/* TODO: placeholder mark — the real Helvetic Studio mark does not exist yet */}
           <span className={NAV_MARK} aria-hidden="true" />
@@ -172,7 +179,7 @@ export const SiteNav = () => {
           Get in touch
           <ButtonIcon />
         </FlightLink>
-        <MobileMenu pathname={pathname} />
+        <MobileMenu pathname={pathname} onPresenceChange={setMenuPresent} />
       </nav>
     </div>
   );
