@@ -21,7 +21,7 @@
     "@hugeicons/core-free-icons": "catalog:",
     "@hugeicons/react": "catalog:",
     "@opennextjs/cloudflare": "^1.20.15",
-    "@tanstack/react-hotkeys": "0.10.0",
+    "@tanstack/react-hotkeys": "0.22.0",
     "@website/env": "workspace:*",
     "@website/ui": "workspace:*",
     "babel-plugin-react-compiler": "1.0.0",
