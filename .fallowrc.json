@@ -67,7 +67,8 @@
         "*.config.ts",
         "*.setup.ts",
         "apps/*/*.config.ts",
-        "packages/*/*.config.ts"
+        "packages/*/*.config.ts",
+        "packages/config/*.d.ts"
       ]
     }
   },

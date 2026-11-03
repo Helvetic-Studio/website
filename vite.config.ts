@@ -46,6 +46,11 @@ export default defineConfig({
   },
   fmt: {
     ...ultracite,
+    ignorePatterns: [
+      ...(ultracite.ignorePatterns ?? []),
+      // Vendored agent skills (see skills-lock.json); keep them byte-identical to upstream.
+      ".agents/skills/**",
+    ],
   },
   test: {
     // Playwright owns *.spec.ts under e2e/; Vitest only runs *.test.*.
