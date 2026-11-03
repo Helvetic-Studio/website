@@ -354,7 +354,10 @@ const ChartLegendContent = ({
 }: React.ComponentProps<"div"> & {
   hideIcon?: boolean;
   nameKey?: string;
-} & RechartsPrimitive.DefaultLegendContentProps) => {
+  // Recharts 3.10 deprecated `verticalAlign` on its own legend props, but
+  // `<Legend>` still forwards it to custom content, so we type it ourselves.
+  verticalAlign?: "top" | "middle" | "bottom";
+} & Omit<RechartsPrimitive.DefaultLegendContentProps, "verticalAlign">) => {
   const { config } = useChart();
   const legendPayload = payload ?? [];
 
