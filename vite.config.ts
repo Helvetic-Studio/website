@@ -42,6 +42,21 @@ export default defineConfig({
           "sort-keys": "off",
         },
       },
+      {
+        // Module augmentation (declaration merging) needs empty interfaces that
+        // only extend another type, e.g. packages/config/vitest-jest-dom.d.ts.
+        files: ["packages/config/*.d.ts"],
+        rules: {
+          "typescript/no-empty-interface": [
+            "error",
+            { allowSingleExtends: true },
+          ],
+          "typescript/no-empty-object-type": [
+            "error",
+            { allowInterfaces: "with-single-extends" },
+          ],
+        },
+      },
     ],
   },
   fmt: {

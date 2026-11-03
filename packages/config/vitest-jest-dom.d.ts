@@ -4,8 +4,7 @@
 // declares `Assertion<R, T>`, so the merge yields wrong return types (e.g. `.resolves`
 // matchers are no longer awaitable). Augment Vitest's `Matchers<R, T>` instead.
 // Remove once https://github.com/testing-library/jest-dom/issues/738 is fixed.
-// Declaration merging needs an empty interface body.
-// oxlint-disable typescript/no-empty-interface, typescript/no-empty-object-type
+// The empty single-extends interface is allowed by a lint override in vite.config.ts.
 import type { TestingLibraryMatchers } from "@testing-library/jest-dom/matchers";
 
 declare module "vitest" {
