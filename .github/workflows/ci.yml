@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Vite+
-        uses: voidzero-dev/setup-vp@3754dd7dbdb32bd8f6d28b6043de13ad3a75f21f # v1.21.1
+        uses: voidzero-dev/setup-vp@cab1ab9eaff52d4857875f4f2c016e36af8f2c76 # v1.22.0
         with:
           cache: true
           node-version-file: package.json
@@ -75,7 +75,7 @@ jobs:
 
       - name: Report coverage
         if: ${{ !cancelled() && steps.unit-tests.conclusion != 'skipped' }}
-        uses: davelosert/vitest-coverage-report-action@c4bbc33a89b7ace0e63d35f1f7d4bcee31155a73 # v2.13.0
+        uses: davelosert/vitest-coverage-report-action@74c2d9210b4fc44c84d8213f61d7ec99837b7aa0 # v2.13.2
         with:
           vite-config-path: vite.config.ts
           file-coverage-mode: all
@@ -91,7 +91,7 @@ jobs:
 
       - name: Audit changed code with fallow
         if: ${{ github.event_name == 'pull_request' && !cancelled() && steps.install.conclusion == 'success' }}
-        uses: fallow-rs/fallow@d052786ef2baf78fa5b196f06dbccd6f0d26798e # v3.38.1
+        uses: fallow-rs/fallow@90833be1e8d12202e6f6084c417585e3b78005ce # v3.40.0
         with:
           command: audit
           gate: new-only
